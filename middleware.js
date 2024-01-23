@@ -2,4 +2,4 @@
 export { default } from 'next-auth/middleware'
 
 //using auth to protect specific pages
-export const config = {matcher: ['/dashboard']}
+export const config = {matcher: ['/poop']}
