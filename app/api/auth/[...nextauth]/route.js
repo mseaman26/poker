@@ -9,7 +9,7 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {},
-      id: 'username-login',
+
       async authorize(credentials) {
         const { email, password } = credentials;
 
