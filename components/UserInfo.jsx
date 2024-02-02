@@ -4,7 +4,28 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
 export default function UserInfo() {
+
   const { data: session } = useSession();
+
+  const seedDatabase = async () => {
+    try{
+      const res = await fetch('/api/seed', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      })
+      if(res.ok){
+        console.log('seed fetch successful')
+      }else{
+        console.log('seed fetch not successful')
+      }
+    }catch(err){
+      console.log('caught error: ', err)
+    }
+    
+  }
 
   return (
     <div className="grid place-items-center h-screen">
@@ -21,6 +42,9 @@ export default function UserInfo() {
         >
           Log Out
         </button>
+        {session?.user?.email === 'mike@mike.com' &&
+          <button onClick={() => seedDatabase()}>Seed Database</button>
+        }
       </div>
     </div>
   );

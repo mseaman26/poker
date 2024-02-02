@@ -1,5 +1,11 @@
+
 import UserInfo from "@/components/UserInfo";
 
 export default function Dashboard() {
-  return <UserInfo />;
+  return (
+    <div>
+      <UserInfo />
+    </div>
+    
+  );
 }
