@@ -32,8 +32,9 @@ export async function POST(req){
         console.log('users created successfully')
         return NextResponse.json({message: 'uses created successfully'}, {status: 201})
     }catch(err){
+        console.log(err.code)
         return NextResponse.json({
-            message: 'an error occured seeding the database'
+            message: err
         },
         {status: 500})
     }

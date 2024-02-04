@@ -5,16 +5,14 @@ import { useSession } from "next-auth/react";
 import { io } from "socket.io-client";
 import { useState } from "react";
 
+const serverPort = 3001
+const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
 
 export default function UserInfo() {
-
-  const serverPort = 3001
 
   const { data: session } = useSession();
   const [messageToSend, setMessageToSend] = useState('')
   const [messageRecieved, setMessageRecieved] = useState('')
-
-  const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
 
   socket.on('broadcast message', (message) =>{
     setMessageRecieved(message)
