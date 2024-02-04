@@ -2,10 +2,24 @@
 
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { io } from "socket.io-client";
+import { useState } from "react";
+
 
 export default function UserInfo() {
 
+  const serverPort = 3001
+
   const { data: session } = useSession();
+  const [messageToSend, setMessageToSend] = useState('')
+  const [messageRecieved, setMessageRecieved] = useState('')
+
+  const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
+
+  socket.on('broadcast message', (message) =>{
+    setMessageRecieved(message)
+  })
+
 
   const seedDatabase = async () => {
     try{
@@ -27,8 +41,14 @@ export default function UserInfo() {
     
   }
 
+  const broadcast = (e) => {
+    e.preventDefault()
+    socket.emit('broadcast message', messageToSend)
+  }
+
   return (
     <div className="grid place-items-center h-screen">
+      <h1>Message: {messageRecieved}</h1>
       <div className="shadow-lg p-8 bg-zince-300/10 flex flex-col gap-2 my-6">
         <div>
           Name: <span className="font-bold">{session?.user?.name}</span>
@@ -45,6 +65,9 @@ export default function UserInfo() {
         {session?.user?.email === 'mike@mike.com' &&
           <button onClick={() => seedDatabase()}>Seed Database</button>
         }
+        <form onSubmit={broadcast}>
+          <input type="text" placeholder="send message to everyone" onChange={(e) => setMessageToSend(e.target.value)}/>
+        </form>
       </div>
     </div>
   );
