@@ -20,6 +20,9 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
+  socket.on('activate user', (data) => {
+    console.log('data into server socket: ', data)
+  })
   socket.on("join_room", (data) => {
     socket.join(data);
   });
