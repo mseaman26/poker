@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { useSession } from "next-auth/react";
 import { socket } from "@/socket";
 
 export default function LoginForm() {
@@ -30,6 +29,10 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!email || !password){
+      setError('email and password cannot be blank')
+    }
 
     try {
       const res = await signIn("credentials", {

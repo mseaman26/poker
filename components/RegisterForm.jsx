@@ -1,15 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { initializeSocket, getSocket } from "@/lib/socketService";
+import { socket } from "@/socket";
 
 export default function RegisterForm() {
+  const {data: session} = useSession()
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if(session && socket){
+      alert('register useEffect')
+      console.log('registering with: ', session.user.email)
+      socket.emit('activate user', {
+        socketId: socket.id,
+        email: session.user.email,
+        username: session.user.name
+      })
+    }
+    
+  }, [session])
 
   const router = useRouter();
 
@@ -24,21 +40,6 @@ export default function RegisterForm() {
 
     try {
       console.log('start of try')
-      // const resUserExists = await fetch("api/userExists", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ email }),
-      // });
-
-      // const { user } = await resUserExists.json();
-
-      // if (user) {
-      //   setError("User already exists.");
-      //   return;
-      // }
-
       const res = await fetch("api/register", {
         method: "POST",
         headers: {
@@ -52,18 +53,27 @@ export default function RegisterForm() {
       });
       console.log('checking res')
       if (res.ok) {
-        const form = e.target;
-        // form.reset();
         const signInRes = await signIn('credentials', {
           email,
           password,
-          callbackUrl: '/dashboard'
-        })
-        if(signInRes?.url){
-          console.log('signInRes.url: ', signInRes.url)
-          router.push(signInRes.url)
+          redirect: false,
+          onSuccess: async () => {
+            console.log('rgister on success')
+
+          }
+        });
+        if(signInRes.error){
+          setError('something went wrong with registration')
+          return
         }
-        router.push("/dashboard");
+        initializeSocket()
+        let socket = await getSocket()
+        socket.on('connect', () => {
+          console.log('register on success')
+          console.log(session)
+        })
+        alert('delay before push to dashboard')
+        router.replace("/dashboard");
       } else {
         const { code } = await res.json()
         if(code === 11000){
