@@ -19,7 +19,9 @@ export default function LoginForm() {
       console.log('email useEffect', session.user.email)
 
       socket.emit('activate user', {
-        email: session.user.email
+        socketId: socket.id,
+        email: session.user.email,
+        username: session.user.name
       })
     }
   }, [session])

@@ -17,11 +17,21 @@ const io = new Server(server, {
   },
 });
 
+//map for keeping track of online uses
+const activeUsers = new Map()
+
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
   socket.on('activate user', (data) => {
     console.log('data into server socket: ', data)
+    activeUsers.set(socket.id, {email: data.email, username: data.username})
+    console.log('array being sent to everyone: ', Array.from(activeUsers.values()))
+    io.emit('active users', Array.from(activeUsers.values()))
+  })
+  socket.on('request active users', () => {
+    console.log('sending array from server to everyone ', Array.from(activeUsers.values()))
+    io.emit('active users', Array.from(activeUsers.values()))
   })
   socket.on("join_room", (data) => {
     socket.join(data);
@@ -34,7 +44,9 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive_message", data);
   });
   socket.on('disconnect', () => {
-    console.log('user disconnected')
+    console.log('user disconnected: ',socket.id)
+    activeUsers.delete(socket.id)
+    io.emit('active users', Array.from(activeUsers.values()))
   })
 });
 

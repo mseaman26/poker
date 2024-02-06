@@ -3,7 +3,7 @@
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { io } from "socket.io-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const serverPort = 3001
 const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
@@ -13,6 +13,35 @@ export default function UserInfo() {
   const { data: session } = useSession();
   const [messageToSend, setMessageToSend] = useState('')
   const [messageRecieved, setMessageRecieved] = useState('')
+  const [activeUsers, setActiveUsers] = useState([])
+
+  //for debugging
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to Socket.io');
+      socket.emit('request active users', () => {
+        return
+      })
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('Disconnected from Socket.io');
+    });
+  
+    return () => {
+      // Clean up event listeners
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on('active users', (updatedActiveUsers) => {
+      console.log('updated active users: ', updatedActiveUsers)
+      setActiveUsers(updatedActiveUsers)
+    })
+  }, [])
 
   socket.on('broadcast message', (message) =>{
     setMessageRecieved(message)
@@ -47,6 +76,12 @@ export default function UserInfo() {
   return (
     <div className="grid place-items-center h-screen">
       <h1>Message: {messageRecieved}</h1>
+      <h1>Active Users</h1>
+      <p>
+        {activeUsers.map((user) => {
+          return ` ${user.username} `
+        })}
+      </p>
       <div className="shadow-lg p-8 bg-zince-300/10 flex flex-col gap-2 my-6">
         <div>
           Name: <span className="font-bold">{session?.user?.name}</span>
