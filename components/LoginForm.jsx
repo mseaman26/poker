@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { initializeSocket, getSocket } from "@/lib/socketService";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -21,12 +22,16 @@ export default function LoginForm() {
         password,
         redirect: false,
       });
-
+      console.log('signing in in the auth route')
       if (res.error) {
         setError("Invalid Credentials");
         return;
       }
-
+      initializeSocket()
+      let socket = await getSocket()
+      socket.on('connect', () => {
+        console.log(socket.id)
+      })
       router.replace("dashboard");
     } catch (error) {
       console.log(error);
