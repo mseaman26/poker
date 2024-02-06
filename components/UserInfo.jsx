@@ -15,7 +15,16 @@ export default function UserInfo() {
   const [messageRecieved, setMessageRecieved] = useState('')
   const [activeUsers, setActiveUsers] = useState([])
 
-  //for debugging
+  useEffect(() => {
+    // Emit 'activate user' event when the component mounts and has session information
+    if (session && socket) {
+      socket.emit('activate user', {
+        socketId: socket.id,
+        email: session.user.email,
+        username: session.user.name,
+      });
+    }
+  }, [session]);
 
   useEffect(() => {
     socket.on('connect', () => {
