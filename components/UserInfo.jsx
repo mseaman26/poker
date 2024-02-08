@@ -104,7 +104,10 @@ export default function UserInfo() {
       <h1>Active Users</h1>
       <p>
         {activeUsers.map((user) => {
-          return ` ${user.username} `
+          console.log(user)
+          if(user.email != session?.user?.email){
+            return ` ${user.username} `
+          }
         })}
       </p>
       <div className="shadow-lg p-8 bg-zince-300/10 flex flex-col gap-2 my-6">
