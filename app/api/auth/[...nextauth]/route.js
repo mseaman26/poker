@@ -46,3 +46,39 @@ export const authOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+
+//code snippet for having activity based session behavior
+
+// // pages/api/auth/[...nextauth].js
+
+// import NextAuth from 'next-auth';
+// import Providers from 'next-auth/providers';
+
+// export default NextAuth({
+//   providers: [
+//     // Your authentication providers...
+//   ],
+//   callbacks: {
+//     async session(session, token) {
+//       // Calculate the time since the last activity
+//       const lastActivity = session?.user?.lastActivity || Date.now();
+//       const elapsedTime = Date.now() - lastActivity;
+
+//       // Set a custom property in the session to track last activity
+//       session.user.lastActivity = Date.now();
+
+//       // Check if the elapsed time is less than your desired session expiration time
+//       // (e.g., 30 minutes in milliseconds)
+//       const sessionExpiryTime = 30 * 60 * 1000; // 30 minutes
+//       const isSessionValid = elapsedTime < sessionExpiryTime;
+
+//       if (!isSessionValid) {
+//         // If the session has expired, log the user out
+//         return null;
+//       }
+
+//       // If the session is still valid, return the session
+//       return session;
+//     },
+//   },
+// });

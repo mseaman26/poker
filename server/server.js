@@ -13,7 +13,7 @@ const port = process.env.PORT || 3001;
 const io = new Server(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' ? 'https://your-production-app.com' : 'http://localhost:3000', // Update with your production app's URL
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
   },
 });
 
@@ -25,8 +25,10 @@ io.on("connection", (socket) => {
 
   socket.on('activate user', (data) => {
     console.log('data into server socket: ', data)
-    activeUsers.set(socket.id, {email: data.email, username: data.username})
-    console.log('array being sent to everyone: ', Array.from(activeUsers.values()))
+    if(!activeUsers.has(data.email)){
+      activeUsers.set(socket.id, {email: data.email, username: data.username, socketId: socket.id})
+    }
+    console.log('array being sent to everyone after activating user: ', Array.from(activeUsers.values()))
     io.emit('active users', Array.from(activeUsers.values()))
   })
   socket.on('request active users', () => {

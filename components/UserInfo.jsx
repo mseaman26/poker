@@ -17,18 +17,18 @@ export default function UserInfo() {
 
   useEffect(() => {
     // Emit 'activate user' event when the component mounts and has session information
-    if (session && socket) {
-      socket.emit('activate user', {
-        socketId: socket.id,
-        email: session.user.email,
-        username: session.user.name,
-      });
-    }
+    // if (session && socket) {
+    //   socket.emit('activate user', {
+    //     socketId: socket.id,
+    //     email: session.user.email,
+    //     username: session.user.name,
+    //   });
+    // }
   }, [session]);
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Connected to Socket.io');
+      console.log('Connected to Socket.io, requesting active users');
       socket.emit('request active users', () => {
         return
       })
@@ -74,7 +74,23 @@ export default function UserInfo() {
     }catch(err){
       console.log('caught error: ', err)
     }
-    
+  }
+  const deleteExtraUsers = async () => {
+    try{
+      const res = await fetch('/api/seed', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      if(res.ok){
+        console.log('delete fetch status ok')
+      }else{
+        console.log('delete fetch status not ok')
+      }
+    }catch(err){
+      console.log('error deleting users: ', err)
+    }
   }
 
   const broadcast = (e) => {
@@ -105,7 +121,10 @@ export default function UserInfo() {
           Log Out
         </button>
         {session?.user?.email === 'mike@mike.com' &&
+          <>
           <button onClick={() => seedDatabase()}>Seed Database</button>
+          <button onClick={() => deleteExtraUsers()}>Delete Extra Users</button>
+          </>
         }
         <form onSubmit={broadcast}>
           <input type="text" placeholder="send message to everyone" onChange={(e) => setMessageToSend(e.target.value)}/>

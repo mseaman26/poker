@@ -61,6 +61,41 @@ export default function LoginForm() {
     }
   };
 
+  const loginAsPlayer1 = async(e) => {
+    e.preventDefault()
+
+    try {
+      const res = await signIn("credentials", {
+        email: 'player1@player1.com',
+        password: '!Q2w3e4r',
+        redirect: false,
+        onSuccess: async () => {
+          console.log('on success')
+          console.log(session)
+        }
+      });
+      console.log('signing in in the auth route')
+      if (res.error) {
+        setError("Invalid Credentials");
+        return;
+      }
+      initializeSocket()
+      let socket = await getSocket()
+      socket.on('connect', () => {
+        console.log(socket.id)
+        console.log(email)
+      })
+      router.replace("dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const requestActiveUsers = async(e) => {
+    e.preventDefault()
+    socket.emit('request active users', () => {
+      return
+    })
+  }
   return (
     <div>
       <div>
@@ -89,6 +124,8 @@ export default function LoginForm() {
             Don't have an account? <span className="underline">Register</span>
           </Link>
         </form>
+        <button onClick={(e) => loginAsPlayer1(e)}>login as player1</button><br></br>
+        <button onClick={(e) => requestActiveUsers(e)}>Request active users</button>
       </div>
     </div>
   );

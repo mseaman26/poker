@@ -16,7 +16,6 @@ export default function RegisterForm() {
 
   useEffect(() => {
     if(session && socket){
-      alert('register useEffect')
       console.log('registering with: ', session.user.email)
       socket.emit('activate user', {
         socketId: socket.id,
@@ -72,7 +71,6 @@ export default function RegisterForm() {
           console.log('register on success')
           console.log(session)
         })
-        alert('delay before push to dashboard')
         router.replace("/dashboard");
       } else {
         const { code } = await res.json()

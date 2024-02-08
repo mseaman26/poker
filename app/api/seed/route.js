@@ -39,4 +39,16 @@ export async function POST(req){
         {status: 500})
     }
 }
+export async function DELETE(){
+  const allowedEmails = ['mike@mike.com', 'player1@player1.com', 'player2@player2.com', 'player3@player3.com', 'player4@player4.com']
+
+  try{
+    const deletedUsers = User.deleteMany({email: {$nin: allowedEmails}})
+    console.log(`deleted ${(await deletedUsers).deletedCount} users successfully`)
+    return NextResponse.json({message: 'users deleted successfully'},{status: 200})
+  }catch(err){
+    console.log(err)
+    return NextResponse.json({message: err}, {status: 500})
+  }
+}
 
