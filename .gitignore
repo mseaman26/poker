@@ -22,6 +22,8 @@
 .DS_Store
 *.pem
 notes.txt
+.vscode
+
 # debug
 npm-debug.log*
 yarn-debug.log*
