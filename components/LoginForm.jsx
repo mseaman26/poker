@@ -5,27 +5,52 @@ import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 
 export default function LoginForm() {
   const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
+  initializeSocket()
+  let socket = getSocket()
 
   useEffect(() => {
-    if(session && socket){
-      console.log('email useEffect', session.user.email)
+    socket.on('connect', () => {
+      console.log('sessoion: ', session)
+      console.log(socket.id)
+      console.log(email)
+      
+      
+    })
+  }, [])
 
-      socket.emit('activate user', {
-        socketId: socket.id,
-        email: session.user.email,
-        username: session.user.name
-      })
+  useEffect(() => {
+    if(socket && session){
+      console.log('socket: ', socket)
+      console.log('session: ', session)
+
+        socket.emit('activate user', {
+          socketId: socket.id,
+          email: session.user.email,
+          username: session.user.name
+        })
+
     }
-  }, [session])
+  }, [socket, session])
 
-  const router = useRouter();
+  // useEffect(() => {
+  //   if(session && socket){
+  //     console.log('email useEffect', session.user.email)
+
+  //     socket.emit('activate user', {
+  //       socketId: socket.id,
+  //       email: session.user.email,
+  //       username: session.user.name
+  //     })
+  //   }
+  // }, [socket])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +79,11 @@ export default function LoginForm() {
       socket.on('connect', () => {
         console.log(socket.id)
         console.log(email)
+        socket.emit('activate user', {
+          socketId: socket.id,
+          email: session.user.email,
+          username: session.user.name
+        })
       })
       router.replace("dashboard");
     } catch (error) {
@@ -61,13 +91,13 @@ export default function LoginForm() {
     }
   };
 
-  const loginAsPlayer1 = async(e) => {
+  const loginAsUser = async(e, email, password) => {
     e.preventDefault()
 
     try {
       const res = await signIn("credentials", {
-        email: 'player1@player1.com',
-        password: '!Q2w3e4r',
+        email,
+        password,
         redirect: false,
         onSuccess: async () => {
           console.log('on success')
@@ -79,18 +109,16 @@ export default function LoginForm() {
         setError("Invalid Credentials");
         return;
       }
-      initializeSocket()
-      let socket = await getSocket()
-      socket.on('connect', () => {
-        console.log(socket.id)
-        console.log(email)
-      })
+      
+      
       router.replace("dashboard");
     } catch (error) {
       console.log(error);
     }
   }
   const requestActiveUsers = async(e) => {
+    initializeSocket()
+    let socket = await getSocket()
     e.preventDefault()
     socket.emit('request active users', () => {
       return
@@ -124,7 +152,9 @@ export default function LoginForm() {
             Don't have an account? <span className="underline">Register</span>
           </Link>
         </form>
-        <button onClick={(e) => loginAsPlayer1(e)}>login as player1</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player1@player1.com', '!Q2w3e4r')}>login as player1</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player2@player2.com', '!Q2w3e4r')}>login as player2</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player3@player3.com', '!Q2w3e4r')}>login as player3</button><br></br>
         <button onClick={(e) => requestActiveUsers(e)}>Request active users</button>
       </div>
     </div>

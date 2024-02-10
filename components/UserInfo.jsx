@@ -3,13 +3,15 @@
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { io } from "socket.io-client";
+import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 
-const serverPort = 3001
-const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
+// const serverPort = 3001
+// const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
 
 export default function UserInfo() {
-
+  initializeSocket()
+  let socket = getSocket()
   const { data: session } = useSession();
   const [messageToSend, setMessageToSend] = useState('')
   const [messageRecieved, setMessageRecieved] = useState('')
@@ -43,18 +45,30 @@ export default function UserInfo() {
       socket.off('connect');
       socket.off('disconnect');
     };
-  }, [socket]);
+  }, [])
+  // }, [socket]);
 
   useEffect(() => {
+    if(socket && session){
+      console.log('socket: ', socket)
+      console.log('session: ', session)
+
+        socket.emit('activate user', {
+          socketId: socket.id,
+          email: session.user.email,
+          username: session.user.name
+        })
+
+    }
     socket.on('active users', (updatedActiveUsers) => {
       console.log('updated active users: ', updatedActiveUsers)
       setActiveUsers(updatedActiveUsers)
     })
-  }, [])
+  }, [socket, session])
 
-  socket.on('broadcast message', (message) =>{
-    setMessageRecieved(message)
-  })
+  // socket.on('broadcast message', (message) =>{
+  //   setMessageRecieved(message)
+  // })
 
 
   const seedDatabase = async () => {
