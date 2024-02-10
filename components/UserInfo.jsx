@@ -2,7 +2,6 @@
 
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
-import { io } from "socket.io-client";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 
@@ -60,6 +59,7 @@ export default function UserInfo() {
         })
 
     }
+
     socket.on('active users', (updatedActiveUsers) => {
       console.log('updated active users: ', updatedActiveUsers)
       setActiveUsers(updatedActiveUsers)

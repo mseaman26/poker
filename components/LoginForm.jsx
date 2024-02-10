@@ -128,7 +128,7 @@ export default function LoginForm() {
     <div>
       <div>
         <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => loginAsUser(e, email, password)}>
           <input
             onChange={(e) => setEmail(e.target.value)}
             type="text"

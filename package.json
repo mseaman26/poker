@@ -7,7 +7,7 @@
     "next-dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start-server": "node server/server.js",
+    "start-server": "node ../server/server.js",
     "lint": "next lint",
     "seed": "node lib/seed/seed.js"
   },
