@@ -15,17 +15,8 @@ export default function UserInfo() {
   const [messageToSend, setMessageToSend] = useState('')
   const [messageRecieved, setMessageRecieved] = useState('')
   const [activeUsers, setActiveUsers] = useState([])
+  // const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    // Emit 'activate user' event when the component mounts and has session information
-    // if (session && socket) {
-    //   socket.emit('activate user', {
-    //     socketId: socket.id,
-    //     email: session.user.email,
-    //     username: session.user.name,
-    //   });
-    // }
-  }, [session]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -45,7 +36,6 @@ export default function UserInfo() {
       socket.off('disconnect');
     };
   }, [])
-  // }, [socket]);
 
   useEffect(() => {
     if(socket && session){
@@ -65,11 +55,12 @@ export default function UserInfo() {
       setActiveUsers(updatedActiveUsers)
     })
   }, [socket, session])
+  // useEffect(() => {
+  //   console.log('seach term: ', searchTerm)
+  //   const res =  fetch('api/users/search', {
 
-  // socket.on('broadcast message', (message) =>{
-  //   setMessageRecieved(message)
-  // })
-
+  //   })
+  // }, [searchTerm])
 
   const seedDatabase = async () => {
     try{
@@ -111,9 +102,30 @@ export default function UserInfo() {
     e.preventDefault()
     socket.emit('broadcast message', messageToSend)
   }
+  const searchUsers = async (e) => {
+    console.log('e.target.value: ', e.target.value)
+    try{
+      const res = await fetch(`api/users/search/${e.target.value}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      if(res.ok) {
+        const data = await res.json()
+        console.log('search users res ok. here is res: ', data)
+      }
+      else{
+        console.log('search users res not ok: ', res)
+      }
+    }catch(err){
+      console.log('error trying to search users: : ', err)
+    }
+  }
 
+  //RETURN
   return (
-    <div className="grid place-items-center h-screen">
+    <div className="h-screen">
       <h1>Message: {messageRecieved}</h1>
       <h1>Active Users</h1>
       <p>
@@ -124,6 +136,11 @@ export default function UserInfo() {
           }
         })}
       </p>
+      {/* SEARCH FORM */}
+      <form>
+        <input type="text" placeholder="search for users" onChange={searchUsers}></input>
+        <button>Submit</button>
+      </form>
       <div className="shadow-lg p-8 bg-zince-300/10 flex flex-col gap-2 my-6">
         <div>
           Name: <span className="font-bold">{session?.user?.name}</span>

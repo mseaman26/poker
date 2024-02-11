@@ -26,16 +26,35 @@ export const authOptions = {
           if (!passwordsMatch) {
             return null;
           }
-
-          return user;
+          return { ...user.toObject(), id: user._id.toString() };
         } catch (error) {
           console.log("Error: ", error);
         }
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token
+        token.id = user?.id
+      }
+      return token
+    },
+    session({ session, token }) {
+        // I skipped the line below coz it gave me a TypeError
+        // session.accessToken = token.accessToken;
+        session.user.id = token.id;
+  
+        return session;
+      },
+  },
+  session: {
+    strategy: 'jwt',
+  },
   session: {
     strategy: "jwt",
+    // jwt: true
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

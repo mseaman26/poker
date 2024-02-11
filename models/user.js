@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import mongoose, { Schema, models } from "mongoose";
 
 const userSchema = new Schema(
@@ -15,6 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    friends: {
+      type: [ObjectId],
+      default: []
+    }
   },
   { timestamps: true }
 );

@@ -29,7 +29,7 @@ export default function LoginForm() {
   useEffect(() => {
     if(socket && session){
       console.log('socket: ', socket)
-      console.log('session: ', session)
+      console.log('session: ', session.user)
 
         socket.emit('activate user', {
           socketId: socket.id,
