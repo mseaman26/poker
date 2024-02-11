@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 // const serverPort = 3001
 // const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
@@ -15,8 +16,8 @@ export default function UserInfo() {
   const [messageToSend, setMessageToSend] = useState('')
   const [messageRecieved, setMessageRecieved] = useState('')
   const [activeUsers, setActiveUsers] = useState([])
-  // const [searchTerm, setSearchTerm] = useState('')
-
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchedUsers, setSearchedUsers] = useState([])
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -55,12 +56,6 @@ export default function UserInfo() {
       setActiveUsers(updatedActiveUsers)
     })
   }, [socket, session])
-  // useEffect(() => {
-  //   console.log('seach term: ', searchTerm)
-  //   const res =  fetch('api/users/search', {
-
-  //   })
-  // }, [searchTerm])
 
   const seedDatabase = async () => {
     try{
@@ -103,24 +98,30 @@ export default function UserInfo() {
     socket.emit('broadcast message', messageToSend)
   }
   const searchUsers = async (e) => {
-    console.log('e.target.value: ', e.target.value)
-    try{
-      const res = await fetch(`api/users/search/${e.target.value}`, {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      if(res.ok) {
-        const data = await res.json()
-        console.log('search users res ok. here is res: ', data)
+    const term = e.target.value
+    setSearchTerm(term)
+    console.log('term: ', term)
+    if(term){
+      try{
+        const res = await fetch(`api/users/search/${term}`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if(res.ok) {
+          const data = await res.json()
+          setSearchedUsers(data)
+          console.log('search users res ok. here is res: ', data)
+        }
+        else{
+          console.log('search users res not ok: ', res)
+        }
+      }catch(err){
+        console.log('error trying to search users: : ', err)
       }
-      else{
-        console.log('search users res not ok: ', res)
-      }
-    }catch(err){
-      console.log('error trying to search users: : ', err)
     }
+    
   }
 
   //RETURN
@@ -141,6 +142,20 @@ export default function UserInfo() {
         <input type="text" placeholder="search for users" onChange={searchUsers}></input>
         <button>Submit</button>
       </form>
+      {/* SEARCH RESULTS */}
+      <h1>Searched Users</h1>
+      {searchTerm && searchedUsers.length === 0 ? (
+        <h1>No user results</h1>
+      ) : (
+        <>
+        {searchedUsers.map((searchedUser, index) => {
+          return(
+            <Link href={`/${searchedUser._id}`} key={index}>{searchedUser.name}</Link>
+          )
+        })}
+        </>
+      )}
+      
       <div className="shadow-lg p-8 bg-zince-300/10 flex flex-col gap-2 my-6">
         <div>
           Name: <span className="font-bold">{session?.user?.name}</span>

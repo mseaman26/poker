@@ -3,7 +3,7 @@ import User from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function GET(req, {params}){
-
+    const searchTerm = params.searchTerm
     // try{
     //     await connectMongoDB()
     //     const users = await User.find({
@@ -26,7 +26,7 @@ export async function GET(req, {params}){
     // }
     try{
         console.log("Dynamic route hit!");
-        const searchTerm = params.searchTerm[0]
+        
         console.log('searchTerm: ', searchTerm)
         await connectMongoDB()
         const users = await User.find({
@@ -45,4 +45,5 @@ export async function GET(req, {params}){
     }
     
     return NextResponse.json({ message: 'hello' });
+    
 }
