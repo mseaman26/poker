@@ -78,7 +78,7 @@ export const ViewUserInfo = ({id}) => {
             )}
             </>
         }
-        <p>my idddd: {session?.user?.id}</p>
+        <p>my id: {session?.user?.id}</p>
         </>
     )
 }

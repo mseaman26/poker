@@ -7,6 +7,7 @@ import { signIn, useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { socket } from "@/socket";
 import { searchUsersAPI } from "@/lib/helpers";
+import { isValidEmail } from "@/lib/helpers";
 
 export default function RegisterForm() {
   const {data: session} = useSession()
@@ -44,7 +45,10 @@ export default function RegisterForm() {
   const handleSubmit = async (e) => {
     console.log('start of handleSubmit')
     e.preventDefault();
-
+    if(!isValidEmail(email)){
+      setError('You must enter a valid email')
+      return
+    }
     if (!name || !email || !password) {
       setError("All fields are necessary.");
       return;

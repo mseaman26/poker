@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
-// import { socket } from "@/socket";
+import { isValidEmail } from "@/lib/helpers";
 
 export default function LoginForm() {
   const { data: session } = useSession();
@@ -40,17 +40,9 @@ export default function LoginForm() {
     }
   }, [socket, session])
 
-  // useEffect(() => {
-  //   if(session && socket){
-  //     console.log('email useEffect', session.user.email)
-
-  //     socket.emit('activate user', {
-  //       socketId: socket.id,
-  //       email: session.user.email,
-  //       username: session.user.name
-  //     })
-  //   }
-  // }, [socket])
+  useEffect(() => {
+    setError('')
+  }, [email, password])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,7 +85,14 @@ export default function LoginForm() {
 
   const loginAsUser = async(e, email, password) => {
     e.preventDefault()
-
+    if(!isValidEmail(email)){
+      setError('You must enter a valid email')
+      return
+    }
+    if(!email || !password){
+      setError('email and password cannot be blank')
+      return
+    }
     try {
       const res = await signIn("credentials", {
         email,
