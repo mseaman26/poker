@@ -37,7 +37,7 @@ export const authOptions = {
     jwt({ token, account, user }) {
       if (account) {
         token.accessToken = account.access_token
-        token.id = user?.id
+        token.id = user?._id
       }
       return token
     },

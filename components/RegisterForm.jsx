@@ -75,7 +75,7 @@ export default function RegisterForm() {
       } else {
         const { code } = await res.json()
         if(code === 11000){
-          setError('a user with that email already exists')
+          setError('you are attempting to create a user with either an email or username that already exists in the database')
         }
         console.log("res: ", code);
       }

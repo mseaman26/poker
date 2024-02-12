@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { searchUsersAPI } from "@/lib/helpers";
 
 // const serverPort = 3001
 // const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
@@ -102,24 +103,11 @@ export default function UserInfo() {
     setSearchTerm(term)
     console.log('term: ', term)
     if(term){
-      try{
-        const res = await fetch(`api/users/search/${term}`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        if(res.ok) {
-          const data = await res.json()
+        const data = await searchUsersAPI(term)
+        if( data!== null){
           setSearchedUsers(data)
-          console.log('search users res ok. here is res: ', data)
+          console.log('search users res ok, here is data: ', data)
         }
-        else{
-          console.log('search users res not ok: ', res)
-        }
-      }catch(err){
-        console.log('error trying to search users: : ', err)
-      }
     }
     
   }
@@ -149,9 +137,11 @@ export default function UserInfo() {
       ) : (
         <>
         {searchedUsers.map((searchedUser, index) => {
-          return(
-            <Link href={`/${searchedUser._id}`} key={index}>{searchedUser.name}</Link>
-          )
+          if(searchedUser.email !== session.user.email){
+            return(
+              <Link href={`/user/${searchedUser._id}`} key={index}>{searchedUser.name}</Link>
+            )
+          }
         })}
         </>
       )}
@@ -162,6 +152,9 @@ export default function UserInfo() {
         </div>
         <div>
           Email: <span className="font-bold">{session?.user?.email}</span>
+        </div>
+        <div>
+          id: <span className="font-bold">{session?.user?.id}</span>
         </div>
         <button
           onClick={() => signOut()}
