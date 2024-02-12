@@ -14,8 +14,6 @@ export async function POST(req){
         console.log('currentUserObj: ', currentUserObj._id)
         console.log('userToAddObj', userToAddObj._id)
 
-        
-
         if(!currentUserObj || !userToAddObj){
             return NextResponse.json({message: 'no user found'}, {status: 404})
         }
@@ -43,7 +41,31 @@ export async function POST(req){
         console.error("Error adding friend:", err);
         return NextResponse.json({ message: "Error adding friend", err }, { status: 500 });
     }
-    // console.log('current user', currentUser)
-    // console.log('user to add', userToAdd)
-    // return NextResponse.json({message: 'add friend route test'})
+}
+
+export async function DELETE(req){
+  const {currentUser, userToRemove } = await req.json()
+
+  try{
+    console.log('currentUser: ', currentUser)
+    console.log('userToRemove: ', userToRemove)
+    await connectMongoDB()
+    const currentUserObj = await User.findById(currentUser)
+    const userToRemoveObj = await User.findById(userToRemove)
+    if(!currentUserObj || !userToRemove){
+      return NextResponse.json({message: 'no user found'}, {status: 404})
+    }
+    await User.updateOne(
+      { _id: currentUserObj._id },
+      { $pull: { friends: userToRemoveObj._id } }
+    );
+    await User.updateOne(
+      { _id: userToRemoveObj._id },
+      { $pull: { friends: currentUserObj._id } }
+    );
+    return NextResponse.json({ message: 'friend removed successfully' }, { status: 200 })
+  }catch(err){
+    console.error("Error removing friend:", err);
+    return NextResponse.json({ message: "Error removing friend", err }, { status: 500 });
+  }
 }
