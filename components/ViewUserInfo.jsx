@@ -2,6 +2,7 @@
 import { fetchSingleUser } from "@/lib/helpers"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
+import { addFriendAPI } from "@/lib/helpers"
 
 export const ViewUserInfo = ({id}) => {
 
@@ -17,6 +18,14 @@ export const ViewUserInfo = ({id}) => {
             setUserData(data)
         }
     }
+    
+    const addFriend = async () => {
+        console.log('add friend function')
+        if(session?.user?.id && id){
+            const res = await addFriendAPI(session.user.id, id)
+            console.log(res)
+        }
+    }
 
     useEffect(() => {
         console.log('component mountex, id: ', id)
@@ -30,7 +39,8 @@ export const ViewUserInfo = ({id}) => {
         <>
         <h1>user Info</h1>
         <p>Name: {userData.name}</p>
-        <p>my id: {session?.user?.id}</p>
+        <button onClick={addFriend}>Add Friend</button>
+        <p>my idddd: {session?.user?.id}</p>
         </>
     )
 }
