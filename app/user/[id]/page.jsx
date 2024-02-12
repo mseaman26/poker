@@ -1,5 +1,5 @@
 
-import { ViewUserInfo } from "@/components/viewUserInfo"
+import { ViewUserInfo } from "@/components/ViewUserInfo"
 
 export default function ViewUserPage  ({params})  {
     console.log('user id: ', params.id)
