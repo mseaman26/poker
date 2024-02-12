@@ -139,7 +139,7 @@ export default function UserInfo() {
         {searchedUsers.map((searchedUser, index) => {
           if(searchedUser.email !== session.user.email){
             return(
-              <Link href={`/user/${searchedUser._id}`} key={index}>{searchedUser.name}</Link>
+              <Link href={`/user/${searchedUser._id}`} key={index}>{`${searchedUser.name} ${searchedUser.email}`}</Link>
             )
           }
         })}

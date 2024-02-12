@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { socket } from "@/socket";
+import { searchUsersAPI } from "@/lib/helpers";
 
 export default function RegisterForm() {
   const {data: session} = useSession()
@@ -13,6 +14,8 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [usernameAvailable, setUsernameAvailable] = useState(false)
+  const [emailAvailable, setEmailAvailable] = useState(false)
 
   useEffect(() => {
     if(session && socket){
@@ -25,6 +28,16 @@ export default function RegisterForm() {
     }
     
   }, [session])
+
+  useEffect(() => {
+    handleNameChange()
+  }, [name])
+  useEffect(() => {
+    handleEmailChange()
+  }, [email])
+  useEffect(() => {
+    setError('')
+  }, [password])
 
   const router = useRouter();
 
@@ -84,22 +97,56 @@ export default function RegisterForm() {
     }
   };
 
+  const handleNameChange = async () => {
+    setError('')
+    if(name){
+      const data = await searchUsersAPI(name)
+      for(let user of data){
+        console.log('found a matching name')
+        if(user.name === name){
+          setUsernameAvailable(false)
+          return
+        }
+      }
+      setUsernameAvailable(true)
+    }
+  }
+  const handleEmailChange = async () => {
+    setError('')
+    if(email){
+      const data = await searchUsersAPI(email)
+      for(let user of data){
+        console.log('found a matching email')
+        if(user.email === email){
+          setEmailAvailable(false)
+          return
+        }
+      }
+      setEmailAvailable(true)
+    }
+  }
   return (
     <div>
       <div>
         <h1>Register</h1>
 
         <form onSubmit={handleSubmit}>
-          <input
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            placeholder="Full Name"
-          />
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-          />
+          <div>
+            <input
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              placeholder="Username"
+            />
+            <h1>{name ? (usernameAvailable ? 'user name is available!' : 'user name not available') : ''}</h1>
+          </div>
+          <div>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Email"
+            />
+            <h1>{email ? (emailAvailable ? 'email is available!' : 'email not available') : ''}</h1>
+          </div>
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
