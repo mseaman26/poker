@@ -133,7 +133,7 @@ export default function RegisterForm() {
         <form onSubmit={handleSubmit}>
           <div>
             <input
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
               type="text"
               placeholder="Username"
             />
@@ -141,7 +141,7 @@ export default function RegisterForm() {
           </div>
           <div>
             <input
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
               type="text"
               placeholder="Email"
             />

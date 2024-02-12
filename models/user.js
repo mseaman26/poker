@@ -19,6 +19,7 @@ const userSchema = new Schema(
     },
     friends: {
       type: [ObjectId],
+      ref: 'User',
       default: []
     }
   },

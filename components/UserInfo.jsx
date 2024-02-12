@@ -132,7 +132,7 @@ export default function UserInfo() {
       </form>
       {/* SEARCH RESULTS */}
       <h1>Searched Users</h1>
-      {searchTerm && searchedUsers.length === 0 ? (
+      {searchTerm && searchedUsers.length === 0 || !searchTerm? (
         <h1>No user results</h1>
       ) : (
         <>
