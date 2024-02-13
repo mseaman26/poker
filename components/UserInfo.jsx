@@ -139,7 +139,7 @@ export default function UserInfo() {
         {searchedUsers.map((searchedUser, index) => {
           if(searchedUser.email !== session.user.email){
             return(
-              <Link href={`/user/${searchedUser._id}`} key={index}>{`${searchedUser.name} ${searchedUser.email}`}</Link>
+              <Link href={`/user/${searchedUser._id}`} key={index}>{`${searchedUser.name}, `}</Link>
             )
           }
         })}
@@ -156,12 +156,7 @@ export default function UserInfo() {
         <div>
           id: <span className="font-bold">{session?.user?.id}</span>
         </div>
-        <button
-          onClick={() => signOut()}
-          className="bg-red-500 text-white font-bold px-6 py-2 mt-3"
-        >
-          Log Out
-        </button>
+       
         {session?.user?.email === 'mike@mike.com' &&
           <>
           <button onClick={() => seedDatabase()}>Seed Database</button>
