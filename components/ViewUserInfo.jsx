@@ -1,8 +1,8 @@
 'use client'
-import { fetchSingleUser } from "@/lib/helpers"
+import { fetchSingleUser } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { addFriendAPI, removeFriendAPI } from "@/lib/helpers"
+import { addFriendAPI, removeFriendAPI } from "@/lib/apiHelpers"
 
 export const ViewUserInfo = ({id}) => {
 

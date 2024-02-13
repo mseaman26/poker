@@ -1,24 +1,24 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI } from "@/lib/helpers";
+import { searchUsersAPI, createGameAPI } from "@/lib/apiHelpers";
+import { useRouter } from "next/navigation";
 
-// const serverPort = 3001
-// const socket = io(process.env.PORT || `http://localhost:${serverPort}`)
 
 export default function UserInfo() {
   initializeSocket()
   let socket = getSocket()
   const { data: session } = useSession();
   const [messageToSend, setMessageToSend] = useState('')
-  const [messageRecieved, setMessageRecieved] = useState('')
   const [activeUsers, setActiveUsers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [searchedUsers, setSearchedUsers] = useState([])
+  const [gameNameInputShown, setGameNameInputShown] = useState(false)
+  const [gameName, setGameName] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -111,11 +111,28 @@ export default function UserInfo() {
     }
     
   }
-
+  const createGame = async (e) => {
+    e.preventDefault()
+    if(gameName){
+      const data = await createGameAPI(gameName)
+      console.log(data)
+      alert('before game room redirect')
+      router.replace(`/room/${data._id}`)
+    }
+  }
   //RETURN
   return (
     <div className="h-screen">
-      <h1>Message: {messageRecieved}</h1>
+      <button onClick={() => setGameNameInputShown(true)}>CREATE NEW GAME</button>
+      {gameNameInputShown && (
+        <div>
+          <button onClick={() => setGameNameInputShown(false)}>X</button>
+          <form onSubmit={createGame}>
+            <input type="text" placeholder="Name of Game Room" onChange={(e) => setGameName(e.target.value)}></input>
+            <button>Submit</button>
+          </form>
+        </div>
+      )}
       <h1>Active Users</h1>
       <p>
         {activeUsers.map((user) => {

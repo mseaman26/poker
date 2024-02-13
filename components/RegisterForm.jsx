@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { socket } from "@/socket";
-import { searchUsersAPI } from "@/lib/helpers";
-import { isValidEmail } from "@/lib/helpers";
+import { searchUsersAPI } from "@/lib/apiHelpers";
+import { isValidEmail } from "@/lib/validators";
 
 export default function RegisterForm() {
   const {data: session} = useSession()

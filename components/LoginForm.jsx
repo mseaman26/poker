@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { isValidEmail } from "@/lib/helpers";
+import { isValidEmail } from "@/lib/validators";
 
 export default function LoginForm() {
   const { data: session } = useSession();

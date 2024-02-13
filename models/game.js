@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema, models } from "mongoose";
 
-const roomSchema = new Schema(
+const gameSchema = new Schema(
   {
     name: {
       type: String,
@@ -22,5 +22,5 @@ const roomSchema = new Schema(
   { timestamps: true }
 );
 
-const Room = models.Room || mongoose.model("Room", roomSchema);
-export default Room;
+const Game = models.Game || mongoose.model("Game", gameSchema);
+export default Game;
