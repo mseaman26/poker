@@ -2,6 +2,7 @@ import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/models/user";
 import { NextResponse } from "next/server";
 
+//ADD FRIEND
 export async function POST(req){
     const { currentUser, userToAdd } = await req.json();
 
@@ -42,7 +43,7 @@ export async function POST(req){
         return NextResponse.json({ message: "Error adding friend", err }, { status: 500 });
     }
 }
-
+//REMOVE FRIEND
 export async function DELETE(req){
   const {currentUser, userToRemove } = await req.json()
 
@@ -69,3 +70,4 @@ export async function DELETE(req){
     return NextResponse.json({ message: "Error removing friend", err }, { status: 500 });
   }
 }
+//GET ALL FRIENDS

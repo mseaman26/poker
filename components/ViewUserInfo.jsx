@@ -20,15 +20,19 @@ export const ViewUserInfo = ({id}) => {
         }
     }
     const getCurrentUserData = async (userId) => {
-        const me = await fetchSingleUser(userId)
-        console.log('my friends: ', me.friends)
-        if(me.friends.includes(userData._id)){
-            console.log('setting isFriend to true')
-            setIsFriend(true)
-        }else{
+        if(userData._id){
+            const me = await fetchSingleUser(userId)
+            console.log('my friends: ', me.friends)
             setIsFriend(false)
-        }
+            for(let friend of me.friends){
+                console.log('friend ID', friend._id.toString())
+                console.log('userdata ID ', userData._id.toString())
+                if(friend._id.toString() === userData._id.toString()){
+                    setIsFriend(true)
+                }
+            }
 
+        }
     }
     
     const addFriend = async () => {
@@ -51,7 +55,7 @@ export const ViewUserInfo = ({id}) => {
         getUserData(id)
     }, [])
     useEffect(() => {
-        if(session){
+        if(session && userData){
             console.log('my id: ', session.user.id)
             getCurrentUserData(session.user.id)
         }

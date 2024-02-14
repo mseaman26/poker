@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI } from "@/lib/apiHelpers";
+import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
 
@@ -20,6 +20,8 @@ export default function UserInfo() {
   const [gameNameInputShown, setGameNameInputShown] = useState(false)
   const [gameName, setGameName] = useState('')
   const [myGames, setMyGames] = useState([])
+  const [meData, setMeData] = useState({})
+  const [myFriends, setMyFriends] = useState([])
   const router = useRouter()
 
   
@@ -83,6 +85,13 @@ export default function UserInfo() {
       setMyGames(data)
     }
   }
+  const getMe = async () => {
+    if(session){
+      console.log('inside getMe with session')
+      const data = await fetchSingleUser(session.user.id)
+      setMeData(data)
+    }
+  }
   const createGame = async (e) => {
     e.preventDefault()
     if(gameName){
@@ -136,10 +145,12 @@ export default function UserInfo() {
   }, [socket, session])
   useEffect(() => {
     getMyGames()
+    getMe()
   },[session])
   useEffect(() => {
-    console.log(myGames)
-  }, [myGames])
+    console.log('meData: ', meData)
+    setMyFriends(meData.friends)
+  }, [meData])
   //RETURN
   return (
     <div className={styles.container}>
@@ -206,21 +217,34 @@ export default function UserInfo() {
           </form>
         </div>
       </div>
-      <div className={styles.containerRight}>
-       <h1>My games</h1>
-       <ul>
-        {myGames.map((game, index) => {
-          return(
-            <div key={index}>
-               <span>{game.name} id: {game._id}</span>
-               <button className="bg-red-500" onClick={() => deleteGame(game._id)}>X</button>
-            </div>
-           
-          )
-        })}
-      </ul>
+      <div className={styles.myGames}>
+        <h1>My games</h1>
+        <ul>
+          {myGames.map((game, index) => {
+            return(
+              <div key={index}>
+                <span>{game.name} id: {game._id}</span>
+                <button className="bg-red-500" onClick={() => deleteGame(game._id)}>X</button>
+              </div>
+            
+            )
+          })}
+        </ul>
       </div>
-      
+      <div className={styles.myFriends}>
+          <h1>My Friends</h1>
+          {myFriends && 
+            <ul>
+              {myFriends.map((friend, index) => {
+                return(
+                  <li key={index}>
+                    <span>{friend.name}...{friend.email}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          }
+      </div>
     </div>
   );
 }
