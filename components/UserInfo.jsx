@@ -117,7 +117,7 @@ export default function UserInfo() {
       const data = await createGameAPI(gameName)
       console.log(data)
       alert('before game room redirect')
-      router.replace(`/room/${data._id}`)
+      router.replace(`/game/${data._id}`)
     }
   }
   //RETURN
