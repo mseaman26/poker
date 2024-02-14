@@ -77,7 +77,7 @@ export default function LoginForm() {
           username: session.user.name
         })
       })
-      router.replace("dashboard");
+      router.push("dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -110,7 +110,7 @@ export default function LoginForm() {
       }
       
       
-      router.replace("dashboard");
+      router.push("dashboard");
     } catch (error) {
       console.log(error);
     }

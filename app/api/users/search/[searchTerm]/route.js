@@ -23,7 +23,5 @@ export async function GET(req, {params}){
     }catch(err){
         console.log('err: ', err)
     }
-    
     return NextResponse.json({ message: 'hello' });
-    
 }

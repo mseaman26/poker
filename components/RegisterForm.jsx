@@ -88,7 +88,7 @@ export default function RegisterForm() {
           console.log('register on success')
           console.log(session)
         })
-        router.replace("/dashboard");
+        router.push("/dashboard");
       } else {
         const { code } = await res.json()
         if(code === 11000){

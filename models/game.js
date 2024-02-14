@@ -8,6 +8,11 @@ const gameSchema = new Schema(
       required: true,
       unique: true
     },
+    creatorId: {
+      type: ObjectId,
+      ref: 'User',
+      required: true
+    },
     invitedUsers: {
       type: [ObjectId],
       ref: 'User',

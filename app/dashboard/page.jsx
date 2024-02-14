@@ -1,5 +1,5 @@
 
-import UserInfo from "@/components/UserInfo";
+import UserInfo from "@/components/Dashboard";
 
 export default function Dashboard() {
   return (
