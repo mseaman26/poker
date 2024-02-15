@@ -22,6 +22,8 @@ export default function UserInfo() {
   const [myGames, setMyGames] = useState([])
   const [meData, setMeData] = useState({})
   const [myFriends, setMyFriends] = useState([])
+  const [activeFriends, setActiveFriends] = useState([])
+  const [inactiveFriends, setInactiveFriends] = useState([])
   const router = useRouter()
 
   
@@ -133,7 +135,8 @@ export default function UserInfo() {
         socket.emit('activate user', {
           socketId: socket.id,
           email: session.user.email,
-          username: session.user.name
+          username: session.user.name,
+          id: session.user.id
         })
 
     }
@@ -151,6 +154,36 @@ export default function UserInfo() {
     console.log('meData: ', meData)
     setMyFriends(meData.friends)
   }, [meData])
+  useEffect(() => {
+    console.log('inside useffect for updating active friends')
+    if(myFriends && activeUsers){
+      console.log('myFriends: ', myFriends)
+      console.log('active users: ', activeUsers)
+      let newActiveFriends = []; // Create a copy of the current state
+      for(let activeUser of activeUsers){
+        if (myFriends.some(friend => friend._id === activeUser.id)) {
+          console.log('found an active friend', activeUser.username);
+          // let alreadyFound = false
+          // for(let activeFriend of activeFriends){
+          //   if(activeFriend && activeUser && activeFriend.id === activeUser.id){
+          //     console.log('already found: ', activeUser)
+          //     alreadyFound = true
+          //   }
+          // }
+          // if(!alreadyFound){
+          //   newActiveFriends.push(activeUser);
+          // }
+          newActiveFriends.push(activeUser);
+        }
+      }
+      setActiveFriends(newActiveFriends);
+      console.log('final active friends: ', activeFriends)
+    }
+    
+  }, [myFriends, activeUsers])
+  useEffect(() => {
+    console.log('active friends: ', activeFriends)
+  }, [activeFriends])
   //RETURN
   return (
     <div className={styles.container}>
@@ -217,6 +250,7 @@ export default function UserInfo() {
           </form>
         </div>
       </div>
+      {/* MY GAMES */}
       <div className={styles.myGames}>
         <h1>My games</h1>
         <ul>
@@ -231,6 +265,7 @@ export default function UserInfo() {
           })}
         </ul>
       </div>
+      {/* MY FRIENDS */}
       <div className={styles.myFriends}>
           <h1>My Friends</h1>
           {myFriends && 
@@ -238,12 +273,24 @@ export default function UserInfo() {
               {myFriends.map((friend, index) => {
                 return(
                   <li key={index}>
-                    <span>{friend.name}...{friend.email}</span>
+                    <span className={styles.activeFriend}>{friend.name}</span>
                   </li>
                 )
               })}
             </ul>
           }
+          <h1>My Active Friends</h1>
+          <ul>
+            {console.log('acive friends being rendered: ', activeFriends)}
+            {activeFriends.map((friend, index) => {
+              console.log('should render something')
+              return(
+                <li key={index}>
+                  <h1>{friend.username}</h1>
+                </li>
+              )
+            })}
+          </ul>
       </div>
     </div>
   );
