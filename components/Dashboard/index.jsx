@@ -160,30 +160,50 @@ export default function UserInfo() {
       console.log('myFriends: ', myFriends)
       console.log('active users: ', activeUsers)
       let newActiveFriends = []; // Create a copy of the current state
-      for(let activeUser of activeUsers){
-        if (myFriends.some(friend => friend._id === activeUser.id)) {
-          console.log('found an active friend', activeUser.username);
-          // let alreadyFound = false
-          // for(let activeFriend of activeFriends){
-          //   if(activeFriend && activeUser && activeFriend.id === activeUser.id){
-          //     console.log('already found: ', activeUser)
-          //     alreadyFound = true
-          //   }
-          // }
-          // if(!alreadyFound){
-          //   newActiveFriends.push(activeUser);
-          // }
-          newActiveFriends.push(activeUser);
+      let newInactiveFriends = []
+      // for(let activeUser of activeUsers){
+      //   if (myFriends.some(friend => friend._id === activeUser.id)) {
+      //     console.log('found an active friend', activeUser.username);
+      //     newActiveFriends.push(activeUser);
+      //   }else{
+
+      //   }
+      // }
+      for(let friend of myFriends){
+        if (activeUsers.some(activeUser => activeUser.id === friend._id)) {
+          console.log('found an active friend', friend.name);
+          newActiveFriends.push(friend);
+        }else{
+          newInactiveFriends.push(friend)
         }
       }
       setActiveFriends(newActiveFriends);
+      setInactiveFriends(newInactiveFriends)
       console.log('final active friends: ', activeFriends)
     }
     
   }, [myFriends, activeUsers])
+  // useEffect(() => {
+  //   if(myFriends){
+  //     let newInactiveFriends = []
+  //     for(let friend of myFriends){
+  //       console.log('friend id in my friends: ', friend._id)
+  //       if(activeFriends.some(activeFriend => activeFriend._id === friend._id)){
+  //         console.log('shouldnt add to inactive friends')
+  //       }else{
+  //         newInactiveFriends.push(friend)
+  //       }
+  //     }
+  //     setInactiveFriends(newInactiveFriends)
+  //   }
+    
+  // }, [activeFriends])
   useEffect(() => {
     console.log('active friends: ', activeFriends)
   }, [activeFriends])
+  useEffect(() => {
+    console.log('inactive friends: ', inactiveFriends)
+  }, [inactiveFriends])
   //RETURN
   return (
     <div className={styles.container}>
@@ -286,7 +306,17 @@ export default function UserInfo() {
               console.log('should render something')
               return(
                 <li key={index}>
-                  <h1>{friend.username}</h1>
+                  <h1>{friend.name}</h1>
+                </li>
+              )
+            })}
+          </ul>
+          <h1>My Inactive Friends</h1>
+          <ul>
+            {inactiveFriends.map((inactiveFriend, index) => {
+              return(
+                <li key={index}>
+                  <h1>{inactiveFriend.name}</h1>
                 </li>
               )
             })}
