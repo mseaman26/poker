@@ -3,9 +3,11 @@ import { fetchSingleUser } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { addFriendAPI, removeFriendAPI } from "@/lib/apiHelpers"
+import { initializeSocket, getSocket } from "@/lib/socketService";
 
 export const ViewUserInfo = ({id}) => {
-
+    initializeSocket()
+    let socket = getSocket()
     const [userData, setUserData] = useState({})
     const [isFriend, setIsFriend] = useState(null)
     const { data: session } = useSession();
@@ -60,13 +62,15 @@ export const ViewUserInfo = ({id}) => {
             getCurrentUserData(session.user.id)
         }
     }, [session, userData])
+    useEffect(() => {
+        if(id){
+            console.log('!!! front end user Id: ', id)
+            socket.emit('friend change', {
+                userId: id
+            })
+        }
+    }, [removeFriend, addFriend])
 
-    useEffect(() => {
-        console.log('userdata: ', userData)
-    }, [userData])
-    useEffect(() => {
-        console.log('isFriend: ', isFriend)
-    }, [isFriend])
     //RETURN
     return(
         <div>

@@ -64,10 +64,7 @@ export default function UserInfo() {
     }
   }
 
-  const broadcast = (e) => {
-    e.preventDefault()
-    socket.emit('broadcast message', messageToSend)
-  }
+
   const searchUsers = async (e) => {
     const term = e.target.value
     setSearchTerm(term)
@@ -88,9 +85,11 @@ export default function UserInfo() {
     }
   }
   const getMe = async () => {
+    console.log('no session? ', session)
     if(session){
       console.log('inside getMe with session')
       const data = await fetchSingleUser(session.user.id)
+      console.log('me data after friend change', data)
       setMeData(data)
     }
   }
@@ -115,6 +114,16 @@ export default function UserInfo() {
       socket.emit('request active users', () => {
         return
       })
+      // socket.on('friend change', () => {
+      //   console.log('friend change recieved')
+      //   if(session){
+      //     getMe()
+      //     console.log('got me?')
+      //   }else{
+      //     console.log('no session on friend change')
+      //   }
+        
+      // })
     });
   
     socket.on('disconnect', () => {
@@ -127,7 +136,14 @@ export default function UserInfo() {
       socket.off('disconnect');
     };
   }, [])
-
+  useEffect(() => {
+    socket.on('friend change', () => {
+      console.log('friend change with session', session)
+      if(session){
+        getMe()
+      }
+    })
+  }, [session])
   useEffect(() => {
     if(socket && session){
       console.log('socket: ', socket)
@@ -266,9 +282,7 @@ export default function UserInfo() {
             <button onClick={() => deleteExtraUsers()}>Delete Extra Users</button>
             </>
           }
-          <form onSubmit={broadcast}>
-            <input type="text" placeholder="send message to everyone" onChange={(e) => setMessageToSend(e.target.value)}/>
-          </form>
+         
         </div>
       </div>
       {/* MY GAMES */}
