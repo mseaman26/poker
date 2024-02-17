@@ -1,5 +1,6 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Game from "@/models/game";
+import User from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function POST(req){
@@ -12,8 +13,13 @@ export async function POST(req){
             {$addToSet: {invitedUsers: userId}},
             {new: true}
         )
-        console.log('invite to game response: ', updatedGame)
-        return NextResponse.json(updatedGame)
+        const updatedUser = await User.findByIdAndUpdate(
+            {_id: userId},
+            {$addToSet: {gameInvites: gameId}},
+            {new: true}
+        )
+        console.log('invite to game response: ', {updatedGame, updatedUser})
+        return NextResponse.json({updatedGame, updatedUser})
     }catch(err){
         console.log(err)
         return NextResponse.json(
@@ -32,8 +38,13 @@ export async function DELETE(req){
             {$pull: {invitedUsers: userId}},
             {new: true}
         )
-        console.log('!!!!uninvite from game response: ', updatedGame)
-        return NextResponse.json(updatedGame)
+        const updatedUser = await User.findByIdAndUpdate(
+            {_id: userId},
+            {$pull: {gameInvites: gameId}},
+            {new: true}
+        )
+        console.log('!!!!uninvite from game response: ', {updatedGame, updatedUser})
+        return NextResponse.json({updatedGame, updatedUser})
     }catch(err){
         console.log(err)
         return NextResponse.json(

@@ -17,15 +17,15 @@ export const ViewGameInfo = ({id}) => {
     const inviteToGame = async (userId) => {
         if(gameInfo && userId){
             const data = await inviteToGameAPI(gameInfo._id, userId)
-            console.log('invite to game data: ', data)
-            setGameInfo(data)
+            console.log('!!!invite to game data.updatedUser: ', data.updatedUser)
+            setGameInfo(data.updatedGame)
         }
     }
     const unInviteToGame = async (userId) => {
         if(gameInfo && userId){
             const data = await uninviteToGameAPI(gameInfo._id, userId)
             console.log('uninvite from game data: ', data)
-            setGameInfo(data)
+            setGameInfo(data.updatedGame)
         }
     }
 
@@ -37,7 +37,7 @@ export const ViewGameInfo = ({id}) => {
         console.log(gameInfo)
     }, [gameInfo])
     useEffect(() => {
-        console.log('meData:', meData.friends)
+        console.log('meData:', meData)
     }, [meData])
 
     return(
