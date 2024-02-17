@@ -99,6 +99,7 @@ export default function UserInfo() {
     if(gameName){
       const data = await createGameAPI(gameName, session?.user?.id)
       console.log(data)
+      localStorage.setItem('meData', JSON.stringify(meData))
       router.push(`/game/${data._id}`)
     }
   }
@@ -152,14 +153,14 @@ export default function UserInfo() {
   },[session])
   useEffect(() => {
     console.log('meData: ', meData)
-    setMyFriends(meData.friends)
+    setMyFriends(meData?.friends)
   }, [meData])
   useEffect(() => {
     console.log('inside useffect for updating active friends')
     if(myFriends && activeUsers){
       console.log('myFriends: ', myFriends)
       console.log('active users: ', activeUsers)
-      let newActiveFriends = []; // Create a copy of the current state
+      let newActiveFriends = []; 
       let newInactiveFriends = []
       // for(let activeUser of activeUsers){
       //   if (myFriends.some(friend => friend._id === activeUser.id)) {
@@ -290,7 +291,7 @@ export default function UserInfo() {
           <h1>My Friends</h1>
           {myFriends && 
             <ul>
-              {myFriends.map((friend, index) => {
+              {myFriends?.map((friend, index) => {
                 return(
                   <li key={index}>
                     <span className={styles.activeFriend}>{friend.name}</span>

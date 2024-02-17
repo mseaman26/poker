@@ -1,0 +1,9 @@
+.container{
+    display: flex;
+}
+.containerLeft{
+    width: 50%;
+}
+.containerRight{
+    width: 50%;
+}

@@ -37,6 +37,11 @@ export async function POST(req){
           name: 'Dave',
           email: 'dave@dave.com',
           password: await bcrypt.hash('dave', 10)
+        },
+        {
+          name: 'mike',
+          email: 'mike@mike.com',
+          password: await bcrypt.hash('mike', 10)
         }
     ]
     try{

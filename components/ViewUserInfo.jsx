@@ -22,9 +22,9 @@ export const ViewUserInfo = ({id}) => {
     const getCurrentUserData = async (userId) => {
         if(userData._id){
             const me = await fetchSingleUser(userId)
-            console.log('my friends: ', me.friends)
+            console.log('my friends: ', me)
             setIsFriend(false)
-            for(let friend of me.friends){
+            for(let friend of me?.friends){
                 console.log('friend ID', friend._id.toString())
                 console.log('userdata ID ', userData._id.toString())
                 if(friend._id.toString() === userData._id.toString()){
@@ -67,9 +67,9 @@ export const ViewUserInfo = ({id}) => {
     useEffect(() => {
         console.log('isFriend: ', isFriend)
     }, [isFriend])
-
+    //RETURN
     return(
-        <>
+        <div>
         <h1>user Info</h1>
         <p>Name: {userData.name}</p>
         
@@ -83,7 +83,7 @@ export const ViewUserInfo = ({id}) => {
             </>
         }
         <p>my id: {session?.user?.id}</p>
-        </>
+        </div>
     )
 }
  

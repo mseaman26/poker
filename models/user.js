@@ -21,7 +21,13 @@ const userSchema = new Schema(
       type: [ObjectId],
       ref: 'User',
       default: []
+    },
+    gameInvites: {
+      type: [ObjectId],
+      ref: 'Game',
+      default: []
     }
+
   },
   { timestamps: true }
 );
