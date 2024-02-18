@@ -7,8 +7,13 @@
 .myGames{
     width: 40%;
     display: flex;
-    flex-direction: column;
 }
 .aciveFriend{
     color: green;
+}
+.myGamesLeft{
+    width: 50%;
+}
+.myGamesRight{
+    width: 50%;
 }

@@ -13,7 +13,6 @@ export default function UserInfo() {
   initializeSocket()
   let socket = getSocket()
   const { data: session } = useSession();
-  const [messageToSend, setMessageToSend] = useState('')
   const [activeUsers, setActiveUsers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [searchedUsers, setSearchedUsers] = useState([])
@@ -24,6 +23,7 @@ export default function UserInfo() {
   const [myFriends, setMyFriends] = useState([])
   const [activeFriends, setActiveFriends] = useState([])
   const [inactiveFriends, setInactiveFriends] = useState([])
+  const [myInvites, setMyInvites] = useState([])
   const router = useRouter()
 
   
@@ -63,8 +63,6 @@ export default function UserInfo() {
       console.log('error deleting users: ', err)
     }
   }
-
-
   const searchUsers = async (e) => {
     const term = e.target.value
     setSearchTerm(term)
@@ -108,22 +106,16 @@ export default function UserInfo() {
       getMyGames()
     }
   }
+  const goToGame = async(gameId) => {
+    localStorage.setItem('meData', JSON.stringify(meData))
+    router.push(`/game/${gameId}`)
+  }
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to Socket.io, requesting active users');
       socket.emit('request active users', () => {
         return
       })
-      // socket.on('friend change', () => {
-      //   console.log('friend change recieved')
-      //   if(session){
-      //     getMe()
-      //     console.log('got me?')
-      //   }else{
-      //     console.log('no session on friend change')
-      //   }
-        
-      // })
     });
   
     socket.on('disconnect', () => {
@@ -170,6 +162,8 @@ export default function UserInfo() {
   useEffect(() => {
     console.log('meData: ', meData)
     setMyFriends(meData?.friends)
+    setMyInvites(meData.gameInvites)
+    console.log('gameInvites: ', meData.gameInvites)
   }, [meData])
   useEffect(() => {
     console.log('inside useffect for updating active friends')
@@ -178,14 +172,6 @@ export default function UserInfo() {
       console.log('active users: ', activeUsers)
       let newActiveFriends = []; 
       let newInactiveFriends = []
-      // for(let activeUser of activeUsers){
-      //   if (myFriends.some(friend => friend._id === activeUser.id)) {
-      //     console.log('found an active friend', activeUser.username);
-      //     newActiveFriends.push(activeUser);
-      //   }else{
-
-      //   }
-      // }
       for(let friend of myFriends){
         if (activeUsers.some(activeUser => activeUser.id === friend._id)) {
           console.log('found an active friend', friend.name);
@@ -200,21 +186,6 @@ export default function UserInfo() {
     }
     
   }, [myFriends, activeUsers])
-  // useEffect(() => {
-  //   if(myFriends){
-  //     let newInactiveFriends = []
-  //     for(let friend of myFriends){
-  //       console.log('friend id in my friends: ', friend._id)
-  //       if(activeFriends.some(activeFriend => activeFriend._id === friend._id)){
-  //         console.log('shouldnt add to inactive friends')
-  //       }else{
-  //         newInactiveFriends.push(friend)
-  //       }
-  //     }
-  //     setInactiveFriends(newInactiveFriends)
-  //   }
-    
-  // }, [activeFriends])
   useEffect(() => {
     console.log('active friends: ', activeFriends)
   }, [activeFriends])
@@ -287,18 +258,30 @@ export default function UserInfo() {
       </div>
       {/* MY GAMES */}
       <div className={styles.myGames}>
-        <h1>My games</h1>
-        <ul>
+        <div className={styles.myGamesLeft}>
+          <h1>Games I've Been Invited To</h1>
+          <ul>
+            {myInvites?.map((gameInvite, index) => 
+              <li key={index}><button onClick={() => goToGame(gameInvite._id)}>{gameInvite.name}</button></li>
+            )}
+          </ul>
+        </div>
+        <div className={styles.myGamesRight}>
+          <h1>My games</h1>
+          <ul>
           {myGames.map((game, index) => {
             return(
               <div key={index}>
-                <span>{game.name} id: {game._id}</span>
+                <button onClick={()=> goToGame(game._id)}>{game.name}</button>
                 <button className="bg-red-500" onClick={() => deleteGame(game._id)}>X</button>
               </div>
             
             )
           })}
         </ul>
+        </div>
+        
+        
       </div>
       {/* MY FRIENDS */}
       <div className={styles.myFriends}>

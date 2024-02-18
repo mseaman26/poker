@@ -47,22 +47,26 @@ export const ViewGameInfo = ({id}) => {
 
             </div>
             <div className={styles.containerRight}>
-                <h1>Invite Friends</h1>
-                <ul>
-                    {meData && meData.friends? (
-                        meData.friends.map((friend, index) => 
-                        <li key={index}>
-                            {gameInfo?.invitedUsers?.includes(friend._id) ? (
-                                <button key={index} onClick={(() => unInviteToGame(friend._id))}>Uninvite {friend.name}</button>
-                            ) : 
-                                <button key={index} onClick={(() => inviteToGame(friend._id))}>Invite {friend.name}</button>
-                            }
-                            
-                        </li>
-                        )
-                    ) : <></>}
-                    
-                </ul>
+                {gameInfo.creatorId === meData._id &&
+                    <div className={styles.inviteFriends}>
+                    <h1>Invite Friends</h1>
+                    <ul>
+                        {meData && meData.friends? (
+                            meData.friends.map((friend, index) => 
+                            <li key={index}>
+                                {gameInfo?.invitedUsers?.includes(friend._id) ? (
+                                    <button key={index} onClick={(() => unInviteToGame(friend._id))}>Uninvite {friend.name}</button>
+                                ) : 
+                                    <button key={index} onClick={(() => inviteToGame(friend._id))}>Invite {friend.name}</button>
+                                }
+                                
+                            </li>
+                            )
+                        ) : <></>}
+                        
+                    </ul>
+                </div>
+                }
             </div>
         </div>
     )

@@ -8,7 +8,13 @@ export async function GET(req, {params}){
         console.log('search single user route hit')
         const id = params.id
         console.log('id in route: ', id)
-        const user = await User.findById(id).populate('friends')
+        const user = await User.findById(id).populate('friends').populate({
+            path: 'gameInvites',
+            populate: {
+              path: 'creatorId',
+              model: 'User'  
+            }
+          });
         return NextResponse.json(user)
     }catch(err){
         console.log('error in single user fetch: ', err)
