@@ -42,12 +42,18 @@ export const ViewUserInfo = ({id}) => {
         if(session?.user?.id && id){
             const res = await addFriendAPI(session.user.id, id)
             setIsFriend(true)
+            socket.emit('friend refresh', {
+                action: 'add',
+                userId: session.user.id,
+                friendId: id,
+              });
         }
     }
     const removeFriend = async () => {
         console.log('remove friend function')
         if(session?.user?.id && id){
             const res = await removeFriendAPI(session.user.id, id)
+            console.log('friendId: ', id)
             setIsFriend(false)
         }
     }
@@ -65,9 +71,11 @@ export const ViewUserInfo = ({id}) => {
     useEffect(() => {
         if(id){
             console.log('!!! front end user Id: ', id)
-            socket.emit('friend change', {
-                userId: id
-            })
+            socket.emit('friend refresh', {
+                action: 'add',
+                userId: session?.user?.id,
+                friendId: id,
+              });
         }
     }, [removeFriend, addFriend])
 

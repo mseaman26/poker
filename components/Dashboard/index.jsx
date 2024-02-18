@@ -135,6 +135,12 @@ export default function UserInfo() {
         getMe()
       }
     })
+    socket.on('user refresh', () => {
+      console.log('received user refresh')
+      if(session){
+        getMe()
+      }
+  })
   }, [session])
   useEffect(() => {
     if(socket && session){

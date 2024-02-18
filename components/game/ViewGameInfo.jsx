@@ -2,8 +2,11 @@
 import { getGameAPI, inviteToGameAPI, uninviteToGameAPI } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
 import styles from './ViewGameInfo.module.css'
+// import { initializeSocket, getSocket } from "@/lib/socketService";
 
 export const ViewGameInfo = ({id}) => {
+    // initializeSocket()
+    // let socket = getSocket()
     const [gameInfo, setGameInfo] = useState({})
     const [meData, setMeData] = useState({})
 
@@ -19,6 +22,9 @@ export const ViewGameInfo = ({id}) => {
             const data = await inviteToGameAPI(gameInfo._id, userId)
             console.log('!!!invite to game data.updatedUser: ', data.updatedUser)
             setGameInfo(data.updatedGame)
+            // socket.emit('user refresh', {
+            //     userId
+            // })
         }
     }
     const unInviteToGame = async (userId) => {
@@ -26,6 +32,9 @@ export const ViewGameInfo = ({id}) => {
             const data = await uninviteToGameAPI(gameInfo._id, userId)
             console.log('uninvite from game data: ', data)
             setGameInfo(data.updatedGame)
+            // socket.emit('user refresh', {
+            //     userId
+            // })
         }
     }
 
