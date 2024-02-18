@@ -69,4 +69,19 @@ export async function DELETE(){
     return NextResponse.json({message: err}, {status: 500})
   }
 }
+export async function PUT(){
+  try {
+    await connectMongoDB();
+    console.log('updating users...');
+    const updateResult = await User.updateMany(
+      { gamesCreated: { $exists: false } }, // filter for existing users without the new property
+      { $set: { gamesCreated: [] } } // set the default value for the new property
+    );
+    
+    console.log(`]users updated: ${updateResult}`);
+    return NextResponse.json({ message: 'users updated successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating users:', error);
+  } 
+}
 

@@ -46,6 +46,24 @@ export default function UserInfo() {
       console.log('caught error: ', err)
     }
   }
+  const updateUsers = async () => {
+    try{
+      const res = await fetch('/api/seed', {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      })
+      if(res.ok){
+        console.log('update users fetch successful')
+      }else{
+        console.log('update users fetch not successful... res: ', res)
+      }
+    }catch(err){
+      console.log('caught error: ', err)
+    }
+  }
   const deleteExtraUsers = async () => {
     try{
       const res = await fetch('/api/seed', {
@@ -257,6 +275,7 @@ export default function UserInfo() {
             <>
             <button onClick={() => seedDatabase()}>Seed Database</button>
             <button onClick={() => deleteExtraUsers()}>Delete Extra Users</button>
+            <button onClick={() => updateUsers()}>Update Users</button>
             </>
           }
          
