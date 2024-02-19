@@ -1,12 +1,14 @@
 'use client'
 import { getGameAPI, inviteToGameAPI, uninviteToGameAPI } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
+
+import { initializeSocket, getSocket } from "@/lib/socketService";
 import styles from './ViewGameInfo.module.css'
 // import { initializeSocket, getSocket } from "@/lib/socketService";
 
 export const ViewGameInfo = ({id}) => {
-    // initializeSocket()
-    // let socket = getSocket()
+    initializeSocket()
+    let socket = getSocket()
     const [gameInfo, setGameInfo] = useState({})
     const [meData, setMeData] = useState({})
 
@@ -22,9 +24,9 @@ export const ViewGameInfo = ({id}) => {
             const data = await inviteToGameAPI(gameInfo._id, userId)
             console.log('!!!invite to game data.updatedUser: ', data.updatedUser)
             setGameInfo(data.updatedGame)
-            // socket.emit('user refresh', {
-            //     userId
-            // })
+            socket.emit('friend refresh', {
+                friendId: userId
+            })
         }
     }
     const unInviteToGame = async (userId) => {
@@ -32,15 +34,31 @@ export const ViewGameInfo = ({id}) => {
             const data = await uninviteToGameAPI(gameInfo._id, userId)
             console.log('uninvite from game data: ', data)
             setGameInfo(data.updatedGame)
-            // socket.emit('user refresh', {
-            //     userId
-            // })
+            socket.emit('friend refresh', {
+                friendId: userId
+            })
         }
     }
 
     useEffect(() => {
+        socket.on('connect', () => {
+            console.log('Connected to Socket.io, requesting active users');
+            socket.emit('request active users', () => {
+              return
+            })
+          });
+        socket.on('disconnect', () => {
+        console.log('Disconnected from Socket.io');
+        });
+        
         getGameInfo(id)
         setMeData(JSON.parse(localStorage.getItem('meData')))
+        return () => {
+        // Clean up event listeners
+        socket.off('connect');
+        socket.off('disconnect');
+        };
+
     }, [])
     useEffect(() => {
         console.log(gameInfo)

@@ -59,8 +59,26 @@ export const ViewUserInfo = ({id}) => {
     }
 
     useEffect(() => {
-        console.log('component mountex, id: ', id)
+        socket.on('connect', () => {
+            console.log('Connected to Socket.io, requesting active users');
+            socket.emit('request active users', () => {
+              return
+            })
+        });
+        
+          socket.on('disconnect', () => {
+            console.log('Disconnected from Socket.io');
+        });
+          
+        console.log('component mounted, id: ', id)
         getUserData(id)
+
+        return () => {
+        // Clean up event listeners
+        socket.off('connect');
+        socket.off('disconnect');
+        };
+        
     }, [])
     useEffect(() => {
         if(session && userData){

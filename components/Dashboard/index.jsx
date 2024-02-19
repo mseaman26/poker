@@ -135,6 +135,12 @@ export default function UserInfo() {
         return
       })
     });
+    socket.on('friend refresh', () => {
+      console.log('friend refresh with session', session)
+      if(session){
+        getMe()
+      }
+    })
   
     socket.on('disconnect', () => {
       console.log('Disconnected from Socket.io');
