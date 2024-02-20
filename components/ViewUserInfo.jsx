@@ -54,6 +54,7 @@ export const ViewUserInfo = ({id}) => {
         if(session?.user?.id && id){
             const res = await removeFriendAPI(session.user.id, id)
             console.log('friendId: ', id)
+            console.log('remove friend response: ', res)
             setIsFriend(false)
         }
     }

@@ -50,7 +50,7 @@ export async function DELETE(req){
               );
         }
         console.log('delete game response')
-        return NextResponse.json({message: 'game successfully deleted'})
+        return NextResponse.json({deletedGame})
     }catch(err){
         console.log(err)
         return NextResponse.json(

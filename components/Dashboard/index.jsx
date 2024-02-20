@@ -103,9 +103,7 @@ export default function UserInfo() {
   const getMe = async () => {
     console.log('no session? ', session)
     if(session){
-      console.log('inside getMe with session')
       const data = await fetchSingleUser(session.user.id)
-      console.log('me data after friend change', data)
       setMeData(data)
     }
   }
@@ -120,7 +118,7 @@ export default function UserInfo() {
   }
   const deleteGame = async(gameId) => {
     if(gameId){
-      await deleteGameAPI(gameId)
+      const deletedGame = await deleteGameAPI(gameId)
       getMyGames()
     }
   }
@@ -153,13 +151,13 @@ export default function UserInfo() {
     };
   }, [])
   useEffect(() => {
-    socket.on('friend change', () => {
-      console.log('friend change with session', session)
-      if(session){
-        getMe()
-      }
-    })
-    socket.on('user refresh', () => {
+    // socket.on('friend change', () => {
+    //   console.log('friend change with session', session)
+    //   if(session){
+    //     getMe()
+    //   }
+    // })
+    socket.on('friend refresh', () => {
       console.log('received user refresh')
       if(session){
         getMe()

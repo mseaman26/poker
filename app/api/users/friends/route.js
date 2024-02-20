@@ -1,5 +1,6 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/models/user";
+import Game from "@/models/game";
 import { NextResponse } from "next/server";
 
 //ADD FRIEND
@@ -64,6 +65,12 @@ export async function DELETE(req){
       { _id: userToRemoveObj._id },
       { $pull: { friends: currentUserObj._id } }
     );
+    await Game.updateMany(
+      { creatorId: currentUserObj._id, 
+        invitees: userToRemoveObj._id
+      },
+      { $pull: {invitedUsers: userToRemoveObj._id}}
+    )
     return NextResponse.json({ message: 'friend removed successfully' }, { status: 200 })
   }catch(err){
     console.error("Error removing friend:", err);
