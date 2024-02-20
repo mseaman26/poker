@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser } from "@/lib/apiHelpers";
+import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser, deleteAllGamesAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
 
@@ -126,6 +126,11 @@ export default function UserInfo() {
     localStorage.setItem('meData', JSON.stringify(meData))
     router.push(`/game/${gameId}`)
   }
+  const deleteAllGames = async () => {
+    const res = await deleteAllGamesAPI()
+    console.log('delete all games res: ', res)
+  }
+
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to Socket.io, requesting active users');
@@ -280,6 +285,7 @@ export default function UserInfo() {
             <button onClick={() => seedDatabase()}>Seed Database</button>
             <button onClick={() => deleteExtraUsers()}>Delete Extra Users</button>
             <button onClick={() => updateUsers()}>Update Users</button>
+            <button onClick={() => deleteAllGames()}>Delete All Games</button>
             </>
           }
          

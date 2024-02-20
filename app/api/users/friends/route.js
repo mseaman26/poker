@@ -49,8 +49,6 @@ export async function DELETE(req){
   const {currentUser, userToRemove } = await req.json()
 
   try{
-    console.log('currentUser: ', currentUser)
-    console.log('userToRemove: ', userToRemove)
     await connectMongoDB()
     const currentUserObj = await User.findById(currentUser)
     const userToRemoveObj = await User.findById(userToRemove)
@@ -67,10 +65,23 @@ export async function DELETE(req){
     );
     await Game.updateMany(
       { creatorId: currentUserObj._id, 
-        invitees: userToRemoveObj._id
+        invitedUsers: userToRemoveObj._id
       },
       { $pull: {invitedUsers: userToRemoveObj._id}}
     )
+   
+    const unfriendedUser = await User.findById(userToRemoveObj._id).populate('gameInvites')
+    let gameInvites = unfriendedUser.gameInvites || []
+    console.log('game invites', gameInvites)
+    let updatedGameInvites = gameInvites.filter(game => {
+      console.log('game invites and current user id',gameInvites, currentUserObj._id )
+      return game.creatorId.toString() !== currentUserObj._id.toString()
+    })
+    await User.updateOne(
+      { _id: userToRemoveObj._id },
+      { $set: { gameInvites: updatedGameInvites } }
+    );
+
     return NextResponse.json({ message: 'friend removed successfully' }, { status: 200 })
   }catch(err){
     console.error("Error removing friend:", err);
