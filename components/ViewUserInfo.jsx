@@ -1,16 +1,14 @@
 'use client'
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { addFriendAPI, removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI, fetchSingleUserAPI } from "@/lib/apiHelpers"
+import { removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI, fetchSingleUserAPI } from "@/lib/apiHelpers"
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { get } from "mongoose"
 
 export const ViewUserInfo = ({id}) => {
     initializeSocket()
     let socket = getSocket()
     const [userData, setUserData] = useState({})
-    const [isFriend, setIsFriend] = useState(null)
-    const [friendStatus, setFriendStatus] = useState('')
+    const [friendStatus, setFriendStatus] = useState(null)
     const { data: session } = useSession();
     //getting the other user's data
     const getUserData = async (userId) => {
@@ -40,7 +38,8 @@ export const ViewUserInfo = ({id}) => {
                 console.log('friend requests: ', userData.friendRequests)
                 console.log('my id: ', me?._id.toString())
                 for(let request of userData.friendRequests){
-                    if(request.toString() === me?._id.toString()){
+                    console.log('request ID', request._id, 'me ID', me?._id)
+                    if(request._id.toString() === me?._id.toString()){
                         console.log('request found')
                         setFriendStatus('pending')
                     }
@@ -125,7 +124,6 @@ export const ViewUserInfo = ({id}) => {
         socket.off('connect');
         socket.off('disconnect');
         };
-        
     }, [])
     useEffect(() => {
         if(session && userData){
@@ -152,23 +150,31 @@ export const ViewUserInfo = ({id}) => {
     useEffect(() => {
         console.log('friend status',friendStatus)
     }, [friendStatus])
+    useEffect(() => {
+        getCurrentUserData(session?.user?.id)
+    }, [session])
+
 
     //RETURN
     return(
         <div>
         <h1>user Info</h1>
         <p>Name: {userData?.name}</p>
-        {friendStatus === 'friends' ? (
-            <button onClick={removeFriend}>remove friend</button>
-        ) : friendStatus === 'pending' ? (
+        {userData && session &&
             <>
-            <span>Friend Request Pending...</span><button onClick={cancelFriendRequest}>Cancel Request</button>
-            </>)
-        :(
-            <button onClick={requestFriend}>Request Friendship</button>
-        )
+            {friendStatus === 'friends' ? (
+                <button onClick={removeFriend}>remove friend</button>
+            ) : friendStatus === 'pending' ? (
+                <>
+                <span>Friend Request Pending...</span><button onClick={cancelFriendRequest}>Cancel Request</button>
+                </>)
+            :(
+                <button onClick={requestFriend}>Request Friendship</button>
+            )}
+            </>  
             
         }
+            
         <p>my id: {session?.user?.id}</p>
         </div>
     )
