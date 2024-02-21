@@ -7,6 +7,7 @@ import Link from "next/link";
 import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
+import { get } from "mongoose";
 
 
 export default function UserInfo() {
@@ -133,24 +134,11 @@ export default function UserInfo() {
     const res = await deleteAllGamesAPI()
     console.log('delete all games res: ', res)
   }
-  const respondToFriendRequestAPI = async (requestingUserId, response) => {
-    if(requestingUserId){
-      const res = await fetch('/api/users/friendRequest/respond', {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentUser: session.user.id,
-          requestingUser: requestingUserId,
-          response
-        })
-      })
-      if(res.ok){
-        console.log('friend request responsed to successfully')
-        getMe()
-      }
-    }
+  const respondToFriendRequest = async (currentUserId, requestorId, response) => {
+    const res = await respondToFriendRequestAPI(currentUserId, requestorId, response)
+    console.log('respond to friend request res: ', res)
+    socket.emit('friend refresh', {friendId: requestorId})
+    getMe()
   }
  
   useEffect(() => {
@@ -348,8 +336,8 @@ export default function UserInfo() {
             return(
               <li key={index}>
                 <span>{friendRequest.name}</span>
-                <button onClick={() => respondToFriendRequestAPI(friendRequest._id, 'accept')} className={styles.bgGreen}>&#10004;</button>
-                <button onClick={() => respondToFriendRequestAPI(friendRequest._id, 'decline')} className={styles.bgRed}>&#10006;</button>
+                <button onClick={() => respondToFriendRequest(meData._id, friendRequest._id, 'accept')} className={styles.bgGreen}>&#10004;</button>
+                <button onClick={() => respondToFriendRequest(meData._id, friendRequest._id, 'decline')} className={styles.bgRed}>&#10006;</button>
               </li>
             )
           })}
