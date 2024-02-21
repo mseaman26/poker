@@ -130,7 +130,7 @@ export const ViewUserInfo = ({id}) => {
     useEffect(() => {
         if(session && userData){
             console.log('my id: ', session.user.id)
-            getCurrentUserData(session.user.id)
+            getCurrentUserData(session?.user?.id)
             socket.emit('activate user', {
                 socketId: socket.id,
                 email: session.user.email,
