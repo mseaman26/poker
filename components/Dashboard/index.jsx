@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser, deleteAllGamesAPI } from "@/lib/apiHelpers";
+import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
 
@@ -24,6 +24,7 @@ export default function UserInfo() {
   const [activeFriends, setActiveFriends] = useState([])
   const [inactiveFriends, setInactiveFriends] = useState([])
   const [myInvites, setMyInvites] = useState([])
+  const [friendRequests, setFriendRequests] = useState([])
   const router = useRouter()
 
   
@@ -118,7 +119,9 @@ export default function UserInfo() {
   }
   const deleteGame = async(gameId) => {
     if(gameId){
-      const deletedGame = await deleteGameAPI(gameId)
+      const res = await deleteGameAPI(gameId)
+      console.log('invited users: ', res.deletedGame.invitedUsers)
+      socket.emit('friends refresh', res.deletedGame.invitedUsers)
       getMyGames()
     }
   }
@@ -130,7 +133,26 @@ export default function UserInfo() {
     const res = await deleteAllGamesAPI()
     console.log('delete all games res: ', res)
   }
-
+  const respondToFriendRequestAPI = async (requestingUserId, response) => {
+    if(requestingUserId){
+      const res = await fetch('/api/users/friendRequest/respond', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentUser: session.user.id,
+          requestingUser: requestingUserId,
+          response
+        })
+      })
+      if(res.ok){
+        console.log('friend request responsed to successfully')
+        getMe()
+      }
+    }
+  }
+ 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to Socket.io, requesting active users');
@@ -320,40 +342,52 @@ export default function UserInfo() {
       </div>
       {/* MY FRIENDS */}
       <div className={styles.myFriends}>
-          <h1>My Friends</h1>
-          {myFriends && 
-            <ul>
-              {myFriends?.map((friend, index) => {
-                return(
-                  <li key={index}>
-                    <span className={styles.activeFriend}>{friend.name}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          }
-          <h1>My Active Friends</h1>
+        <h1>My Friend Requests</h1>
+        <ul>
+          {meData?.friendRequests?.map((friendRequest, index) => {
+            return(
+              <li key={index}>
+                <span>{friendRequest.name}</span>
+                <button onClick={() => respondToFriendRequestAPI(friendRequest._id, 'accept')} className={styles.bgGreen}>&#10004;</button>
+                <button onClick={() => respondToFriendRequestAPI(friendRequest._id, 'decline')} className={styles.bgRed}>&#10006;</button>
+              </li>
+            )
+          })}
+        </ul>
+        <h1>My Friends</h1>
+        {myFriends && 
           <ul>
-            {console.log('acive friends being rendered: ', activeFriends)}
-            {activeFriends.map((friend, index) => {
-              console.log('should render something')
+            {myFriends?.map((friend, index) => {
               return(
                 <li key={index}>
-                  <h1>{friend.name}</h1>
+                  <span className={styles.activeFriend}>{friend.name}</span>
                 </li>
               )
             })}
           </ul>
-          <h1>My Inactive Friends</h1>
-          <ul>
-            {inactiveFriends.map((inactiveFriend, index) => {
-              return(
-                <li key={index}>
-                  <h1>{inactiveFriend.name}</h1>
-                </li>
-              )
-            })}
-          </ul>
+        }
+        <h1>My Active Friends</h1>
+        <ul>
+          {console.log('acive friends being rendered: ', activeFriends)}
+          {activeFriends.map((friend, index) => {
+            console.log('should render something')
+            return(
+              <li key={index}>
+                <h1>{friend.name}</h1>
+              </li>
+            )
+          })}
+        </ul>
+        <h1>My Inactive Friends</h1>
+        <ul>
+          {inactiveFriends.map((inactiveFriend, index) => {
+            return(
+              <li key={index}>
+                <h1>{inactiveFriend.name}</h1>
+              </li>
+            )
+          })}
+        </ul>
       </div>
     </div>
   );

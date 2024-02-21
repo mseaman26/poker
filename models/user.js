@@ -22,6 +22,11 @@ const userSchema = new Schema(
       ref: 'User',
       default: []
     },
+    friendRequests: {
+      type: [ObjectId],
+      ref: 'User',
+      default: []
+    },
     gameInvites: {
       type: [ObjectId],
       ref: 'Game',

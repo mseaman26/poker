@@ -8,13 +8,9 @@ export async function POST(req){
     const { currentUser, userToAdd } = await req.json();
 
     try{
-        console.log('currentUser: ', currentUser)
-        console.log('userToAdd: ', userToAdd)
         await connectMongoDB()
         const currentUserObj = await User.findById(currentUser)
         const userToAddObj = await User.findById(userToAdd)
-        console.log('currentUserObj: ', currentUserObj._id)
-        console.log('userToAddObj', userToAddObj._id)
 
         if(!currentUserObj || !userToAddObj){
             return NextResponse.json({message: 'no user found'}, {status: 404})
@@ -72,9 +68,7 @@ export async function DELETE(req){
    
     const unfriendedUser = await User.findById(userToRemoveObj._id).populate('gameInvites')
     let gameInvites = unfriendedUser.gameInvites || []
-    console.log('game invites', gameInvites)
     let updatedGameInvites = gameInvites.filter(game => {
-      console.log('game invites and current user id',gameInvites, currentUserObj._id )
       return game.creatorId.toString() !== currentUserObj._id.toString()
     })
     await User.updateOne(

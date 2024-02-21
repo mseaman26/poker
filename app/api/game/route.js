@@ -44,6 +44,7 @@ export async function DELETE(req){
             );
             console.log('deleted game: ', deletedGame)
             const invitedUserIds = deletedGame?.invitedUsers || [];
+            console.log('invitedUserIds', invitedUserIds)
             await User.updateMany(
                 { _id: { $in: invitedUserIds } },
                 { $pull: { gameInvites: deletedGame._id } }

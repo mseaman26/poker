@@ -14,7 +14,8 @@ export async function GET(req, {params}){
               path: 'creatorId',
               model: 'User'  
             }
-          });
+          })
+          .populate('friendRequests')
         return NextResponse.json(user)
     }catch(err){
         console.log('error in single user fetch: ', err)
