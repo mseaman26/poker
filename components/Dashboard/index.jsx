@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUser, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
+import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
 
@@ -104,7 +104,7 @@ export default function UserInfo() {
   const getMe = async () => {
     console.log('no session? ', session)
     if(session){
-      const data = await fetchSingleUser(session.user.id)
+      const data = await fetchSingleUserAPI(session.user.id)
       setMeData(data)
     }
   }

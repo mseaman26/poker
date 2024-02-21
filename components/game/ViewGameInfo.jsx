@@ -1,14 +1,17 @@
 'use client'
-import { getGameAPI, inviteToGameAPI, uninviteToGameAPI } from "@/lib/apiHelpers"
+import { getGameAPI, inviteToGameAPI, uninviteToGameAPI, fetchSingleUserAPI } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
 
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import styles from './ViewGameInfo.module.css'
-// import { initializeSocket, getSocket } from "@/lib/socketService";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export const ViewGameInfo = ({id}) => {
     initializeSocket()
     let socket = getSocket()
+    const router = useRouter()
+    const { data: session } = useSession();
     const [gameInfo, setGameInfo] = useState({})
     const [meData, setMeData] = useState({})
 
@@ -19,6 +22,16 @@ export const ViewGameInfo = ({id}) => {
             setGameInfo(data)
         }
     }
+    const getMe = async () => {
+        if(session){
+            console.log('session: ', session)
+        if(session){
+          const data = await fetchSingleUserAPI(session.user.id)
+          setMeData(data)
+        }
+        }
+        
+      }
     const inviteToGame = async (userId) => {
         if(gameInfo && userId){
             const data = await inviteToGameAPI(gameInfo._id, userId)
@@ -39,6 +52,9 @@ export const ViewGameInfo = ({id}) => {
             })
         }
     }
+    const goToGame = () => {
+        router.push(`/game/${gameInfo._id}/play`)
+    }
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -52,7 +68,8 @@ export const ViewGameInfo = ({id}) => {
         });
         
         getGameInfo(id)
-        setMeData(JSON.parse(localStorage.getItem('meData')))
+        getMe()
+        // setMeData(JSON.parse(localStorage.getItem('meData')))
         return () => {
         // Clean up event listeners
         socket.off('connect');
@@ -61,17 +78,24 @@ export const ViewGameInfo = ({id}) => {
 
     }, [])
     useEffect(() => {
-        console.log(gameInfo)
+        console.log('game info: ', gameInfo)
     }, [gameInfo])
     useEffect(() => {
         console.log('meData:', meData)
     }, [meData])
+    useEffect(() => {
+        console.log('socket: ', socket)
+        getMe()
+    }, [session])
 
     return(
         <div className={styles.container}>
             <div className={styles.containerLeft}>
                 <h1>Game Name: {gameInfo?.name}</h1>
-
+                <h2>Game Creator: {gameInfo?.creatorId}</h2>
+                {gameInfo?.invitedUsers && gameInfo?.invitedUsers.length > 0 &&
+                    <button onClick={goToGame}>Enter Game</button>
+                }
             </div>
             <div className={styles.containerRight}>
                 {gameInfo.creatorId === meData._id &&
