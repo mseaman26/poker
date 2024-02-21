@@ -9,6 +9,7 @@ export const ViewUserInfo = ({id}) => {
     let socket = getSocket()
     const [userData, setUserData] = useState({})
     const [friendStatus, setFriendStatus] = useState(null)
+    const [buttonVisible, setButtonVisible] = useState(false)
     const { data: session } = useSession();
     //getting the other user's data
     const getUserData = async (userId) => {
@@ -45,6 +46,7 @@ export const ViewUserInfo = ({id}) => {
                     }
                 }
             }
+            setButtonVisible(true)
             // if(friendStatus !== 'pending' && friendStatus !== 'friends'){
             //     console.log('friend status inside not friends thing: ',friendStatus)
             //     console.log('not friends')
@@ -160,7 +162,7 @@ export const ViewUserInfo = ({id}) => {
         <div>
         <h1>user Info</h1>
         <p>Name: {userData?.name}</p>
-        {userData && session &&
+        {userData && session && buttonVisible &&
             <>
             {friendStatus === 'friends' ? (
                 <button onClick={removeFriend}>remove friend</button>
