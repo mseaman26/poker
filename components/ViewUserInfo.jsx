@@ -1,8 +1,7 @@
 'use client'
-import { fetchSingleUser } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { addFriendAPI, removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI } from "@/lib/apiHelpers"
+import { addFriendAPI, removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI, fetchSingleUserAPI } from "@/lib/apiHelpers"
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { get } from "mongoose"
 
@@ -18,7 +17,7 @@ export const ViewUserInfo = ({id}) => {
         console.log('trying to fetch single user, id: ', userId)
         if(userId){
             console.log('inside if')
-            const data = await fetchSingleUser(userId)
+            const data = await fetchSingleUserAPI(userId)
             console.log('single user data: ', data)
             setUserData(data)
         }
@@ -26,7 +25,7 @@ export const ViewUserInfo = ({id}) => {
     //getting the current user's data
     const getCurrentUserData = async (userId) => {
         if(userData._id){
-            const me = await fetchSingleUser(userId)
+            const me = await fetchSingleUserAPI(userId)
             console.log('my friends: ', me)
             // setFriendStatus('notFriends')
             for(let friend of me?.friends){

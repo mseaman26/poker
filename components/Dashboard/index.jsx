@@ -217,8 +217,8 @@ export default function UserInfo() {
   useEffect(() => {
     console.log('meData: ', meData)
     setMyFriends(meData?.friends)
-    setMyInvites(meData.gameInvites)
-    console.log('gameInvites: ', meData.gameInvites)
+    setMyInvites(meData?.gameInvites)
+    console.log('gameInvites: ', meData?.gameInvites)
   }, [meData])
   useEffect(() => {
     console.log('inside useffect for updating active friends')
@@ -354,7 +354,7 @@ export default function UserInfo() {
             )
           })}
         </ul>
-        <h1>My Friends</h1>
+        {/* <h1>My Friends</h1>
         {myFriends && 
           <ul>
             {myFriends?.map((friend, index) => {
@@ -365,25 +365,24 @@ export default function UserInfo() {
               )
             })}
           </ul>
-        }
-        <h1>My Active Friends</h1>
+        } */}
+        <h1>My Friends</h1>
         <ul>
           {console.log('acive friends being rendered: ', activeFriends)}
           {activeFriends.map((friend, index) => {
             console.log('should render something')
             return(
               <li key={index}>
-                <h1>{friend.name}</h1>
+                <Link href={`/user/${friend._id}`}><button>{friend.name} &#128994;</button></Link>
               </li>
             )
           })}
         </ul>
-        <h1>My Inactive Friends</h1>
         <ul>
           {inactiveFriends.map((inactiveFriend, index) => {
             return(
               <li key={index}>
-                <h1>{inactiveFriend.name}</h1>
+                <Link href={`/user/${inactiveFriend._id}`}><button>{inactiveFriend.name} 💤</button></Link>
               </li>
             )
           })}
