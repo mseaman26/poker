@@ -87,6 +87,20 @@ export const ViewGameInfo = ({id}) => {
         console.log('socket: ', socket)
         getMe()
     }, [session])
+    useEffect(() => {
+        if(socket && session){
+    
+            socket.emit('activate user', {
+              socketId: socket.id,
+              email: session.user.email,
+              username: session.user.name,
+              id: session.user.id
+            })
+    
+        }
+    
+    
+      }, [socket, session])
 
     return(
         <div className={styles.container}>

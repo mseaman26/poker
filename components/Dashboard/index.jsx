@@ -7,8 +7,6 @@ import Link from "next/link";
 import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
-import { get } from "mongoose";
-
 
 export default function UserInfo() {
   initializeSocket()
@@ -166,12 +164,6 @@ export default function UserInfo() {
     };
   }, [])
   useEffect(() => {
-    // socket.on('friend change', () => {
-    //   console.log('friend change with session', session)
-    //   if(session){
-    //     getMe()
-    //   }
-    // })
     socket.on('friend refresh', () => {
       console.log('received user refresh')
       if(session){
@@ -180,16 +172,15 @@ export default function UserInfo() {
   })
   }, [session])
   useEffect(() => {
-    if(socket && session){
-      console.log('socket: ', socket)
-      console.log('session: ', session)
 
-        socket.emit('activate user', {
-          socketId: socket.id,
-          email: session.user.email,
-          username: session.user.name,
-          id: session.user.id
-        })
+    if(socket && session){
+      console.log('activating user with session: ', session)
+      socket.emit('activate user', {
+        socketId: socket.id,
+        email: session.user.email,
+        username: session.user.name,
+        id: session.user.id
+      })
 
     }
 
