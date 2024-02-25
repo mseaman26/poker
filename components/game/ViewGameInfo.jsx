@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export const ViewGameInfo = ({id}) => {
+    
     initializeSocket()
     let socket = getSocket()
     const router = useRouter()
@@ -79,7 +80,8 @@ export const ViewGameInfo = ({id}) => {
     }, [])
     useEffect(() => {
         console.log('game info: ', gameInfo)
-    }, [gameInfo])
+
+    }, [gameInfo, gameInfo])
     useEffect(() => {
         console.log('meData:', meData)
     }, [meData])

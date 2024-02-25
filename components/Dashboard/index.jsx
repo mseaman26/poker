@@ -121,6 +121,7 @@ export default function UserInfo() {
       const res = await deleteGameAPI(gameId)
       console.log('invited users: ', res.deletedGame.invitedUsers)
       socket.emit('friends refresh', res.deletedGame.invitedUsers)
+      socket.emit('room deleted', {gameId: gameId})
       getMyGames()
     }
   }
