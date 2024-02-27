@@ -1,8 +1,10 @@
 'use client'
 import { initializeSocket, getSocket } from "@/lib/socketService";
+import { getGameAPI, fetchSingleUserAPI } from "@/lib/apiHelpers";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
+import { get } from "mongoose";
 
 export default function({params}){
 
@@ -11,7 +13,22 @@ export default function({params}){
     const { data: session } = useSession();
     const [chatMessages, setChatMessages] = useState([]);
     const [usersInRoom, setUsersInRoom] = useState([]);
+    const [gameData, setGameData] = useState({})
+    const [meData, setMeData] = useState({})
 
+
+    const getGameData = async (gameId) => {
+        if(gameId){
+            const data = await getGameAPI(gameId)
+            setGameData(data)
+        }
+    }
+    const getMeData = async () => {
+        if(session){
+            const data = await fetchSingleUserAPI(session.user.id)
+            console.log('me data: ', data)
+        }
+    }
     const sendMessage = (e) => {
         console.log('sending message: ', e.target[0].value)
         e.preventDefault();
@@ -20,6 +37,18 @@ export default function({params}){
         socket.emit('chat message', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name, message: e.target[0].value})
         e.target[0].value = ''
     }
+    const startGame = () => {
+        console.log('starting game')
+        socket.emit('start game', {roomId: params.gameId, players: usersInRoom})
+
+    }
+
+    useEffect(() => {
+        console.log('game data: ', gameData)
+    }, [gameData])
+    useEffect(() => {
+        console.log('me data: ', meData)
+    }, [meData])
 
     useEffect(() => {
         setChatMessages(
@@ -66,6 +95,7 @@ export default function({params}){
         }
     }, [])
     useEffect(() => {
+        getMeData()
         socket.on('updated users in room', (data) => {
             console.log('update users in room', data)
             setUsersInRoom(data)
@@ -80,6 +110,7 @@ export default function({params}){
             })
             socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
         }
+        getGameData(params.gameId)
       }, [socket, session])
 
     useEffect(() => {
@@ -115,6 +146,11 @@ export default function({params}){
                     })}
                 </div>
             </main>
+            <div className={styles.game}>
+                {gameData.creatorId === session?.user?.id &&
+                    <button onClick={startGame}>Start Game</button>
+                }
+            </div>
         </div>
     )
 }

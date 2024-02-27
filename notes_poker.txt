@@ -1,0 +1,2 @@
+-when creating a game, things like buy in need to be specified
+-give game model a buyIn property

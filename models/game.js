@@ -7,7 +7,6 @@ const gameSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique: true
     },
     creatorId: {
       type: ObjectId,
@@ -17,13 +16,19 @@ const gameSchema = new Schema(
     invitedUsers: {
       type: [ObjectId],
       ref: 'User',
-      default: []
+      default: [],
+      required: true
     },
-    usersInRoom: {
-        type: [ObjectId],
-        ref: 'User',
-        default: []
-    }
+    buyIn: {  
+      type: Number,
+      required: true,
+      default: 0
+    },
+    started: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
   },
   { timestamps: true }
 );

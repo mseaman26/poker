@@ -64,9 +64,29 @@ export default function UserInfo() {
       console.log('caught error: ', err)
     }
   }
+  const updateGames = async () => {
+    try{
+      const res = await fetch('/api/seed/game', {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      })
+      if(res.ok){
+        console.log('update games fetch successful')
+      }else{
+        console.log('update games fetch not successful... res: ', res)
+      }
+    }catch(err){
+      console.log('caught error: ', err)
+    }
+  }
+
+
   const deleteExtraUsers = async () => {
     try{
-      const res = await fetch('/api/seed', {
+      const res = await fetch('/api/seed/game', {
         method: 'DELETE',
         headers: {
           'Content-Type': "application/json"
@@ -287,6 +307,7 @@ export default function UserInfo() {
             <button onClick={() => seedDatabase()}>Seed Database</button>
             <button onClick={() => deleteExtraUsers()}>Delete Extra Users</button>
             <button onClick={() => updateUsers()}>Update Users</button>
+            <button onClick={() => updateGames()}>Update Games</button>
             <button onClick={() => deleteAllGames()}>Delete All Games</button>
             </>
           }
