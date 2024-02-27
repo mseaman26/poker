@@ -4,7 +4,7 @@ import { getGameAPI, fetchSingleUserAPI } from "@/lib/apiHelpers";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
-import { get } from "mongoose";
+import { set } from "mongoose";
 
 export default function({params}){
 
@@ -14,6 +14,7 @@ export default function({params}){
     const [chatMessages, setChatMessages] = useState([]);
     const [usersInRoom, setUsersInRoom] = useState([]);
     const [gameData, setGameData] = useState({})
+    const [gameState, setGameState] = useState({})
     const [meData, setMeData] = useState({})
 
 
@@ -23,10 +24,14 @@ export default function({params}){
             setGameData(data)
         }
     }
+    const getGameState = async (gameId) => {
+        socket.emit('game state', {gameId: gameId})
+    }
     const getMeData = async () => {
         if(session){
             const data = await fetchSingleUserAPI(session.user.id)
             console.log('me data: ', data)
+            setMeData(data)
         }
     }
     const sendMessage = (e) => {
@@ -49,6 +54,17 @@ export default function({params}){
     useEffect(() => {
         console.log('me data: ', meData)
     }, [meData])
+    useEffect(() => {
+        console.log('game state: ', gameState)
+        if(meData._id){
+            console.log('me data: ', meData)
+        }
+        
+        if(meData._id && gameState.players){
+            console.log('current turn: ', gameState.players[gameState.turn].userId)
+            console.log(meData._id  === gameState.players[gameState.turn].userId) 
+        }
+    }, [gameState, meData])
 
     useEffect(() => {
         setChatMessages(
@@ -89,6 +105,7 @@ export default function({params}){
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
             // localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages))
         })
+        socket.emit('game state', {gameId: params.gameId})
         return () => {
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id})
             socket.off('connect')
@@ -100,6 +117,9 @@ export default function({params}){
             console.log('update users in room', data)
             setUsersInRoom(data)
         })
+        socket.on('game state', (data) => {
+            setGameState(data)
+        })
         if(socket && session){
             console.log('session: ', session)
             socket.emit('activate user', {
@@ -109,6 +129,7 @@ export default function({params}){
               id: session.user.id
             })
             socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
+            socket.emit('game state', {gameId: params.gameId})
         }
         getGameData(params.gameId)
       }, [socket, session])
@@ -147,9 +168,14 @@ export default function({params}){
                 </div>
             </main>
             <div className={styles.game}>
-                {gameData.creatorId === session?.user?.id &&
+                {gameData.creatorId === session?.user?.id && !gameState.active &&
                     <button onClick={startGame}>Start Game</button>
                 }
+                {meData && gameState.active && gameState.players && gameState.players[gameState.turn].userId === meData._id &&
+                <button>End Turn</button>}
+                <div className={styles.players}>
+
+                </div>
             </div>
         </div>
     )
