@@ -186,7 +186,9 @@ export default function({params}){
                     {usersInRoom.map((user, index) => {
                         return (
                             <div key={index}>
-                                <p>{user.username}</p>
+                                <p>{user?.username}{gameState.players && gameState?.players[gameState.turn].userId === user.userId? <span>&#128994;</span> : <></> }</p>
+                                
+                                {/* <p>{user?.username}{gameState?.players[gameState.turn]?.userId === user?.userId && <span>&#128994</span>}</p> */}
                             </div>
                         )
                     })}
@@ -203,6 +205,7 @@ export default function({params}){
                 {gameData.creatorId === session?.user?.id && gameState.active === true && 
                     <button onClick={endGame}>End Game</button>}
                 </div>
+
             </div>
         </div>
     )
