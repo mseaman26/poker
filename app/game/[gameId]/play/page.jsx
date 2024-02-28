@@ -49,8 +49,14 @@ export default function({params}){
     const startGame = () => {
         console.log('starting game')
         socket.emit('start game', {roomId: params.gameId, players: usersInRoom})
-
     }
+    const endGame = () => {
+    console.log('ending game');
+    socket.emit('end game', params.gameId, () => {
+        // This callback will be executed once the 'end game' event is acknowledged
+        getGameState(); // Fetch the updated game state after the game has ended
+    });
+};
 
     useEffect(() => {
         console.log('game data: ', gameData)
@@ -80,10 +86,15 @@ export default function({params}){
         socket.on('connect', () => {
             setTimeout(() => {
                 getGameState();
-            }, 500);
+            }, 100);
             socket.emit('request active users', () => {
               return
             })
+            socket.on('game state', (data) => {
+                console.log('setting game state: ', data )
+                setGameState(data)
+            })
+            socket.emit('get game state', params.gameId)
         });
         socket.on('chat message', (data) => {
             console.log('chat message recieved: ', data)
@@ -124,9 +135,7 @@ export default function({params}){
             console.log('update users in room', data)
             setUsersInRoom(data)
         })
-        socket.on('game state', (data) => {
-            setGameState(data)
-        })
+        
 
         if(socket && session){
             getGameState()
@@ -184,6 +193,8 @@ export default function({params}){
                 <button onClick={nextTurn}>Next Turn</button>}
                 <div className={styles.players}>
                 <button onClick={getGameState}>Get Game State</button>
+                {gameData.creatorId === session?.user?.id && gameState.active && 
+                    <button onClick={endGame}>End Game</button>}
                 </div>
             </div>
         </div>
