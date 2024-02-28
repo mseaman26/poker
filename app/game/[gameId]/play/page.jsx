@@ -4,7 +4,6 @@ import { getGameAPI, fetchSingleUserAPI } from "@/lib/apiHelpers";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
-import { set } from "mongoose";
 
 export default function({params}){
 
@@ -24,9 +23,14 @@ export default function({params}){
             setGameData(data)
         }
     }
-    const getGameState = async (gameId) => {
-        socket.emit('game state', {gameId: gameId})
+    const getGameState = async () => {
+        socket.emit('game state', params.gameId)
     }
+    const nextTurn = () => {
+        console.log('next turn')
+        socket.emit('next turn', {roomId: params.gameId})
+    }
+
     const getMeData = async () => {
         if(session){
             const data = await fetchSingleUserAPI(session.user.id)
@@ -55,12 +59,13 @@ export default function({params}){
         console.log('me data: ', meData)
     }, [meData])
     useEffect(() => {
-        console.log('game state: ', gameState)
+        
         if(meData._id){
             console.log('me data: ', meData)
         }
         
         if(meData._id && gameState.players){
+            console.log('game state: ', gameState)
             console.log('current turn: ', gameState.players[gameState.turn].userId)
             console.log(meData._id  === gameState.players[gameState.turn].userId) 
         }
@@ -73,7 +78,9 @@ export default function({params}){
           : []
         )
         socket.on('connect', () => {
-            console.log('Connected to Socket.io, requesting active users');
+            setTimeout(() => {
+                getGameState();
+            }, 500);
             socket.emit('request active users', () => {
               return
             })
@@ -105,7 +112,7 @@ export default function({params}){
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
             // localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages))
         })
-        socket.emit('game state', {gameId: params.gameId})
+        
         return () => {
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id})
             socket.off('connect')
@@ -120,7 +127,9 @@ export default function({params}){
         socket.on('game state', (data) => {
             setGameState(data)
         })
+
         if(socket && session){
+            getGameState()
             console.log('session: ', session)
             socket.emit('activate user', {
               socketId: socket.id,
@@ -129,7 +138,7 @@ export default function({params}){
               id: session.user.id
             })
             socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
-            socket.emit('game state', {gameId: params.gameId})
+            
         }
         getGameData(params.gameId)
       }, [socket, session])
@@ -172,9 +181,9 @@ export default function({params}){
                     <button onClick={startGame}>Start Game</button>
                 }
                 {meData && gameState.active && gameState.players && gameState.players[gameState.turn].userId === meData._id &&
-                <button>End Turn</button>}
+                <button onClick={nextTurn}>Next Turn</button>}
                 <div className={styles.players}>
-
+                <button onClick={getGameState}>Get Game State</button>
                 </div>
             </div>
         </div>
