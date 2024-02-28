@@ -55,8 +55,7 @@ export default function({params}){
     socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
-    });
-};
+    })};
 
     useEffect(() => {
         console.log('game data: ', gameData)
@@ -70,10 +69,10 @@ export default function({params}){
             console.log('me data: ', meData)
         }
         
-        if(meData._id && gameState.players){
+        if(meData._id && gameState?.players){
             console.log('game state: ', gameState)
-            console.log('current turn: ', gameState.players[gameState.turn].userId)
-            console.log(meData._id  === gameState.players[gameState.turn].userId) 
+            console.log('current turn: ', gameState?.players[gameState.turn]?.userId)
+            console.log(meData._id  === gameState?.players[gameState.turn]?.userId) 
         }
     }, [gameState, meData])
 
@@ -93,6 +92,14 @@ export default function({params}){
             socket.on('game state', (data) => {
                 console.log('setting game state: ', data )
                 setGameState(data)
+            })
+            socket.on('game ended', (data) => {
+                console.log('game ended: ', data)
+                getGameState()
+                // setTimeout(() => {
+                //     window.location.reload()
+                // }, 100);
+                
             })
             socket.emit('get game state', params.gameId)
         });
@@ -189,11 +196,11 @@ export default function({params}){
                 {gameData.creatorId === session?.user?.id && !gameState.active &&
                     <button onClick={startGame}>Start Game</button>
                 }
-                {meData && gameState.active && gameState.players && gameState.players[gameState.turn].userId === meData._id &&
+                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
                 <button onClick={nextTurn}>Next Turn</button>}
                 <div className={styles.players}>
                 <button onClick={getGameState}>Get Game State</button>
-                {gameData.creatorId === session?.user?.id && gameState.active && 
+                {gameData.creatorId === session?.user?.id && gameState.active === true && 
                     <button onClick={endGame}>End Game</button>}
                 </div>
             </div>
