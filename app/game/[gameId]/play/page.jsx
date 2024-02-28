@@ -186,7 +186,23 @@ export default function({params}){
                     {usersInRoom.map((user, index) => {
                         return (
                             <div key={index}>
-                                <p>{user?.username}{gameState.players && gameState?.players[gameState.turn].userId === user.userId? <span>&#128994;</span> : <></> }</p>
+                                <p>
+                            {gameState.dealer !== undefined && gameState.dealerId.userId === user.userId ? (
+                                <span>D </span>
+                            ) : (
+                                'no'
+                            )}
+                            {user?.username}
+                            {gameState.players && gameState.players[gameState.turn].userId === user.userId ? (
+                                <span>&#128994;</span>
+                            ) : (
+                                <></>
+                            )}
+                            {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
+                                <span> Small</span> : <></>}
+                            {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
+                                <span> Big</span> : <></>}
+                            </p>
                                 
                                 {/* <p>{user?.username}{gameState?.players[gameState.turn]?.userId === user?.userId && <span>&#128994</span>}</p> */}
                             </div>
