@@ -2,6 +2,19 @@ import { ObjectId } from "mongodb";
 import mongoose, { Schema, models } from "mongoose";
 import User from "./user";
 
+const playerSchema = new Schema({
+  userId: {
+    type: ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  chips: {
+    type: Number,
+    required: true,
+  }
+  // Add other properties related to a player if needed
+});
+
 const gameSchema = new Schema(
   {
     name: {
@@ -29,6 +42,13 @@ const gameSchema = new Schema(
       required: true,
       default: false
     },
+    players: {
+      type: [playerSchema],
+      ref: 'User',
+      default: [],
+      required: true
+    },
+
   },
   { timestamps: true }
 );

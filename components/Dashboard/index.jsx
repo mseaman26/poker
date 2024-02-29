@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchUsersAPI, createGameAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
+import { CreateGame } from "../game/CreateGame/CreateGame";
+import { searchUsersAPI, getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI, deleteAllGamesAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers";
 import { useRouter } from "next/navigation";
 import styles from './Dashboard.module.css'
 
@@ -15,15 +16,13 @@ export default function UserInfo() {
   const [activeUsers, setActiveUsers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [searchedUsers, setSearchedUsers] = useState([])
-  const [gameNameInputShown, setGameNameInputShown] = useState(false)
-  const [gameName, setGameName] = useState('')
+  const [createGameShown, setCreateGameShown] = useState(false)
   const [myGames, setMyGames] = useState([])
   const [meData, setMeData] = useState({})
   const [myFriends, setMyFriends] = useState([])
   const [activeFriends, setActiveFriends] = useState([])
   const [inactiveFriends, setInactiveFriends] = useState([])
   const [myInvites, setMyInvites] = useState([])
-  const [friendRequests, setFriendRequests] = useState([])
   const router = useRouter()
 
   
@@ -251,15 +250,17 @@ export default function UserInfo() {
   return (
     <div className={styles.container}>
       <div className={`h-screen ${styles.containerLeft}`}>
-        <button onClick={() => setGameNameInputShown(true)}>CREATE NEW GAME</button>
-        {gameNameInputShown && (
-          <div>
-            <button onClick={() => setGameNameInputShown(false)}>X</button>
-            <form onSubmit={createGame}>
-              <input type="text" placeholder="Name of Game Room" onChange={(e) => setGameName(e.target.value)}></input>
-              <button>Submit</button>
-            </form>
-          </div>
+        {/* CREATE GAME */}
+        <button onClick={() => setCreateGameShown(true)}>CREATE NEW GAME</button>
+        {createGameShown && (
+          <CreateGame setCreateGameShown={setCreateGameShown} session={session}/>
+          // <div>
+          //   <button onClick={() => setGameNameInputShown(false)}>X</button>
+          //   <form onSubmit={createGame}>
+          //     <input type="text" placeholder="Name of Game Room" onChange={(e) => setGameName(e.target.value)}></input>
+          //     <button>Submit</button>
+          //   </form>
+          // </div>
         )}
         <h1>Active Users</h1>
         <p>

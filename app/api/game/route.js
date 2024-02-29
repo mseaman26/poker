@@ -5,13 +5,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req){
     try{
-        const { name, creatorId } = await req.json()
+        const { name, creatorId, buyIn } = await req.json()
         console.log('game name being submitted: ', name)
         console.log('creatorId', creatorId)
         await connectMongoDB()
         const newGame = await Game.create({
             name,
-            creatorId
+            creatorId,
+            buyIn
         })
         console.log('new game created: ', newGame)
         await User.updateOne(
