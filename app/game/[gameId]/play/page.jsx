@@ -1,6 +1,6 @@
 'use client'
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { getGameAPI, fetchSingleUserAPI } from "@/lib/apiHelpers";
+import { getGameAPI, fetchSingleUserAPI, updateGameAPI } from "@/lib/apiHelpers";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
@@ -46,9 +46,11 @@ export default function({params}){
         socket.emit('chat message', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name, message: e.target[0].value})
         e.target[0].value = ''
     }
-    const startGame = () => {
+    const startGame = async () => {
         console.log('starting game')
         socket.emit('start game', {roomId: params.gameId, players: usersInRoom})
+        const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+        console.log('updata game at start game: ', data)
     }
     const endGame = () => {
     console.log('ending game');
