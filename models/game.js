@@ -8,9 +8,14 @@ const playerSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  username: {
+    type: String,
+    required: true,
+  },
   chips: {
     type: Number,
     required: true,
+    default: 0
   }
   // Add other properties related to a player if needed
 });
@@ -44,11 +49,14 @@ const gameSchema = new Schema(
     },
     players: {
       type: [playerSchema],
-      ref: 'User',
       default: [],
       required: true
     },
-
+    dealer: {
+      type: Number,
+      required: true,
+      default: 0
+    },
   },
   { timestamps: true }
 );

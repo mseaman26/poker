@@ -1,14 +1,18 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Game from "@/models/game";
+import { plugin } from "mongoose";
 import { NextResponse } from "next/server";
 
 export async function GET(req, {params}){
     try{
-        console.log('game id in route: ', params.gameId)
         await connectMongoDB()
-        console.log('get game route hit')
         const gameId = params.gameId
         const game = await Game.findById(gameId)
+            .populate({
+                path: 'players.userId',
+                model: 'User',
+                select: 'chips userId' // Include both chips and userId fields in the result
+            })
         return NextResponse.json(game)
     }catch(err){
         console.log('error in get game fetch ', err)
@@ -16,12 +20,8 @@ export async function GET(req, {params}){
 }
 export async function PUT(req, { params }) {
     try {
-      console.log('game id in route: ', params.gameId);
-      console.log('params: ', params);
       const gameData = await req.json();
-      console.log('game data being updated: ', gameData);
       await connectMongoDB();
-      console.log('update game route hit');
       const gameId = params.gameId;
   
       // Use findOneAndUpdate to update specific fields and get the updated document

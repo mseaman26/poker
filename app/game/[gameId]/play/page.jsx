@@ -4,6 +4,7 @@ import { getGameAPI, fetchSingleUserAPI, updateGameAPI } from "@/lib/apiHelpers"
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
+import { useRouter } from "next/navigation";
 
 export default function({params}){
 
@@ -15,16 +16,22 @@ export default function({params}){
     const [gameData, setGameData] = useState({})
     const [gameState, setGameState] = useState({})
     const [meData, setMeData] = useState({})
+    const router = useRouter()
 
 
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
+            console.log('game data: ', data)
             setGameData(data)
         }
     }
     const getGameState = async () => {
-        socket.emit('game state', params.gameId)
+        socket.emit('game state', params.gameId, (data) => {
+            console.log('game state: ', data)
+            console.log('!!!!!!setting game state')
+            setGameState(data)
+        })
     }
     const nextTurn = () => {
         console.log('next turn')
@@ -48,12 +55,20 @@ export default function({params}){
     }
     const startGame = async () => {
         console.log('starting game')
+        console.log('users in room: at startgame:', usersInRoom)
         socket.emit('start game', {roomId: params.gameId, players: usersInRoom})
         const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
         console.log('updata game at start game: ', data)
     }
-    const endGame = () => {
+    const nextHand = () => {
+        console.log('next hand')
+        socket.emit('next hand', params.gameId, () => {
+            getGameState()
+        })   
+    }
+    const endGame = async () => {
     console.log('ending game');
+    const data = await updateGameAPI(params.gameId, {started: false})
     socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
@@ -61,12 +76,24 @@ export default function({params}){
 
     useEffect(() => {
         console.log('game data: ', gameData)
+        if(gameData?.started && !gameState?.active){
+            console.log('game started but not active')
+            setGameState(prevState => ({buyIn: gameData.buyIn, active: true, players: gameData.players, dealer: gameData.dealer}))
+        }
     }, [gameData])
     useEffect(() => {
         console.log('me data: ', meData)
     }, [meData])
     useEffect(() => {
-        
+        console.log('game state: ', gameState);
+    }, [gameState]);
+    useEffect(() => {
+        console.log('page reloaded. gamestate: ', gameState)
+        getGameState()
+       
+    }, [])
+    useEffect(() => {
+        console.log('game state: ', gameState)
         if(meData._id){
             console.log('me data: ', meData)
         }
@@ -79,6 +106,7 @@ export default function({params}){
     }, [gameState, meData])
 
     useEffect(() => {
+        getGameState()  
         setChatMessages(
             typeof window !== 'undefined' && window.localStorage
           ? JSON.parse(localStorage.getItem(`chatMessages: ${params.gameId}`)) || []
@@ -93,7 +121,7 @@ export default function({params}){
             })
             socket.on('game state', (data) => {
                 console.log('setting game state: ', data )
-                setGameState(data)
+                setGameState(prevState => (data));
             })
             socket.on('game ended', (data) => {
                 console.log('game ended: ', data)
@@ -103,7 +131,7 @@ export default function({params}){
                 // }, 100);
                 
             })
-            socket.emit('get game state', params.gameId)
+            socket.emit('game state', params.gameId)
         });
         socket.on('chat message', (data) => {
             console.log('chat message recieved: ', data)
@@ -134,10 +162,15 @@ export default function({params}){
         })
         
         return () => {
+            console.log('cleanup')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id})
+            socket.off('disconnect')
+            socket.off('chat message')
+            socket.off('game state')
             socket.off('connect')
         }
-    }, [])
+        
+    }, [params.gameId])
     useEffect(() => {
         getMeData()
         socket.on('updated users in room', (data) => {
@@ -159,7 +192,10 @@ export default function({params}){
             
         }
         getGameData(params.gameId)
-      }, [socket, session])
+        setTimeout(() => {
+            getGameState();
+        }, 100);
+      }, [socket, session, params.gameId])
 
     useEffect(() => {
         console.log('chat messages: ', chatMessages)
@@ -189,13 +225,13 @@ export default function({params}){
                         return (
                             <div key={index}>
                                 <p>
-                            {gameState.dealer !== undefined && gameState.dealerId.userId === user.userId ? (
+                            {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
                                 <span>D </span>
                             ) : (
-                                'no'
+                                <></>
                             )}
-                            {user?.username}
-                            {gameState.players && gameState.players[gameState.turn].userId === user.userId ? (
+                            {user?.username}{' '}{user?.chips}
+                            {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
                                 <span>&#128994;</span>
                             ) : (
                                 <></>
@@ -213,17 +249,22 @@ export default function({params}){
                 </div>
             </main>
             <div className={styles.game}>
-                {gameData.creatorId === session?.user?.id && !gameState.active &&
+                {gameData?.creatorId === session?.user?.id && !gameState.active &&
                     <button onClick={startGame}>Start Game</button>
                 }
                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
                 <button onClick={nextTurn}>Next Turn</button>}
                 <div className={styles.players}>
                 <button onClick={getGameState}>Get Game State</button>
-                {gameData.creatorId === session?.user?.id && gameState.active === true && 
+                {gameData?.creatorId === session?.user?.id && gameState.active === true && 
                     <button onClick={endGame}>End Game</button>}
                 </div>
-
+                <h1>
+                    {gameData?.started ? 'Game started' : 'Game not started'}
+                </h1>
+                {gameState?.active &&
+                    <button onClick={nextHand}>Next Hand</button>
+                }
             </div>
         </div>
     )

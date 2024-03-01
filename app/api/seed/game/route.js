@@ -75,8 +75,8 @@ export async function PUT(){
     await connectMongoDB();
     console.log('updating games...');
     const updateResult = await Game.updateMany(
-      { players: { $exists: false } }, // filter for existing users without the new property
-      { $set: { players: [] } } // set the default value for the new property
+      { dealer: { $exists: false } }, // filter for existing users without the new property
+      { $set: { dealer: 0 } } // set the default value for the new property
     );
     console.log('games updated: ', updateResult);
     return NextResponse.json({ message: 'games updated successfully' }, { status: 200 });
