@@ -7,7 +7,7 @@ import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
 
 export default function({params}){
-
+    
     initializeSocket();
     let socket = getSocket();
     const { data: session } = useSession();
@@ -62,7 +62,7 @@ export default function({params}){
                 console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
                 const data = await updateGameAPI(params.gameId, {started: true})
                 console.log('data up one reset: ', data)
-                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer})
+                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind})
                 // socket.emit('start game', {buyIn: gameData.buyIn, 
                 //     active: true, 
                 //     players: gameData.players, 
@@ -76,9 +76,10 @@ export default function({params}){
                 //     round: 0})
             }else{
                 if(window.confirm('do you want to reset this game? any current game data will be lost')){
+                    const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
                     const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
                     console.log('data up one reset: ', data)
-                    socket.emit('start game', {roomId: params.gameId, players: data.players})
+                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind})
                 }
                 else{
                     return
@@ -86,8 +87,9 @@ export default function({params}){
             }
         }else{
             const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
-            socket.emit('start game', {roomId: params.gameId, players: data.players})
-
+            console.log('start game big blind: ', data.bigBlind)
+            socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
+                
         }
 
         
@@ -169,6 +171,9 @@ export default function({params}){
             }, 100);
             socket.emit('request active users', () => {
               return
+            })
+            socket.on('start game', async (data) => {
+                await updateGameAPI(params.gameId, data)
             })
             socket.on('game state', (data) => {
                 console.log('setting game state: ', data )
