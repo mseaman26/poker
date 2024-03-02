@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
-import { get, set } from "mongoose";
 
 export default function({params}){
 
@@ -63,7 +62,7 @@ export default function({params}){
                 console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
                 const data = await updateGameAPI(params.gameId, {started: true})
                 console.log('data up one reset: ', data)
-                socket.emit('start game', {roomId: params.gameId, players: data.players})
+                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer})
                 // socket.emit('start game', {buyIn: gameData.buyIn, 
                 //     active: true, 
                 //     players: gameData.players, 
