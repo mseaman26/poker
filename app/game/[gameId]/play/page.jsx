@@ -62,24 +62,13 @@ export default function({params}){
                 console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
                 const data = await updateGameAPI(params.gameId, {started: true})
                 console.log('data up one reset: ', data)
-                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind})
-                // socket.emit('start game', {buyIn: gameData.buyIn, 
-                //     active: true, 
-                //     players: gameData.players, 
-                //     dealer: gameData.dealer, 
-                //     turn: (gameData.dealer + 2) % gameData.players.length, 
-                //     bigBlindId: {userId: gameData.players[gameData.dealer + 1 % gameData.players.length].userId._id, username: gameData.players[gameData.dealer + 1 % gameData.players.length].username},
-                //     smallBlindId: {userId: gameData.players[gameData.dealer].userId, username: gameData.players[gameData.dealer].username},
-                //     dealerId: {userId: gameData.players[gameData.dealer].userId, username: gameData.players[gameData.dealer].username},
-                //     pot: 0, 
-                //     roomId: params.gameId, 
-                //     round: 0})
+                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind, buyIn: data.buyIn})
             }else{
                 if(window.confirm('do you want to reset this game? any current game data will be lost')){
                     const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
                     const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
                     console.log('data up one reset: ', data)
-                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind})
+                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind, buyIn: data.buyIn})
                 }
                 else{
                     return
