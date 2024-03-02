@@ -8,11 +8,11 @@ export async function GET(req, {params}){
         await connectMongoDB()
         const gameId = params.gameId
         const game = await Game.findById(gameId)
-            .populate({
-                path: 'players.userId',
-                model: 'User',
-                select: 'chips userId' // Include both chips and userId fields in the result
-            })
+            // .populate({
+            //     path: 'players.userId',
+            //     model: 'User',
+            //     select: 'chips userId' // Include both chips and userId fields in the result
+            // })
         return NextResponse.json(game)
     }catch(err){
         console.log('error in get game fetch ', err)

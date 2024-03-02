@@ -4,8 +4,7 @@ import User from "./user";
 
 const playerSchema = new Schema({
   userId: {
-    type: ObjectId,
-    ref: 'User',
+    type: String,
     required: true,
   },
   username: {

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
+import { get, set } from "mongoose";
 
 export default function({params}){
 
@@ -56,15 +57,54 @@ export default function({params}){
     const startGame = async () => {
         console.log('starting game')
         console.log('users in room: at startgame:', usersInRoom)
-        socket.emit('start game', {roomId: params.gameId, players: usersInRoom})
-        const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
-        console.log('updata game at start game: ', data)
+        if(gameData?.started){
+            if(window.confirm('resume game?')){
+                console.log('resume game players: ', gameData.players)
+                console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
+                const data = await updateGameAPI(params.gameId, {started: true})
+                console.log('data up one reset: ', data)
+                socket.emit('start game', {roomId: params.gameId, players: data.players})
+                // socket.emit('start game', {buyIn: gameData.buyIn, 
+                //     active: true, 
+                //     players: gameData.players, 
+                //     dealer: gameData.dealer, 
+                //     turn: (gameData.dealer + 2) % gameData.players.length, 
+                //     bigBlindId: {userId: gameData.players[gameData.dealer + 1 % gameData.players.length].userId._id, username: gameData.players[gameData.dealer + 1 % gameData.players.length].username},
+                //     smallBlindId: {userId: gameData.players[gameData.dealer].userId, username: gameData.players[gameData.dealer].username},
+                //     dealerId: {userId: gameData.players[gameData.dealer].userId, username: gameData.players[gameData.dealer].username},
+                //     pot: 0, 
+                //     roomId: params.gameId, 
+                //     round: 0})
+            }else{
+                if(window.confirm('do you want to reset this game? any current game data will be lost')){
+                    const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+                    console.log('data up one reset: ', data)
+                    socket.emit('start game', {roomId: params.gameId, players: data.players})
+                }
+                else{
+                    return
+                }
+            }
+        }else{
+            const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+            socket.emit('start game', {roomId: params.gameId, players: data.players})
+
+        }
+
+        
+        // const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+        // console.log('updata game at start game: ', data)
     }
-    const nextHand = () => {
+    const nextHand = async() => {
         console.log('next hand')
         socket.emit('next hand', params.gameId, () => {
-            getGameState()
-        })   
+            console.log('!!!!!!!next hand callback')
+            getGameState().then(() => {
+                updateGameAPI(params.gameId, {...gameState})
+            }
+            
+        )})   
+        
     }
     const endGame = async () => {
     console.log('ending game');
@@ -78,7 +118,21 @@ export default function({params}){
         console.log('game data: ', gameData)
         if(gameData?.started && !gameState?.active){
             console.log('game started but not active')
-            setGameState(prevState => ({buyIn: gameData.buyIn, active: true, players: gameData.players, dealer: gameData.dealer}))
+            const loadedGameData = {buyIn: gameData.buyIn, 
+                active: true, 
+                players: gameData.players, 
+                dealer: gameData.dealer, 
+                turn: gameData.dealer + 2 % gameData.players.length, 
+                bigBlindId: gameData.players[gameData.dealer + 1 % gameData.players.length],
+                smallBlindId: gameData.players[gameData.dealer],
+                dealerId: gameData.players[gameData.dealer],
+                pot: 0, 
+                roomId: params.gameId, 
+                round: 0}
+            console.log('loaded game data: ', loadedGameData)
+            setGameState(prevState => (loadedGameData))
+            socket.emit('start game', loadedGameData)
+            console.log('new game state: ', gameState)
         }
     }, [gameData])
     useEffect(() => {
@@ -209,7 +263,7 @@ export default function({params}){
                 <button type="submit">Send</button>
             </form>
             <main>
-                <div className={styles.mainLeft}>
+                <div className={styles.chat}>
                     <h1>Chat</h1>
                     {chatMessages.map((message, index) => {
                         return (
@@ -219,7 +273,7 @@ export default function({params}){
                         )
                     })}
                 </div>
-                <div className={styles.mainRight}>
+                <div className={styles.usersInRoom}>
                     <h1>Users in room</h1>
                     {usersInRoom.map((user, index) => {
                         return (
@@ -243,6 +297,18 @@ export default function({params}){
                             </p>
                                 
                                 {/* <p>{user?.username}{gameState?.players[gameState.turn]?.userId === user?.userId && <span>&#128994</span>}</p> */}
+                            </div>
+                        )
+                    })}
+                </div>
+                <div className={styles.players}>
+                    <h1>Players</h1>
+                    {gameState?.players && gameState?.players.map((player, index) => {
+                        return (
+                            <div key={index}>
+                                <p>{player.username}{gameState.dealer === index ? 'Dealer' : null}{gameState.turn === index ? 
+                                    <span>&#128994;</span> : null
+                                }</p>
                             </div>
                         )
                     })}
