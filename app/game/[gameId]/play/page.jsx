@@ -100,10 +100,8 @@ export default function({params}){
         socket.emit('next hand', params.gameId, () => {
             console.log('!!!!!!!next hand callback')
             getGameState().then(() => {
-                updateGameAPI(params.gameId, {...gameState})
-            }
-            
-        )})   
+                
+        })})
         
     }
     const endGame = async () => {
@@ -184,6 +182,10 @@ export default function({params}){
                 //     window.location.reload()
                 // }, 100);
                 
+            })
+            socket.on('next hand', async (data) => {
+                console.log('next hand received: ', data)
+                await updateGameAPI(params.gameId, data)
             })
             socket.emit('game state', params.gameId)
         });
