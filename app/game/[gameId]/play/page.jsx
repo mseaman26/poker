@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
+import Myturn from "@/components/game/MyTurn/MyTurn";
 
 export default function({params}){
     
@@ -33,10 +34,10 @@ export default function({params}){
             setGameState(data)
         })
     }
-    const nextTurn = () => {
-        console.log('next turn')
-        socket.emit('next turn', {roomId: params.gameId})
-    }
+    // const nextTurn = () => {
+    //     console.log('next turn')
+    //     socket.emit('next turn', {roomId: params.gameId})
+    // }
 
     const getMeData = async () => {
         if(session){
@@ -68,7 +69,7 @@ export default function({params}){
                     const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
                     const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
                     console.log('data up one reset: ', data)
-                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind, buyIn: data.buyIn})
+                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind * 100, buyIn: data.buyIn})
                 }
                 else{
                     return
@@ -171,9 +172,6 @@ export default function({params}){
             socket.on('game ended', (data) => {
                 console.log('game ended: ', data)
                 getGameState()
-                // setTimeout(() => {
-                //     window.location.reload()
-                // }, 100);
                 
             })
             socket.on('next hand', async (data) => {
@@ -268,42 +266,51 @@ export default function({params}){
                         )
                     })}
                 </div>
-                <div className={styles.usersInRoom}>
-                    <h1>Users in room</h1>
-                    {usersInRoom.map((user, index) => {
-                        return (
-                            <div key={index}>
-                                <p>
-                            {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
-                                <span>D </span>
-                            ) : (
-                                <></>
-                            )}
-                            {user?.username}{' '}{user?.chips}
-                            {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
-                                <span>&#128994;</span>
-                            ) : (
-                                <></>
-                            )}
-                            {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
-                                <span> Small</span> : <></>}
-                            {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
-                                <span> Big</span> : <></>}
-                            </p>
-                                
-                                {/* <p>{user?.username}{gameState?.players[gameState.turn]?.userId === user?.userId && <span>&#128994</span>}</p> */}
-                            </div>
-                        )
-                    })}
-                </div>
+                {!gameState.active &&
+                    <div className={styles.usersInRoom}>
+                        <h1>Users in room</h1>
+                        {usersInRoom.map((user, index) => {
+                            return (
+                                <div key={index}>
+                                    <p>
+                                    {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
+                                        <span>D </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {user?.username}{' '}{user?.chips}
+                                    {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
+                                        <span>&#128994;</span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
+                                        <span> Small</span> : <></>}
+                                    {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
+                                        <span> Big</span> : <></>}
+                                    </p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                }
+                {gameState.active &&
+                    <div className={styles.gameState}>
+                        <h1>Game State</h1>
+                        <p>Big Blind: ${(gameState.bigBlind / 100).toFixed(2)}</p>
+                        <p>Small Blind: ${(gameState.bigBlind / 200).toFixed(2)}</p>
+                        <p>Pot: ${(gameState.pot / 100).toFixed(2)}</p>
+                        <p>Current Bet: ${(gameState.currentBet / 100).toFixed(2)}</p>
+                    </div>
+                }
                 <div className={styles.players}>
                     <h1>Players</h1>
                     {gameState?.players && gameState?.players.map((player, index) => {
                         return (
                             <div key={index}>
-                                <p>{player.username}{gameState.dealer === index ? 'Dealer' : null}{gameState.turn === index ? 
+                                <p>{gameState.dealer === index ? 'Dealer ->' : null}{gameState.turn === index ? 
                                     <span>&#128994;</span> : null
-                                }</p>
+                                }{player.username}{` chips: $${(player.chips / 100).toFixed(2)}`}</p>
                             </div>
                         )
                     })}
@@ -313,11 +320,17 @@ export default function({params}){
                 {gameData?.creatorId === session?.user?.id && !gameState.active &&
                     <button onClick={startGame}>Start Game</button>
                 }
+                {/* NEXT TURN */}
                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
-                <button onClick={nextTurn}>Next Turn</button>}
+                <>
+                <Myturn gameState={gameState} meData={meData} socket={socket} gameId={params.gameId} />
+                {/* <button onClick={nextTurn}>Next Turn</button> */}
+                </>}
+                
                 <div className={styles.players}>
                 <button onClick={getGameState}>Get Game State</button>
-                {gameData?.creatorId === session?.user?.id && gameState.active === true && 
+                {gameData?.creatorId === session?.user?.id && gameState.active === true &&
+                     
                     <button onClick={endGame}>End Game</button>}
                 </div>
                 <h1>

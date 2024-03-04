@@ -15,7 +15,24 @@ const playerSchema = new Schema({
     type: Number,
     required: true,
     default: 0
-  }
+  },
+  bet: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  hand: {
+    type: [String],
+    default: [],  
+    required: true
+  },
+  folded: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+
+
   // Add other properties related to a player if needed
 });
 
