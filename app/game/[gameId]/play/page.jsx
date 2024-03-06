@@ -117,7 +117,10 @@ export default function({params}){
                 dealerId: gameData.players[gameData.dealer],
                 pot: 0, 
                 roomId: params.gameId, 
-                round: 0}
+                round: 0,
+                bigBlind: gameData.bigBlind,
+                smallBlind: gameData.bigBlind / 2,
+            }
             console.log('loaded game data: ', loadedGameData)
             setGameState(prevState => (loadedGameData))
             socket.emit('start game', loadedGameData)
@@ -165,6 +168,10 @@ export default function({params}){
             socket.on('start game', async (data) => {
                 await updateGameAPI(params.gameId, data)
             })
+            socket.on('next hand', async (data) => {
+                console.log('next hand received: ', data)
+                await updateGameAPI(params.gameId, data)
+            })
             socket.on('game state', (data) => {
                 console.log('setting game state: ', data )
                 setGameState(prevState => (data));
@@ -174,10 +181,7 @@ export default function({params}){
                 getGameState()
                 
             })
-            socket.on('next hand', async (data) => {
-                console.log('next hand received: ', data)
-                await updateGameAPI(params.gameId, data)
-            })
+            
             socket.emit('game state', params.gameId)
         });
         socket.on('chat message', (data) => {
@@ -191,12 +195,6 @@ export default function({params}){
             console.log('Socket disconnected');
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
-        // console.log('getting chat messages from local storage')
-        // if (typeof window !== 'undefined' && window.localStorage) {
-        //   const storedMessages = JSON.parse(localStorage.getItem(`chatMessages: ${params.gameId}`));
-        //   console.log('stored messages: ', storedMessages)  
-        //   setChatMessages(storedMessages ? storedMessages : []);
-        // }
         window.addEventListener('beforeunload', () => {
             console.log('leaving game page')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
@@ -301,6 +299,7 @@ export default function({params}){
                         <p>Small Blind: ${(gameState.bigBlind / 200).toFixed(2)}</p>
                         <p>Pot: ${(gameState.pot / 100).toFixed(2)}</p>
                         <p>Current Bet: ${(gameState.currentBet / 100).toFixed(2)}</p>
+                        <p>Current round: {gameState.round}</p>
                     </div>
                 }
                 <div className={styles.players}>
@@ -310,7 +309,7 @@ export default function({params}){
                             <div key={index}>
                                 <p>{gameState.dealer === index ? 'Dealer ->' : null}{gameState.turn === index ? 
                                     <span>&#128994;</span> : null
-                                }{player.username}{` chips: $${(player.chips / 100).toFixed(2)}`}</p>
+                                }{player.username}{` chips: $${(player.chips / 100).toFixed(2)}`}{`, bet: $${(player.bet / 100).toFixed(2)}`}</p>
                             </div>
                         )
                     })}
@@ -320,12 +319,13 @@ export default function({params}){
                 {gameData?.creatorId === session?.user?.id && !gameState.active &&
                     <button onClick={startGame}>Start Game</button>
                 }
-                {/* NEXT TURN */}
+                {/* MY TURN */}
                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
                 <>
-                <Myturn gameState={gameState} meData={meData} socket={socket} gameId={params.gameId} />
+                <Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />
                 {/* <button onClick={nextTurn}>Next Turn</button> */}
                 </>}
+
                 
                 <div className={styles.players}>
                 <button onClick={getGameState}>Get Game State</button>

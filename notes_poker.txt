@@ -1,3 +1,2 @@
--when creating a game, things like buy in need to be specified
--give game model a buyIn property
--after each hand, there needs to be a way to save all the info about who the dealer is, and how much money each player has
+
+-when user hits "raise," show them the amount to call, and also show them the total including that call as they type in their raise. 
