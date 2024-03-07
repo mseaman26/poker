@@ -19,11 +19,11 @@ const Myturn = ({gameState, socket, gameId}) => {
     }
     const handleBetSubmit = (e) => {
         e.preventDefault()
-        if((betAmount * 100) < gameState.bigBlind){
+        if((betAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
             alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
             return
         }
-        if((betAmount * 100) > gameState.players[gameState.turn].chips){
+        if((betAmount * 100) + gameState.players[gameState.turn].bet + gameState.currentBet > gameState.players[gameState.turn].chips){
             alert('You do not have enough chips')
             return
         }
@@ -49,7 +49,18 @@ const Myturn = ({gameState, socket, gameId}) => {
             console.log('pot square')
             socket.emit('next round', (gameId))
         }
+        if(gameState?.round > 3){
+            console.log('win hand', gameState.turn)
+            socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
+        }
     }, [gameState])
+    useEffect(() => {
+        if(gameState.foldedCount === gameState.players.length - 1){
+            console.log('win hand', gameState.turn)
+            socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
+        }
+    }, [gameState.foldedCount])
+
 
         
     
@@ -61,7 +72,7 @@ const Myturn = ({gameState, socket, gameId}) => {
             <div className={styles.overlay}>
                 <div className={styles.myTurnPopup}>
                     <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
-                    <h1>On the Table: ${(gameState?.players[gameState.turn]?.bet / 100).toFixed(2)}</h1>
+                    <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1>
                     {/* CHECK OR BET */}
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
                         <>
@@ -74,7 +85,8 @@ const Myturn = ({gameState, socket, gameId}) => {
                     {/* BET FORM */}
                     {betFormShown && (
                         <>
-                        <form onChange={handleBetChange} onSubmit={handleBetSubmit}>
+                        <span>test</span>
+                        <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
                             $<input type="number" placeholder='Bet Amount' step="0.01"/>
                             <button type="submit">Bet</button>
                         </form>

@@ -21,6 +21,11 @@ const playerSchema = new Schema({
     required: true,
     default: 0
   },
+  mondeyInPot: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   hand: {
     type: [String],
     default: [],  

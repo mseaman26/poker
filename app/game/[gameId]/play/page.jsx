@@ -78,7 +78,7 @@ export default function({params}){
         }else{
             const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
             console.log('start game big blind: ', data.bigBlind)
-            socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
+            // socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
                 
         }
 
@@ -307,7 +307,7 @@ export default function({params}){
                     {gameState?.players && gameState?.players.map((player, index) => {
                         return (
                             <div key={index}>
-                                <p>{gameState.dealer === index ? 'Dealer ->' : null}{gameState.turn === index ? 
+                                <p>{player.folded && <span className={styles.folded}>F</span>}{gameState.dealer === index ? 'Dealer ->' : null}{gameState.turn === index ? 
                                     <span>&#128994;</span> : null
                                 }{player.username}{` chips: $${(player.chips / 100).toFixed(2)}`}{`, bet: $${(player.bet / 100).toFixed(2)}`}</p>
                             </div>
