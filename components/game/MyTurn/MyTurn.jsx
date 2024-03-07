@@ -5,6 +5,8 @@ const Myturn = ({gameState, socket, gameId}) => {
 
     const [betFormShown, setBetFormShown] = useState(false)
     const [betAmount, setBetAmount] = useState(0)
+    const [raiseFormShown, setRaiseFormShown] = useState(false)
+    const [raiseAmount, setRaiseAmount] = useState(0)
 
     const nextTurn = () => {
         console.log('next turn')
@@ -15,8 +17,39 @@ const Myturn = ({gameState, socket, gameId}) => {
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
     }
     const handleBetChange = (e) => {
+        console.log('setting bet to ', parseFloat(e.target.value))
         setBetAmount(parseFloat(e.target.value))
     }
+    const handleRaiseChange = (e) => {
+        console.log('raise change')
+        console.log('setting bet to: ', parseFloat(e.target.value))
+        setRaiseAmount(parseFloat(e.target.value))
+    }
+    const handleRaisSubmit = (e) => {
+        e.preventDefault()
+        if((raiseAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
+            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
+            return
+        }
+        // if entered bet plus what's already in the pot is greater than the player's chips
+        if((raiseAmount * 100) + gameState.currentBet - gameState.players[gameState.turn].bet  
+        > gameState.players[gameState.turn].chips){
+            console.log('entered amount: ', raiseAmount * 100)
+            console.log('user has already bet: ', gameState.players[gameState.turn].bet)
+            console.log('current bet: ', gameState.currentBet)
+            alert('You do not have enough chips')
+            return
+        }
+        if((raiseAmount * 100) + gameState.players[gameState.turn].bet
+        === gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
+            console.log('all in')
+            socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: raiseAmount * 100})
+        }
+        console.log('raiseAmount: ', raiseAmount*100)
+        bet(raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
+
+    }
+
     const handleBetSubmit = (e) => {
         e.preventDefault()
         if((betAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
@@ -34,7 +67,8 @@ const Myturn = ({gameState, socket, gameId}) => {
             return
         }
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
-        // + gameState.currentBet 
+        
+        
         === gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
             console.log('all in')
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: betAmount * 100})
@@ -128,6 +162,17 @@ const Myturn = ({gameState, socket, gameId}) => {
                         <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
                         </>
                     )}
+                    {/* RAISE FORM */}
+                    {raiseFormShown && (
+                        <>
+                        <span>test</span>
+                        <form onChange={handleRaiseChange} onSubmit={handleRaisSubmit} className={styles.betForm}>
+                            $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                            <button type="submit">Bet</button>
+                        </form>
+                        <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
+                        </>
+                    )}
                     
                     {/* CALL, FOLD, RAISE */}
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet > 0 &&
@@ -139,7 +184,7 @@ const Myturn = ({gameState, socket, gameId}) => {
                         
                         <button onClick={fold}>Fold</button>
                         <button onClick={() => bet(gameState.currentBet - gameState?.players[gameState.turn]?.bet)}>Call</button>
-                        <button onClick={() => setBetFormShown(!betFormShown)}>Raise</button>
+                        <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Raise</button>
                         
                         </>
                     }
