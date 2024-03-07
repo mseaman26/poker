@@ -57,30 +57,31 @@ export default function({params}){
     const startGame = async () => {
         console.log('starting game')
         console.log('users in room: at startgame:', usersInRoom)
-        if(gameData?.started){
-            if(window.confirm('resume game?')){
-                console.log('resume game players: ', gameData.players)
-                console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
-                const data = await updateGameAPI(params.gameId, {started: true})
-                console.log('data up one reset: ', data)
-                socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind, buyIn: data.buyIn})
-            }else{
-                if(window.confirm('do you want to reset this game? any current game data will be lost')){
-                    const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
-                    const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+        // if(gameData?.started){
+            // if(window.confirm('resume game?')){
+            //     console.log('resume game players: ', gameData.players)
+            //     console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
+            //     // const data = await updateGameAPI(params.gameId, {started: true})
+            //     console.log('data up one reset: ', data)
+            //     socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind, buyIn: data.buyIn})
+            // }else{
+                // if(window.confirm('do you want to reset this game? any current game data will be lost')){
+                //     const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
+                    // this line was previously setting started to true as well
+                    const data = await updateGameAPI(params.gameId, {players: usersInRoom})
                     console.log('data up one reset: ', data)
-                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: resetBlind * 100, buyIn: data.buyIn})
-                }
-                else{
-                    return
-                }
-            }
-        }else{
-            const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
-            console.log('start game big blind: ', data.bigBlind)
-            // socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
+                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
+                // }
+                // else{
+                //     return
+                // }
+            // }
+        // }else{
+        //     const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
+        //     console.log('start game big blind: ', data.bigBlind)
+        //     // socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
                 
-        }
+        // }
 
         
         // const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
@@ -104,28 +105,28 @@ export default function({params}){
     })};
 
     useEffect(() => {
-        console.log('game data: ', gameData)
-        if(gameData?.started && !gameState?.active){
-            console.log('game started but not active')
-            const loadedGameData = {buyIn: gameData.buyIn, 
-                active: true, 
-                players: gameData.players, 
-                dealer: gameData.dealer, 
-                turn: gameData.dealer + 2 % gameData.players.length, 
-                bigBlindId: gameData.players[gameData.dealer + 1 % gameData.players.length],
-                smallBlindId: gameData.players[gameData.dealer],
-                dealerId: gameData.players[gameData.dealer],
-                pot: 0, 
-                roomId: params.gameId, 
-                round: 0,
-                bigBlind: gameData.bigBlind,
-                smallBlind: gameData.bigBlind / 2,
-            }
-            console.log('loaded game data: ', loadedGameData)
-            setGameState(prevState => (loadedGameData))
-            socket.emit('start game', loadedGameData)
-            console.log('new game state: ', gameState)
-        }
+        // console.log('game data: ', gameData)
+        // if(gameData?.started && !gameState?.active){
+        //     console.log('game started but not active')
+        //     const loadedGameData = {buyIn: gameData.buyIn, 
+        //         active: true, 
+        //         players: gameData.players, 
+        //         dealer: gameData.dealer, 
+        //         turn: gameData.dealer + 2 % gameData.players.length, 
+        //         bigBlindId: gameData.players[gameData.dealer + 1 % gameData.players.length],
+        //         smallBlindId: gameData.players[gameData.dealer],
+        //         dealerId: gameData.players[gameData.dealer],
+        //         pot: 0, 
+        //         roomId: params.gameId, 
+        //         round: 0,
+        //         bigBlind: gameData.bigBlind,
+        //         smallBlind: gameData.bigBlind / 2,
+        //     }
+        //     console.log('loaded game data: ', loadedGameData)
+        //     setGameState(prevState => (loadedGameData))
+        //     socket.emit('start game', loadedGameData)
+        //     console.log('new game state: ', gameState)
+        // }
     }, [gameData])
     useEffect(() => {
         console.log('me data: ', meData)
@@ -307,9 +308,16 @@ export default function({params}){
                     {gameState?.players && gameState?.players.map((player, index) => {
                         return (
                             <div key={index}>
-                                <p>{player.folded && <span className={styles.folded}>F</span>}{gameState.dealer === index ? 'Dealer ->' : null}{gameState.turn === index ? 
+                                <p>
+                                {player.allIn && <span className={styles.allIn}>A</span>}
+                                {player.folded && <span className={styles.folded}>F</span>}
+                                {gameState.dealer === index ? 'Dealer ->' : null}
+                                {gameState.turn === index ? 
                                     <span>&#128994;</span> : null
-                                }{player.username}{` chips: $${(player.chips / 100).toFixed(2)}`}{`, bet: $${(player.bet / 100).toFixed(2)}`}</p>
+                                }
+                                {player.username}
+                                {` chips: $${(player.chips / 100).toFixed(2)}`}
+                                {`, bet: $${(player.bet / 100).toFixed(2)}`}</p>
                             </div>
                         )
                     })}
@@ -320,7 +328,9 @@ export default function({params}){
                     <button onClick={startGame}>Start Game</button>
                 }
                 {/* MY TURN */}
-                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
+                {/* there is me data, game state is active, game state has players, and the current turn is me */}
+                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && 
+                // gameState?.players[gameState.turn]?.folded === false && 
                 <>
                 <Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />
                 {/* <button onClick={nextTurn}>Next Turn</button> */}

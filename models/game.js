@@ -36,6 +36,10 @@ const playerSchema = new Schema({
     required: true,
     default: false
   },
+  allIn: {
+    type: Number,
+    default: null,
+},
 
 
   // Add other properties related to a player if needed

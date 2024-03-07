@@ -23,17 +23,47 @@ const Myturn = ({gameState, socket, gameId}) => {
             alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
             return
         }
-        if((betAmount * 100) + gameState.players[gameState.turn].bet + gameState.currentBet > gameState.players[gameState.turn].chips){
+        // if entered bet plus what's already in the pot is greater than the player's chips
+        if((betAmount * 100) + gameState.players[gameState.turn].bet 
+        // + gameState.currentBet 
+        > gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
+            console.log('entered amount: ', betAmount * 100)
+            console.log('user has already bet: ', gameState.players[gameState.turn].bet)
+            console.log('current bet: ', gameState.currentBet)
             alert('You do not have enough chips')
             return
+        }
+        if((betAmount * 100) + gameState.players[gameState.turn].bet 
+        // + gameState.currentBet 
+        === gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
+            console.log('all in')
+            socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: betAmount * 100})
         }
         console.log('betAmount: ', betAmount*100)
         bet(betAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
     }
     const bet = (amount) => { 
+        console.log('bet amount: ', amount)
+        console.log('already bet: ', gameState.players[gameState.turn].bet)
+        console.log('chips: ', gameState.players[gameState.turn].chips)
+        if(amount  === gameState.players[gameState.turn].chips){
+            console.log('all in')
+            socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
+        }
         console.log('currentBet: ', gameState.currentBet)
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
     }
+    const manualWin = () => {
+        console.log('manual win')   
+        socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
+    }
+
+    useEffect(() => {
+        if(gameState?.players.length === 1){
+            console.log('win game', gameState.turn)
+            alert('You win!')
+            socket.emit('win game', ({roomId: gameId, turn: gameState.turn}))
+        }}, [gameState.players.length]) 
 
     useEffect(() => {
         console.log('gameState.currentBet: ', gameState.currentBet)
@@ -42,9 +72,9 @@ const Myturn = ({gameState, socket, gameId}) => {
     useEffect(() => {
         console.log('bet index: ', gameState?.betIndex)
         console.log('turn: ', gameState?.turn)
-        if(gameState?.players[gameState.turn]?.folded){
-            nextTurn()
-        }   
+        // if(gameState?.players[gameState.turn]?.folded){
+        //     nextTurn()
+        // }   
         if(gameState?.betIndex === gameState?.turn){
             console.log('pot square')
             socket.emit('next round', (gameId))
@@ -53,6 +83,8 @@ const Myturn = ({gameState, socket, gameId}) => {
             console.log('win hand', gameState.turn)
             socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
         }
+
+
     }, [gameState])
     useEffect(() => {
         if(gameState.foldedCount === gameState.players.length - 1){
@@ -68,11 +100,14 @@ const Myturn = ({gameState, socket, gameId}) => {
     //     nextTurn()
     // }
     return (
+        <>
+        {gameState?.players[gameState.turn]?.folded === true && nextTurn()}
+        {!gameState?.players[gameState.turn]?.folded && 
         <div className={styles.Container}>
             <div className={styles.overlay}>
                 <div className={styles.myTurnPopup}>
                     <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
-                    <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1>
+                    {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
                     {/* CHECK OR BET */}
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
                         <>
@@ -105,14 +140,18 @@ const Myturn = ({gameState, socket, gameId}) => {
                         <button onClick={fold}>Fold</button>
                         <button onClick={() => bet(gameState.currentBet - gameState?.players[gameState.turn]?.bet)}>Call</button>
                         <button onClick={() => setBetFormShown(!betFormShown)}>Raise</button>
+                        
                         </>
                     }
+                    <button onClick={manualWin}>Win Hand</button>
 
 
                     
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 
