@@ -6,6 +6,10 @@ import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
 import Myturn from "@/components/game/MyTurn/MyTurn";
+import { svgUrlHandler } from "@/lib/svgUrlHandler";
+import Image from "next/image";
+
+
 
 export default function({params}){
     
@@ -17,9 +21,11 @@ export default function({params}){
     const [gameData, setGameData] = useState({})
     const [gameState, setGameState] = useState({})
     const [meData, setMeData] = useState({})
+    const [myPocket, setMyPocket] = useState([])
+    const [flop, setFlop] = useState([])
     const router = useRouter()
 
-
+   
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -29,15 +35,9 @@ export default function({params}){
     }
     const getGameState = async () => {
         socket.emit('game state', params.gameId, (data) => {
-            console.log('game state: ', data)
-            console.log('!!!!!!setting game state')
             setGameState(data)
         })
     }
-    // const nextTurn = () => {
-    //     console.log('next turn')
-    //     socket.emit('next turn', {roomId: params.gameId})
-    // }
 
     const getMeData = async () => {
         if(session){
@@ -69,7 +69,6 @@ export default function({params}){
                 //     const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
                     // this line was previously setting started to true as well
                     const data = await updateGameAPI(params.gameId, {players: usersInRoom})
-                    console.log('data up one reset: ', data)
                     socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
                 // }
                 // else{
@@ -88,46 +87,23 @@ export default function({params}){
         // console.log('updata game at start game: ', data)
     }
     const nextHand = async() => {
-        console.log('next hand')
         socket.emit('next hand', params.gameId, () => {
-            console.log('!!!!!!!next hand callback')
             getGameState().then(() => {
                 
         })})
         
     }
+    const manualWin = (turn) => {  
+        socket.emit('win hand', ({roomId: params.gameId, turn: turn}))
+    }
     const endGame = async () => {
-    console.log('ending game');
-    const data = await updateGameAPI(params.gameId, {started: false})
-    socket.emit('end game', params.gameId, () => {
+        console.log('ending game');
+        const data = await updateGameAPI(params.gameId, {started: false})
+        socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
     })};
 
-    useEffect(() => {
-        // console.log('game data: ', gameData)
-        // if(gameData?.started && !gameState?.active){
-        //     console.log('game started but not active')
-        //     const loadedGameData = {buyIn: gameData.buyIn, 
-        //         active: true, 
-        //         players: gameData.players, 
-        //         dealer: gameData.dealer, 
-        //         turn: gameData.dealer + 2 % gameData.players.length, 
-        //         bigBlindId: gameData.players[gameData.dealer + 1 % gameData.players.length],
-        //         smallBlindId: gameData.players[gameData.dealer],
-        //         dealerId: gameData.players[gameData.dealer],
-        //         pot: 0, 
-        //         roomId: params.gameId, 
-        //         round: 0,
-        //         bigBlind: gameData.bigBlind,
-        //         smallBlind: gameData.bigBlind / 2,
-        //     }
-        //     console.log('loaded game data: ', loadedGameData)
-        //     setGameState(prevState => (loadedGameData))
-        //     socket.emit('start game', loadedGameData)
-        //     console.log('new game state: ', gameState)
-        // }
-    }, [gameData])
     useEffect(() => {
         console.log('me data: ', meData)
     }, [meData])
@@ -140,7 +116,6 @@ export default function({params}){
        
     }, [])
     useEffect(() => {
-        console.log('game state: ', gameState)
         if(meData._id){
             console.log('me data: ', meData)
         }
@@ -149,16 +124,13 @@ export default function({params}){
             console.log('game state: ', gameState)
             console.log('current turn: ', gameState?.players[gameState.turn]?.userId)
             console.log(meData._id  === gameState?.players[gameState.turn]?.userId) 
+            setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
         }
     }, [gameState, meData])
 
     useEffect(() => {
         getGameState()  
-        setChatMessages(
-            typeof window !== 'undefined' && window.localStorage
-          ? JSON.parse(localStorage.getItem(`chatMessages: ${params.gameId}`)) || []
-          : []
-        )
+
         socket.on('connect', () => {
             setTimeout(() => {
                 getGameState();
@@ -170,11 +142,9 @@ export default function({params}){
                 await updateGameAPI(params.gameId, data)
             })
             socket.on('next hand', async (data) => {
-                console.log('next hand received: ', data)
                 await updateGameAPI(params.gameId, data)
             })
             socket.on('game state', (data) => {
-                console.log('setting game state: ', data )
                 setGameState(prevState => (data));
             })
             socket.on('game ended', (data) => {
@@ -208,7 +178,6 @@ export default function({params}){
         })
         
         return () => {
-            console.log('cleanup')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id})
             socket.off('disconnect')
             socket.off('chat message')
@@ -220,14 +189,12 @@ export default function({params}){
     useEffect(() => {
         getMeData()
         socket.on('updated users in room', (data) => {
-            console.log('update users in room', data)
             setUsersInRoom(data)
         })
         
 
         if(socket && session){
             getGameState()
-            console.log('session: ', session)
             socket.emit('activate user', {
               socketId: socket.id,
               email: session.user.email,
@@ -311,6 +278,7 @@ export default function({params}){
                                 <p>
                                 {player.allIn && <span className={styles.allIn}>A</span>}
                                 {player.folded && <span className={styles.folded}>F</span>}
+                                <button onClick={() => manualWin(index)}>Win</button>
                                 {gameState.dealer === index ? 'Dealer ->' : null}
                                 {gameState.turn === index ? 
                                     <span>&#128994;</span> : null
@@ -350,6 +318,27 @@ export default function({params}){
                     <button onClick={nextHand}>Next Hand</button>
                 }
             </div>
+            {gameState.flop?.length > 0 &&
+                <div className={styles.flop}>
+                    {gameState.flop.map((card, index) => {
+                        return (
+                            <>
+                            <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`}/>
+                            </>
+                        )
+                    })}
+                </div>
+            }
+            {gameState.players && meData && myPocket?.length > 0  && 
+            // POCKET CARDS
+             <>
+            <div className={styles.pocket}>
+            <Image src={svgUrlHandler(myPocket[0])} height={200} width={100} alt="card1 image"/>
+            <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image"/>
+            </div>
+             </>
+            }
+            
         </div>
     )
 }

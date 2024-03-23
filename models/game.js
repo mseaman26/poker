@@ -26,9 +26,9 @@ const playerSchema = new Schema({
     required: true,
     default: 0
   },
-  hand: {
-    type: [String],
-    default: [],  
+  numericalHand: {
+    type: Number,
+    default: null,  
     required: true
   },
   folded: {
@@ -39,7 +39,23 @@ const playerSchema = new Schema({
   allIn: {
     type: Number,
     default: null,
-},
+  },
+  maxWin: {
+    type: Number,
+    default: null
+  },
+  pocketCards:{
+    type: [String],
+    default: [],
+    required: true
+  },
+  eliminated: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  
+  
 
 
   // Add other properties related to a player if needed

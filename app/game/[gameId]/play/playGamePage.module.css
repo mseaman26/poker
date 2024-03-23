@@ -18,3 +18,9 @@
     color:  white;
     border-radius: 100%;
 }
+.pocket{
+    display: flex;
+}
+.flop{
+    display: flex;
+}
