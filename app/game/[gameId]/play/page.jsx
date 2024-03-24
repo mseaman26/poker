@@ -26,6 +26,17 @@ export default function({params}){
     const router = useRouter()
 
    
+    const startKeepAlive = () => {
+        setInterval(() => {
+            socket.emit('keep-alive'); // Send keep-alive message to the server
+        }, 5000); // Send keep-alive message every 5 seconds
+    };
+  
+      // Function to stop sending keep-alive messages
+    const stopKeepAlive = () => {
+        clearInterval(startKeepAlive); // Stop the interval
+    };
+
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -135,6 +146,7 @@ export default function({params}){
             setTimeout(() => {
                 getGameState();
             }, 100);
+            startKeepAlive();
             socket.emit('request active users', () => {
               return
             })
@@ -164,6 +176,7 @@ export default function({params}){
 
         socket.on('disconnect', () => {
             console.log('Socket disconnected');
+            stopKeepAlive(); 
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
         window.addEventListener('beforeunload', () => {
