@@ -1,2 +1,0 @@
-
--when user hits "raise," show them the amount to call, and also show them the total including that call as they type in their raise. 
