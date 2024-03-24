@@ -120,23 +120,23 @@ const Myturn = ({gameState, socket, gameId}) => {
         console.log('gameState.currentBet: ', gameState.currentBet)
     }, [gameState.currentBet])
 
-    useEffect(() => {
-        console.log('bet index: ', gameState?.betIndex)
-        console.log('turn: ', gameState?.turn)
-        // if(gameState?.players[gameState.turn]?.folded){
-        //     nextTurn()
-        // }   
-        // if(gameState?.betIndex === gameState?.turn){
-        //     console.log('pot square')
-        //     socket.emit('next round', (gameId))
-        // }
-        if(gameState?.round > 3){
-            console.log('win hand', gameState.turn)
-            socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
-        }
+    // useEffect(() => {
+    //     console.log('bet index: ', gameState?.betIndex)
+    //     console.log('turn: ', gameState?.turn)
+    //     // if(gameState?.players[gameState.turn]?.folded){
+    //     //     nextTurn()
+    //     // }   
+    //     // if(gameState?.betIndex === gameState?.turn){
+    //     //     console.log('pot square')
+    //     //     socket.emit('next round', (gameId))
+    //     // }
+    //     if(gameState?.round > 3){
+    //         console.log('win hand', gameState.turn)
+    //         socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
+    //     }
 
 
-    }, [gameState])
+    // }, [gameState])
     useEffect(() => {
         if(gameState.foldedCount === gameState.players.length - 1){
             console.log('win hand', gameState.turn)

@@ -291,7 +291,7 @@ export default function({params}){
                                 <p>
                                 {player.allIn && <span className={styles.allIn}>A</span>}
                                 {player.folded && <span className={styles.folded}>F</span>}
-                                <button onClick={() => manualWin(index)}>Win</button>
+                                {/* <button onClick={() => manualWin(index)}>Win</button> */}
                                 {gameState.dealer === index ? 'Dealer ->' : null}
                                 {gameState.turn === index ? 
                                     <span>&#128994;</span> : null
@@ -324,9 +324,9 @@ export default function({params}){
                      
                     <button onClick={endGame}>End Game</button>}
                 </div>
-                <h1>
+                {/* <h1>
                     {gameData?.started ? 'Game started' : 'Game not started'}
-                </h1>
+                </h1> */}
                 {gameState?.active &&
                     <button onClick={nextHand}>Next Hand</button>
                 }
