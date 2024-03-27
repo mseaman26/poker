@@ -23,6 +23,7 @@ export default function({params}){
     const [meData, setMeData] = useState({})
     const [myPocket, setMyPocket] = useState([])
     const [flop, setFlop] = useState([])
+    const [nextHandButtonShown, setNextHandButtonShown] = useState(false)
     const router = useRouter()
 
    
@@ -68,41 +69,11 @@ export default function({params}){
     const startGame = async () => {
         console.log('starting game')
         console.log('users in room: at startgame:', usersInRoom)
-        // if(gameData?.started){
-            // if(window.confirm('resume game?')){
-            //     console.log('resume game players: ', gameData.players)
-            //     console.log('turn: ', (gameData.dealer + 2) % gameData.players.length)
-            //     // const data = await updateGameAPI(params.gameId, {started: true})
-            //     console.log('data up one reset: ', data)
-            //     socket.emit('start game', {roomId: params.gameId, players: data.players, dealer: data.dealer, bigBlind: data.bigBlind, buyIn: data.buyIn})
-            // }else{
-                // if(window.confirm('do you want to reset this game? any current game data will be lost')){
-                //     const resetBlind = parseFloat(prompt('please reset the blind (numeric value only plese, dont crash the program lol'))
-                    // this line was previously setting started to true as well
-                    const data = await updateGameAPI(params.gameId, {players: usersInRoom})
-                    socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
-                // }
-                // else{
-                //     return
-                // }
-            // }
-        // }else{
-        //     const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
-        //     console.log('start game big blind: ', data.bigBlind)
-        //     // socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: data.bigBlind, buyIn: data.buyIn})
-                
-        // }
-
-        
-        // const data = await updateGameAPI(params.gameId, {started: true, players: usersInRoom})
-        // console.log('updata game at start game: ', data)
+        const data = await updateGameAPI(params.gameId, {players: usersInRoom})
+        socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
     }
-    const nextHand = async() => {
-        socket.emit('next hand', params.gameId, () => {
-            getGameState().then(() => {
-                
-        })})
-        
+    const nextHand = () => {
+        socket.emit('next hand', {roomId: params.gameId})
     }
     const manualWin = (turn) => {  
         socket.emit('win hand', ({roomId: params.gameId, turn: turn}))
@@ -110,6 +81,7 @@ export default function({params}){
     const endGame = async () => {
         console.log('ending game');
         const data = await updateGameAPI(params.gameId, {started: false})
+        setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
@@ -130,12 +102,15 @@ export default function({params}){
         if(meData._id){
             console.log('me data: ', meData)
         }
-        
+
         if(meData._id && gameState?.players){
             console.log('game state: ', gameState)
             console.log('current turn: ', gameState?.players[gameState.turn]?.userId)
             console.log(meData._id  === gameState?.players[gameState.turn]?.userId) 
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
+            if(gameState.handComplete){
+                setNextHandButtonShown(true)
+            }
         }
     }, [gameState, meData])
 
@@ -153,8 +128,22 @@ export default function({params}){
             socket.on('start game', async (data) => {
                 await updateGameAPI(params.gameId, data)
             })
+            socket.on('end hand', async (data) => {
+                alert('hand ended')
+            })
             socket.on('next hand', async (data) => {
                 await updateGameAPI(params.gameId, data)
+            })
+            socket.on('round change', async (data) => {
+                setTimeout(() => {
+                    socket.emit('new round first turn', {roomId: params.gameId})
+                }, 2000);
+            })
+            socket.on('flip cards', async (data) => {
+                setGameState(prevState => (data))
+                setTimeout(() => {
+                    socket.emit('next flip', {roomId: params.gameId})
+                }, 2000);
             })
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
@@ -298,7 +287,7 @@ export default function({params}){
                                 }
                                 {player.username}
                                 {` chips: $${(player.chips / 100).toFixed(2)}`}
-                                {`, bet: $${(player.bet / 100).toFixed(2)}`}</p>
+                                {`, money in pot: $${(player.moneyInPot / 100).toFixed(2)}`}</p>
                             </div>
                         )
                     })}
@@ -327,9 +316,9 @@ export default function({params}){
                 {/* <h1>
                     {gameData?.started ? 'Game started' : 'Game not started'}
                 </h1> */}
-                {gameState?.active &&
+                {/* {gameState?.active &&
                     <button onClick={nextHand}>Next Hand</button>
-                }
+                } */}
             </div>
             {gameState.flop?.length > 0 &&
                 <div className={styles.flop}>
@@ -350,6 +339,9 @@ export default function({params}){
             <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image"/>
             </div>
              </>
+            }
+            {nextHandButtonShown && 
+                <button onClick={nextHand}>Next Hand</button>
             }
             
         </div>

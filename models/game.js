@@ -21,7 +21,7 @@ const playerSchema = new Schema({
     required: true,
     default: 0
   },
-  mondeyInPot: {
+  moneyInPot: {
     type: Number,
     required: true,
     default: 0
