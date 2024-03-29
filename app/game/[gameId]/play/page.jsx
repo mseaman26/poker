@@ -22,13 +22,14 @@ export default function({params}){
     const [gameState, setGameState] = useState({})
     const [meData, setMeData] = useState({})
     const [myPocket, setMyPocket] = useState([])
-    const [flop, setFlop] = useState([])
     const [nextHandButtonShown, setNextHandButtonShown] = useState(false)
+    const [orientation, setOrientation] = useState('');
     const router = useRouter()
 
    
     const startKeepAlive = () => {
         setInterval(() => {
+            console.log('heartbeat')
             socket.emit('keep-alive'); // Send keep-alive message to the server
         }, 5000); // Send keep-alive message every 5 seconds
     };
@@ -86,6 +87,9 @@ export default function({params}){
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
     })};
+    const getOrientation = () => {
+        return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
+    }
 
     useEffect(() => {
         console.log('me data: ', meData)
@@ -96,6 +100,14 @@ export default function({params}){
     useEffect(() => {
         console.log('page reloaded. gamestate: ', gameState)
         getGameState()
+    function handleOrientationChange() {
+        setOrientation(getOrientation());
+        }
+    
+        window.addEventListener('orientationchange', handleOrientationChange);
+        return () => {
+        window.removeEventListener('orientationchange', handleOrientationChange);
+        };
        
     }, [])
     useEffect(() => {
@@ -150,8 +162,11 @@ export default function({params}){
             })
             socket.on('game ended', (data) => {
                 console.log('game ended: ', data)
-                getGameState()
-                
+                getGameState()  
+            })
+            socket.on('refresh', (data) => {
+                console.log('refreshing')
+                window.location.reload()
             })
             
             socket.emit('game state', params.gameId)
@@ -324,9 +339,7 @@ export default function({params}){
                 <div className={styles.flop}>
                     {gameState.flop.map((card, index) => {
                         return (
-                            <>
                             <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`}/>
-                            </>
                         )
                     })}
                 </div>
@@ -343,6 +356,7 @@ export default function({params}){
             {nextHandButtonShown && 
                 <button onClick={nextHand}>Next Hand</button>
             }
+            <h1>Orientation: {orientation}</h1>
             
         </div>
     )
