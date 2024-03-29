@@ -90,7 +90,7 @@ export default function({params}){
     const getOrientation = () => {
         return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
     }
-
+ 
     useEffect(() => {
         console.log('me data: ', meData)
     }, [meData])
@@ -100,15 +100,15 @@ export default function({params}){
     useEffect(() => {
         console.log('page reloaded. gamestate: ', gameState)
         getGameState()
-    function handleOrientationChange() {
-        setOrientation(getOrientation());
+        function handleOrientationChange() {
+            setOrientation(getOrientation());
         }
-    
+        getOrientation(); 
         window.addEventListener('orientationchange', handleOrientationChange);
         return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
         };
-    handleOrientationChange(); 
+        
     }, [])
     useEffect(() => {
         if(meData._id){
