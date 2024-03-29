@@ -108,7 +108,7 @@ export default function({params}){
         return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
         };
-       
+    handleOrientationChange(); 
     }, [])
     useEffect(() => {
         if(meData._id){
