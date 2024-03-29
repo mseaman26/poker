@@ -12,6 +12,10 @@ import Image from "next/image";
 
 
 export default function({params}){
+
+    const getOrientation = () => {
+        return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
+    }
     
     initializeSocket();
     let socket = getSocket();
@@ -23,7 +27,7 @@ export default function({params}){
     const [meData, setMeData] = useState({})
     const [myPocket, setMyPocket] = useState([])
     const [nextHandButtonShown, setNextHandButtonShown] = useState(false)
-    const [orientation, setOrientation] = useState('');
+    const [orientation, setOrientation] = useState(getOrientation());
     const router = useRouter()
 
    
@@ -87,9 +91,7 @@ export default function({params}){
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
     })};
-    const getOrientation = () => {
-        return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
-    }
+    
  
     useEffect(() => {
         console.log('me data: ', meData)
