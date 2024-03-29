@@ -1,7 +1,7 @@
 'use client'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { getGameAPI, fetchSingleUserAPI, updateGameAPI } from "@/lib/apiHelpers";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
@@ -100,6 +100,10 @@ export default function({params}){
     useEffect(() => {
         console.log('page reloaded. gamestate: ', gameState)
         getGameState()
+        
+        
+    }, [])
+    useEffect(() => {
         function handleOrientationChange() {
             setOrientation(getOrientation());
         }
@@ -108,8 +112,7 @@ export default function({params}){
         return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
         };
-        
-    }, [])
+    }, window.orientation)
     useEffect(() => {
         if(meData._id){
             console.log('me data: ', meData)
