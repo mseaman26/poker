@@ -49,6 +49,10 @@ const Myturn = ({gameState, socket, gameId}) => {
         }
         console.log('raiseAmount: ', raiseAmount*100)
         console.log('.bet: ', gameState.players[gameState.turn].bet)
+        if(raiseAmount * 100 > maxRaise){
+            alert(`Max raise is $${(maxRaise / 100).toFixed(2)}`)
+            return
+        }
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
         === gameState.players[gameState.turn].chips){
             let allInAmount = raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet
@@ -56,10 +60,7 @@ const Myturn = ({gameState, socket, gameId}) => {
             console.log('all in amount: ', allInAmount)
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: allInAmount})
         }
-        if(raiseAmount * 100 > maxRaise){
-            alert(`Max raise is $${(maxRaise / 100).toFixed(2)}`)
-            return
-        }
+        
         console.log('raiseAmount: ', raiseAmount*100)
         bet(raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
 
@@ -71,11 +72,16 @@ const Myturn = ({gameState, socket, gameId}) => {
             alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
             return
         }
+        
         // if entered bet plus what's already in the pot is greater than the player's chips
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
         // + gameState.currentBet 
         > gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
             alert('You do not have enough chips')
+            return
+        }
+        if(betAmount * 100 > maxBet){
+            alert(`Max bet is $${(maxBet / 100).toFixed(2)}`)
             return
         }
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
@@ -84,10 +90,7 @@ const Myturn = ({gameState, socket, gameId}) => {
         === gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet){
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: betAmount * 100})
         }
-        if(betAmount * 100 > maxBet){
-            alert(`Max bet is $${(maxBet / 100).toFixed(2)}`)
-            return
-        }
+        
         bet(betAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
         
     }

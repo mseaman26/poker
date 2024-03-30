@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Myturn from "@/components/game/MyTurn/MyTurn";
 import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
+import Player from "@/components/game/player/Player";
 
 
 
@@ -28,6 +29,8 @@ export default function({params}){
     const [myPocket, setMyPocket] = useState([])
     const [nextHandButtonShown, setNextHandButtonShown] = useState(false)
     const [orientation, setOrientation] = useState(getOrientation());
+    const [meIndex, setMeIndex] = useState(null)
+    const [offsetPlayers, setOffsetPlayers] = useState([])
     const router = useRouter()
 
    
@@ -46,7 +49,6 @@ export default function({params}){
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
-            console.log('game data: ', data)
             setGameData(data)
         }
     }
@@ -63,28 +65,16 @@ export default function({params}){
             setMeData(data)
         }
     }
-    const sendMessage = (e) => {
-        console.log('sending message: ', e.target[0].value)
-        e.preventDefault();
-        if(e.target[0].value === '') return
-        
-        socket.emit('chat message', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name, message: e.target[0].value})
-        e.target[0].value = ''
-    }
+
     const startGame = async () => {
-        console.log('starting game')
-        console.log('users in room: at startgame:', usersInRoom)
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
     }
     const nextHand = () => {
         socket.emit('next hand', {roomId: params.gameId})
     }
-    const manualWin = (turn) => {  
-        socket.emit('win hand', ({roomId: params.gameId, turn: turn}))
-    }
+
     const endGame = async () => {
-        console.log('ending game');
         const data = await updateGameAPI(params.gameId, {started: false})
         setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
@@ -99,21 +89,20 @@ export default function({params}){
     useEffect(() => {
         console.log('game state: ', gameState);
     }, [gameState]);
-    useEffect(() => {
-        console.log('page reloaded. gamestate: ', gameState)
-        getGameState()
-        
-        
-    }, [])
+
     useEffect(() => {
         function handleOrientationChange() {
             setOrientation(getOrientation());
         }
-        getOrientation(); 
-        window.addEventListener('orientationchange', handleOrientationChange);
-        return () => {
-        window.removeEventListener('orientationchange', handleOrientationChange);
-        };
+        if(typeof window !== 'undefined') {
+            window.addEventListener('orientationchange', handleOrientationChange);
+            getOrientation();
+            return () => {
+            window.removeEventListener('orientationchange', handleOrientationChange);
+            };
+        }
+        
+        
     }, window.orientation)
     useEffect(() => {
         if(meData._id){
@@ -128,8 +117,22 @@ export default function({params}){
             if(gameState.handComplete){
                 setNextHandButtonShown(true)
             }
+            setMeIndex(gameState.players.findIndex(player => player.userId === meData._id))
+            
         }
     }, [gameState, meData])
+    useEffect(() => {
+            const adjustedPlayers = gameState.players?.map((player, idx) => {
+    
+                const newIndex = (idx + meIndex) % gameState.players.length; // Calculate new index
+                return gameState.players[newIndex]; // Reorder players based on new index
+            });
+            setOffsetPlayers(adjustedPlayers);
+        
+    }, [meIndex, gameState.players])
+    useEffect(() => {
+        console.log('game data: ', gameData)
+    }, [gameData])
 
     useEffect(() => {
         getGameState()  
@@ -138,7 +141,7 @@ export default function({params}){
             setTimeout(() => {
                 getGameState();
             }, 100);
-            startKeepAlive();
+            // startKeepAlive();
             socket.emit('request active users', () => {
               return
             })
@@ -185,18 +188,16 @@ export default function({params}){
 
         socket.on('disconnect', () => {
             console.log('Socket disconnected');
-            stopKeepAlive(); 
+            // stopKeepAlive(); 
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
         window.addEventListener('beforeunload', () => {
             console.log('leaving game page')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
-            // localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages))
         })
         window.addEventListener('unload', () => {
             console.log('leaving game page')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
-            // localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages))
         })
         
         return () => {
@@ -238,22 +239,12 @@ export default function({params}){
     }, [chatMessages]);
     return (
         <div className={styles.container}>
-            <h1>Game: {params.gameId}</h1>
-            <form onSubmit={sendMessage}>
-                <input type="text" placeholder="chat" />
-                <button type="submit">Send</button>
-            </form>
-            <main>
-                <div className={styles.chat}>
-                    <h1>Chat</h1>
-                    {chatMessages.map((message, index) => {
-                        return (
-                            <div key={index}>
-                                <p>{message.username}: {message.message}</p>
-                            </div>
-                        )
-                    })}
-                </div>
+            <div className={styles.gameInfo}>
+                <p>Big Blind: ${gameState?.active ? (gameState.bigBlind / 100).toFixed(2) : (gameData.bigBlind / 100).toFixed(2)}</p>
+            </div>
+
+
+            <main className={styles.table}>
                 {!gameState.active &&
                     <div className={styles.usersInRoom}>
                         <h1>Users in room</h1>
@@ -282,33 +273,36 @@ export default function({params}){
                         })}
                     </div>
                 }
-                {gameState.active &&
-                    <div className={styles.gameState}>
-                        <h1>Game State</h1>
-                        <p>Big Blind: ${(gameState.bigBlind / 100).toFixed(2)}</p>
-                        <p>Small Blind: ${(gameState.bigBlind / 200).toFixed(2)}</p>
-                        <p>Pot: ${(gameState.pot / 100).toFixed(2)}</p>
-                        <p>Current Bet: ${(gameState.currentBet / 100).toFixed(2)}</p>
-                        <p>Current round: {gameState.round}</p>
-                    </div>
-                }
+
                 <div className={styles.players}>
-                    <h1>Players</h1>
-                    {gameState?.players && gameState?.players.map((player, index) => {
+                    {offsetPlayers && offsetPlayers.map((player, index) => {
                         return (
-                            <div key={index}>
-                                <p>
-                                {player.allIn && <span className={styles.allIn}>A</span>}
-                                {player.folded && <span className={styles.folded}>F</span>}
-                                {/* <button onClick={() => manualWin(index)}>Win</button> */}
-                                {gameState.dealer === index ? 'Dealer ->' : null}
-                                {gameState.turn === index ? 
-                                    <span>&#128994;</span> : null
-                                }
-                                {player.username}
-                                {` chips: $${(player.chips / 100).toFixed(2)}`}
-                                {`, money in pot: $${(player.moneyInPot / 100).toFixed(2)}`}</p>
-                            </div>
+                            // <div key={index}>
+
+                            //     <p>
+                            //     {player?.allIn && <span className={styles.allIn}>A</span>}
+                            //     {player?.folded && <span className={styles.folded}>F</span>}
+                            //     {/* <button onClick={() => manualWin(index)}>Win</button> */}
+                            //     {gameState.dealer === (index + meIndex) % offsetPlayers.length ? 'Dealer ->' : null}
+                            //     {gameState.turn === (index + meIndex) % offsetPlayers.length ? 
+                            //         <span>&#128994;</span> : null
+                            //     }
+                            //     {player?.username}
+                            //     {` chips: $${(player?.chips / 100).toFixed(2)}`}
+                            //     {`, money in pot: $${(player?.moneyInPot / 100).toFixed(2)}`}
+                            //     </p>
+                                
+                            // </div>
+                            <>
+                            {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
+                                (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />)}
+                  
+                            {index !== 0 &&
+                                <Player key={index} index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
+                            }
+                            
+                            
+                            </>
                         )
                     })}
                 </div>
@@ -322,13 +316,12 @@ export default function({params}){
                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && 
                 // gameState?.players[gameState.turn]?.folded === false && 
                 <>
-                <Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />
+                {/* <Myturn gameState={gameState}  socket={socket} gameId={params.gameId} /> */}
                 {/* <button onClick={nextTurn}>Next Turn</button> */}
                 </>}
 
                 
                 <div className={styles.players}>
-                <button onClick={getGameState}>Get Game State</button>
                 {gameData?.creatorId === session?.user?.id && gameState.active === true &&
                      
                     <button onClick={endGame}>End Game</button>}

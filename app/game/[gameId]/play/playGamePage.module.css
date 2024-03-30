@@ -1,3 +1,5 @@
+
+
 .container main{
     display: flex;
     justify-content: space-around;
@@ -13,14 +15,18 @@
     color:  white;
     border-radius: 100%;
 }
-.allIn{
-    background-color: red;
-    color:  white;
-    border-radius: 100%;
-}
 .pocket{
     display: flex;
 }
 .flop{
     display: flex;
+}
+.table{
+    background-image: url('../../../assets/images/NicePng_poker-table-png_1898993.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    min-height: calc(100vw * (300 / 625));
+    position: relative;
 }

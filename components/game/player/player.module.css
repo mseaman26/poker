@@ -1,0 +1,13 @@
+.container{
+    position: absolute;
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+.allIn{
+    background-color: red;
+    color:  white;
+    border-radius: 100%;
+}
+.chips{
+    color: green;
+}
