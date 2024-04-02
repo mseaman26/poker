@@ -10,13 +10,24 @@
 .mainLeft{
 
 }
-.folded{
-    background-color: blue;
-    color:  white;
-    border-radius: 100%;
-}
+
 .pocket{
     display: flex;
+    position: absolute;
+    width: 50%;
+    justify-content: center;
+    top: 90%
+}
+.pocketCard{
+    width: 20%;
+    top: 50%;
+    height: auto;
+}
+.pocketCard1{
+    transform: translateX(20%) rotate(-5deg);
+}
+.pocketCard2{
+    transform: translateX(-20%) rotate(5deg);
 }
 .flop{
     display: flex;
@@ -29,4 +40,16 @@
     object-fit: cover;
     min-height: calc(100vw * (300 / 625));
     position: relative;
+}
+.flop{
+    width: 50%;
+    position: absolute;
+    display: flex;
+    top: 36%;
+
+}
+.flopCard{
+    width: 20%;
+    top: 50%;
+    height: auto;
 }

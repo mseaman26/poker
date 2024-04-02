@@ -3,6 +3,7 @@
     background-color: rgb(50, 50, 50);
     color: white;
     transform: translate(-50%, -50%);
+    text-wrap: nowrap;
 }
 .allIn{
     background-color: red;
@@ -10,5 +11,37 @@
     border-radius: 100%;
 }
 .chips{
-    color: green;
+    color: rgb(248, 240, 3);
+}
+.moneyInPot{
+    display: flex;
+    align-items: center;
+}
+.turnMarker{
+    position: absolute;
+    transform: translate(-150%);
+    top: 50%;
+}
+.chipImage{
+    position: absolute;
+    width: 50%;
+    height: auto;
+    left: -56%;
+}
+.chipBackground{
+    position: absolute;
+    width: 45%;
+    height: 80%;
+    left: -55%;
+    border-radius: 100%;
+}
+.chipBlue{
+    background-color: blue;
+    color: white;
+    margin-right: 20px;
+}
+.folded{
+    background-color: blue;
+    color:  white;
+    border-radius: 100%;
 }

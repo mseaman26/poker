@@ -118,6 +118,9 @@ export default function({params}){
                 setNextHandButtonShown(true)
             }
             setMeIndex(gameState.players.findIndex(player => player.userId === meData._id))
+            if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
+                alert('You Win!')
+            }
             
         }
     }, [gameState, meData])
@@ -293,19 +296,37 @@ export default function({params}){
                             //     </p>
                                 
                             // </div>
-                            <>
+                            <div key={index}>
                             {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
                                 (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />)}
                   
-                            {index !== 0 &&
-                                <Player key={index} index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
-                            }
+                            {/* {index !== 0 && */}
+                                <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
+                            {/* } */}
                             
                             
-                            </>
+                            </div>
                         )
                     })}
                 </div>
+                {gameState.flop?.length > 0 &&
+                <div className={styles.flop}>
+                    {gameState.flop.map((card, index) => {
+                        return (
+                            <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
+                        )
+                    })}
+                </div>
+                }
+                {gameState.players && meData && myPocket?.length > 0  && 
+                    // POCKET CARDS
+                    <>
+                    <div className={styles.pocket}>
+                    <Image src={svgUrlHandler(myPocket[0])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`}/>
+                    <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`}/>
+                    </div>
+                    </>
+                }
             </main>
             <div className={styles.game}>
                 {gameData?.creatorId === session?.user?.id && !gameState.active &&
@@ -333,28 +354,12 @@ export default function({params}){
                     <button onClick={nextHand}>Next Hand</button>
                 } */}
             </div>
-            {gameState.flop?.length > 0 &&
-                <div className={styles.flop}>
-                    {gameState.flop.map((card, index) => {
-                        return (
-                            <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`}/>
-                        )
-                    })}
-                </div>
-            }
-            {gameState.players && meData && myPocket?.length > 0  && 
-            // POCKET CARDS
-             <>
-            <div className={styles.pocket}>
-            <Image src={svgUrlHandler(myPocket[0])} height={200} width={100} alt="card1 image"/>
-            <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image"/>
-            </div>
-             </>
-            }
+          
+            
             {nextHandButtonShown && 
                 <button onClick={nextHand}>Next Hand</button>
             }
-            <h1>Orientation: {orientation}</h1>
+            {/* <h1>Orientation: {orientation}</h1> */}
             
         </div>
     )
