@@ -15,6 +15,7 @@ import Player from "@/components/game/player/Player";
 export default function({params}){
 
     const getOrientation = () => {
+        if (typeof window === 'undefined') return 'portrait';
         return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
     }
     
@@ -31,6 +32,7 @@ export default function({params}){
     const [orientation, setOrientation] = useState(getOrientation());
     const [meIndex, setMeIndex] = useState(null)
     const [offsetPlayers, setOffsetPlayers] = useState([])
+    const [centerPot, setCenterPot] = useState(0)
     const router = useRouter()
 
    
@@ -103,19 +105,26 @@ export default function({params}){
         }
         
         
-    }, window.orientation)
+    }, [])
     useEffect(() => {
         if(meData._id){
             console.log('me data: ', meData)
         }
 
         if(meData._id && gameState?.players){
+            let amountToSubractFromPot = 0;
+            gameState.players.forEach(player => {
+                amountToSubractFromPot += player.bet
+            })
+            setCenterPot(gameState.pot - amountToSubractFromPot)
             console.log('game state: ', gameState)
             console.log('current turn: ', gameState?.players[gameState.turn]?.userId)
             console.log(meData._id  === gameState?.players[gameState.turn]?.userId) 
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             if(gameState.handComplete){
-                setNextHandButtonShown(true)
+                if(gameState.active){
+                    setNextHandButtonShown(true)
+                }
             }
             setMeIndex(gameState.players.findIndex(player => player.userId === meData._id))
             if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
@@ -318,13 +327,18 @@ export default function({params}){
                     })}
                 </div>
                 }
+                {gameState.pot > 0 &&
+                    <div className={styles.pot}>
+                        <h1>Pot: ${centerPot / 100}</h1>
+                    </div>
+                }
                 {gameState.players && meData && myPocket?.length > 0  && 
                     // POCKET CARDS
                     <>
-                    <div className={styles.pocket}>
+                    {/* <div className={styles.pocket}>
                     <Image src={svgUrlHandler(myPocket[0])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`}/>
                     <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`}/>
-                    </div>
+                    </div> */}
                     </>
                 }
             </main>

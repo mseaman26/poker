@@ -109,7 +109,32 @@ const Myturn = ({gameState, socket, gameId}) => {
         console.log('manual win')   
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
-
+    useEffect(() => {
+        document.addEventListener('keydown', (e) => {
+            console.log('key: ', e.key)
+            if(e.key === 'f'){
+                fold()
+            }
+            if(e.key === 'c'){
+                call(callAmount)
+            }
+            if(e.key === 'b'){
+                setBetFormShown(!betFormShown)
+            }
+            if(e.key === 'r'){
+                setRaiseFormShown(!raiseFormShown)
+            }
+            if(e.key === 'x'){
+                if(gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0){
+                    bet(0)
+                }
+                
+            }
+        })
+        return () => {
+            document.removeEventListener('keydown', ()=>{});
+        };
+    }, [])
     useEffect(() => {
         if(gameState?.players.length === 1){
             console.log('win game', gameState.turn)
@@ -165,71 +190,65 @@ const Myturn = ({gameState, socket, gameId}) => {
         <>
         {/* {(gameState?.players[gameState.turn]?.folded || gameState?.players[gameState.turn]?.allIn)  && nextTurn()} */}
         {/* {gameState?.players[gameState.turn]?.folded === false &&  */}
-        <div className={styles.Container}>
-            <div className={styles.overlay}>
-                <div className={styles.myTurnPopup}>
-                    <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
-                    {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
-                    {/* CHECK OR BET */}
-                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
-                        <>
-                        <button onClick={() => bet(0)}>Check</button>
-                        <button onClick={() => setBetFormShown(!betFormShown)}>Bet</button>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    {/* BET FORM */}
-                    {betFormShown && (
-                        <>
-                        <span>test</span>
-                        <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
-                            $<input type="number" placeholder='Bet Amount' step="0.01"/>
-                            <button type="submit">Bet</button>
-                            <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
-                        </form>
-                        <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
-                        </>
-                    )}
-                    {/* RAISE FORM */}
-                    {raiseFormShown && (
-                        <>
-                        <span>test</span>
-                        <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
-                            $<input type="number" placeholder='Raise Amount' step="0.01"/>
-                            <button type="submit">Bet</button>
-                        </form>
-                        <h1>Max raise: ${(maxRaise / 100).toFixed(2)}</h1>
-                        <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
-                        </>
-                    )}
-                    
-                    {/* CALL, FOLD, RAISE */}
-                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet > 0 &&
-                        <>
+        <div className={styles.container}>
+            <div className={styles.myTurnPopup}>
+                <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
+                {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
+                {/* CHECK OR BET */}
+                {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
+                    <>
+                    <button onClick={() => bet(0)}>Check</button>
+                    <button onClick={() => setBetFormShown(!betFormShown)}>Bet</button>
+                    </>
+                ) : (
+                    <></>
+                )}
+                {/* BET FORM */}
+                {betFormShown && (
+                    <>
+                    <span>test</span>
+                    <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
+                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                        <button type="submit">Bet</button>
+                        <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
+                    </form>
+                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
+                    </>
+                )}
+                {/* RAISE FORM */}
+                {raiseFormShown && (
+                    <>
+                    <span>test</span>
+                    <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
+                        $<input type="number" placeholder='Raise Amount' step="0.01"/>
+                        <button type="submit">Bet</button>
+                    </form>
+                    <h1>Max raise: ${(maxRaise / 100).toFixed(2)}</h1>
+                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
+                    </>
+                )}
+                
+                {/* CALL, FOLD, RAISE */}
+                {gameState.currentBet - gameState?.players[gameState.turn]?.bet > 0 &&
+                    <>
 
-                        {/* {gameState.currentBet - gameState?.players[gameState.turn]?.bet < gameState.players[gameState.turn].chips && */}
-                        <>
-                        <h1 className={styles.toYou}>
-                            ${(callAmount / 100).toFixed(2)} to call
-                        </h1>
-                        {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
-                        <button onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)}>Call</button>
-                        <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Raise</button>
-                        </>
-                        {/* } */}
-                        <button onClick={fold}>Fold</button>
-                        {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips &&
-                        
-                        <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
-                        }
-                        </>
+                    {/* {gameState.currentBet - gameState?.players[gameState.turn]?.bet < gameState.players[gameState.turn].chips && */}
+                    <>
+                    <h1 className={styles.toYou}>
+                        ${(callAmount / 100).toFixed(2)} to call
+                    </h1>
+                    {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
+                    <button onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)}>Call</button>
+                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Raise</button>
+                    </>
+                    {/* } */}
+                    <button onClick={fold}>Fold</button>
+                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips &&
+                    
+                    <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
                     }
-                    <button onClick={() => manualWin(gameState.turn)}>Win Hand</button>
-
-
-                    
-                </div>
+                    </>
+                }
             </div>
         </div>
         {/* } */}

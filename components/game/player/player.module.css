@@ -4,11 +4,32 @@
     color: white;
     transform: translate(-50%, -50%);
     text-wrap: nowrap;
+    width: 15%;
+    height: 10%;
+}
+.playerInfo{
+    font-size: 1.5vw;
 }
 .allIn{
     background-color: red;
     color:  white;
     border-radius: 100%;
+}
+.dealerMarker{
+    font-size: 1.5vw;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: -20%;
+    height: 50%;
+    aspect-ratio: 1/1;
+    text-align: center;
+    border-radius: 100%;
+    background-color: brown;
+    transform: translateY(-50%);
+
 }
 .chips{
     color: rgb(248, 240, 3);
@@ -16,32 +37,78 @@
 .moneyInPot{
     display: flex;
     align-items: center;
+    
 }
 .turnMarker{
     position: absolute;
-    transform: translate(-150%);
+    font-size: 2.5vw;
     top: 50%;
+    left: -20%;
+    transform: translateY(-50%) translateX(-120%);
+    z-index: 2;
 }
 .chipImage{
     position: absolute;
-    width: 50%;
-    height: auto;
+    width: 3vw;
+
     left: -56%;
 }
 .chipBackground{
     position: absolute;
-    width: 45%;
-    height: 80%;
+    width: 2.8vw;
+    height: 2.8vw;
     left: -55%;
     border-radius: 100%;
 }
 .chipBlue{
     background-color: blue;
     color: white;
-    margin-right: 20px;
+    margin-right: 1vw;
 }
 .folded{
     background-color: blue;
     color:  white;
     border-radius: 100%;
+}
+.pocket{
+    display: flex;
+    position: relative;
+    height: 80%;
+    justify-content: center;
+    top: 90%;
+}
+.pocketCard{
+    position: absolute;
+    z-index: 2;
+    width: 50%;
+    height: auto;
+    height: auto;
+}
+.pocketCard1{
+    transform: translateX(-20%) rotate(-5deg);
+}
+.pocketCard2{
+    transform: translateX(20%) rotate(5deg);
+}
+.myPocket{
+    display: flex;
+    position: absolute;
+    width: 100%;
+    justify-content: center;
+    top: 90%;
+
+}
+.myPocketCard{
+    width: 60%;
+    top: 50%;
+    height: fit-content;
+    position: absolute;
+}
+.myPocketCard1{
+    transform: translateX(-20%) rotate(-5deg);
+    
+}
+.myPocketCard2{
+    transform: translateX(20%) rotate(5deg);
+
 }

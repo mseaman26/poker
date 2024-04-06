@@ -29,9 +29,6 @@
 .pocketCard2{
     transform: translateX(-20%) rotate(5deg);
 }
-.flop{
-    display: flex;
-}
 .table{
     background-image: url('../../../assets/images/NicePng_poker-table-png_1898993.png');
     background-position: center;
@@ -42,14 +39,28 @@
     position: relative;
 }
 .flop{
-    width: 50%;
+    width: 37%;
     position: absolute;
     display: flex;
-    top: 36%;
+    top: 25%;
 
 }
 .flopCard{
     width: 20%;
     top: 50%;
     height: auto;
+}
+.pot{
+    position: absolute;
+    width: 20%;
+    height: 10%;
+    top: 50%;
+    left: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 2vw;
+    border-radius: 10px;
 }
