@@ -5,6 +5,7 @@ import Image from 'next/image';
 import blackChip from '@/app/assets/images/black_Poker_Chip.webp'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
+import Myturn from '../MyTurn/MyTurn';
 
 const Player = ({player, index, numPlayers, meIndex, gameState}) => {
     const position = playerPositions[numPlayers][index]
@@ -12,6 +13,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
     const cardPosition = cardPositions[numPlayers][index]
     const [cardImage1, setCardImage1] = useState(redBack)
     const [cardImage2, setCardImage2] = useState(redBack)
+    const [action, setAction] = useState('')
     
     const style = {
         position: 'absolute',
@@ -81,7 +83,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                 </>
                 :
                 <div>
-                    
+                     {/* ME SECTION */}
                     {player.eliminated === false &&
                     <div className={styles.myPocket}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1}`}/>
@@ -90,7 +92,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                     }       
                     {player.chips > 0 || player.moneyInPot > 0? 
                     <>
-
+                    {gameState.turn === (index + meIndex) % numPlayers &&
+                        <h1>my turn</h1>
+                    }
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <span className={styles.dealerMarker}>D</span>
                     }
