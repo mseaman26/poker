@@ -4,8 +4,10 @@
     color: white;
     transform: translate(-50%, -50%);
     text-wrap: nowrap;
-    width: 15%;
-    height: 10%;
+    max-width: 20%;
+    padding: .5vw;
+    height: 13%;
+    border-radius: 1vw;
 }
 .playerInfo{
     font-size: 1.5vw;
@@ -37,7 +39,9 @@
 .moneyInPot{
     display: flex;
     align-items: center;
-    
+}
+.moneyInPot h1{
+    font-size: 2.5vw;
 }
 .turnMarker{
     position: absolute;
@@ -66,21 +70,19 @@
     margin-right: 1vw;
 }
 .folded{
-    background-color: blue;
-    color:  white;
-    border-radius: 100%;
+    opacity: .3;
 }
 .pocket{
     display: flex;
     position: relative;
     height: 80%;
     justify-content: center;
-    top: 90%;
+    top: 0%;
 }
 .pocketCard{
     position: absolute;
     z-index: 2;
-    width: 50%;
+    width: 60%;
     height: auto;
     height: auto;
 }
@@ -96,7 +98,6 @@
     width: 100%;
     justify-content: center;
     top: 90%;
-
 }
 .myPocketCard{
     width: 60%;
@@ -110,5 +111,18 @@
 }
 .myPocketCard2{
     transform: translateX(20%) rotate(5deg);
-
+}
+.actualHand{
+    position: absolute;
+    color: red;
+    text-align: center;
+    top: -80%
+}
+.yellowHalo{
+    box-shadow: 0 0 10px 15px yellow;
+}
+.action{
+    position: absolute;
+    top: 75%;
+    font-size: 1.8vw;
 }

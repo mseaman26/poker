@@ -6,9 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST(req){
     try{
         const { name, creatorId, buyIn, startingBlind } = await req.json()
-        console.log('game name being submitted: ', name)
-        console.log('starting blind being submitted: ', startingBlind)
-        console.log('creatorId', creatorId)
         await connectMongoDB()
         const newGame = await Game.create({
             name,
@@ -24,7 +21,6 @@ export async function POST(req){
             }
         })
      
-        console.log('create new game response')
         return NextResponse.json({newGame, _id: newGame._id, creatorId})
     }catch(err){
         console.log(err)
@@ -37,7 +33,6 @@ export async function POST(req){
 export async function DELETE(req){
     try{
         const { gameId } = await req.json()
-        console.log('game being deleted: ', gameId)
         await connectMongoDB()
         const deletedGame = await Game.findByIdAndDelete(gameId)
         if(deletedGame){

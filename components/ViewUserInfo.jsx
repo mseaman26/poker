@@ -13,11 +13,8 @@ export const ViewUserInfo = ({id}) => {
     const { data: session } = useSession();
     //getting the other user's data
     const getUserData = async (userId) => {
-        console.log('trying to fetch single user, id: ', userId)
         if(userId){
-            console.log('inside if')
             const data = await fetchSingleUserAPI(userId)
-            console.log('single user data: ', data)
             setUserData(data)
         }
     }
@@ -25,52 +22,25 @@ export const ViewUserInfo = ({id}) => {
     const getCurrentUserData = async (userId) => {
         if(userData._id){
             const me = await fetchSingleUserAPI(userId)
-            console.log('my friends: ', me)
             // setFriendStatus('notFriends')
             for(let friend of me?.friends){
-                console.log('friend ID', friend._id.toString())
-                console.log('userdata ID ', userData._id.toString())
                 if(friend._id.toString() === userData._id.toString()){
-                    console.log('friend found')
                     setFriendStatus('friends')
                 }
             }
             if(userData.friendRequests){
-                console.log('friend requests: ', userData.friendRequests)
-                console.log('my id: ', me?._id.toString())
                 for(let request of userData.friendRequests){
-                    console.log('request ID', request._id, 'me ID', me?._id)
                     if(request._id.toString() === me?._id.toString()){
-                        console.log('request found')
                         setFriendStatus('pending')
                     }
                 }
             }
             setButtonVisible(true)
-            // if(friendStatus !== 'pending' && friendStatus !== 'friends'){
-            //     console.log('friend status inside not friends thing: ',friendStatus)
-            //     console.log('not friends')
-            //     setFriendStatus('notFriends')
-            // }
 
         }
     }
-    
-    // const addFriend = async () => {
-    //     console.log('add friend function')
-    //     if(session?.user?.id && id){
-    //         const res = await addFriendAPI(session.user.id, id)
-    //         setIsFriend(true)
-    //         socket.emit('friend refresh', {
-    //             action: 'add',
-    //             userId: session.user.id,
-    //             friendId: id,
-    //           });
-    //     }
-    // }
 
     const requestFriend = async () => {
-        console.log('add friend function')
         if(session?.user?.id && id){
             const res = await requestFriendAPI(session.user.id, id)
             setFriendStatus('pending')
@@ -85,30 +55,23 @@ export const ViewUserInfo = ({id}) => {
     const cancelFriendRequest = async () => {
         
         if(session?.user?.id && id){
-            console.log('cancel friend request function')
             const res = await cancelFriendRequestAPI(session.user.id, id)
-            console.log('cancel friend request response: ', res)
             setFriendStatus('notFriends')
             setUserData(res)
         }else{
-            console.log('me', session.user.id)
-            console.log('friend', id)
+            //i was console logging here before
         }
     }
 
     const removeFriend = async () => {
-        console.log('remove friend function')
         if(session?.user?.id && id){
             const res = await removeFriendAPI(session.user.id, id)
-            console.log('friendId: ', id)
-            console.log('remove friend response: ', res)
             setFriendStatus('notFriends')
         }
     }
 
     useEffect(() => {
         socket.on('connect', () => {
-            console.log('Connected to Socket.io, requesting active users');
             socket.emit('request active users', () => {
               return
             })
@@ -118,7 +81,6 @@ export const ViewUserInfo = ({id}) => {
             console.log('Disconnected from Socket.io');
         });
           
-        console.log('component mounted, id: ', id)
         getUserData(id)
 
         return () => {
@@ -129,7 +91,6 @@ export const ViewUserInfo = ({id}) => {
     }, [])
     useEffect(() => {
         if(session && userData){
-            console.log('my id: ', session.user.id)
             getCurrentUserData(session?.user?.id)
             socket.emit('activate user', {
                 socketId: socket.id,
@@ -141,7 +102,6 @@ export const ViewUserInfo = ({id}) => {
     }, [session, userData, friendStatus])
     useEffect(() => {
         if(id){
-            console.log('!!! front end user Id: ', id)
             socket.emit('friend refresh', {
                 action: 'add',
                 userId: session?.user?.id,
@@ -149,9 +109,7 @@ export const ViewUserInfo = ({id}) => {
               });
         }
     }, [removeFriend, requestFriend])
-    useEffect(() => {
-        console.log('friend status',friendStatus)
-    }, [friendStatus])
+
     useEffect(() => {
         getCurrentUserData(session?.user?.id)
     }, [session])

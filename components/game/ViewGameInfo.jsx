@@ -19,24 +19,19 @@ export const ViewGameInfo = ({id}) => {
     const getGameInfo = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
-            console.log('game data: ', data)
             setGameInfo(data)
         }
     }
     const getMe = async () => {
         if(session){
-            console.log('session: ', session)
-        if(session){
-          const data = await fetchSingleUserAPI(session.user.id)
-          setMeData(data)
-        }
+            const data = await fetchSingleUserAPI(session.user.id)
+            setMeData(data)
         }
         
       }
     const inviteToGame = async (userId) => {
         if(gameInfo && userId){
             const data = await inviteToGameAPI(gameInfo._id, userId)
-            console.log('!!!invite to game data.updatedUser: ', data.updatedUser)
             setGameInfo(data.updatedGame)
             socket.emit('friend refresh', {
                 friendId: userId
@@ -46,7 +41,6 @@ export const ViewGameInfo = ({id}) => {
     const unInviteToGame = async (userId) => {
         if(gameInfo && userId){
             const data = await uninviteToGameAPI(gameInfo._id, userId)
-            console.log('uninvite from game data: ', data)
             setGameInfo(data.updatedGame)
             socket.emit('friend refresh', {
                 friendId: userId
@@ -60,13 +54,11 @@ export const ViewGameInfo = ({id}) => {
 
     useEffect(() => {
         socket.on('connect', () => {
-            console.log('Connected to Socket.io, requesting active users');
             socket.emit('request active users', () => {
               return
             })
           });
         socket.on('disconnect', () => {
-        console.log('Disconnected from Socket.io');
         });
         
         getGameInfo(id)
@@ -79,15 +71,8 @@ export const ViewGameInfo = ({id}) => {
         };
 
     }, [])
-    useEffect(() => {
-        console.log('game info: ', gameInfo)
 
-    }, [gameInfo, gameInfo])
     useEffect(() => {
-        console.log('meData:', meData)
-    }, [meData])
-    useEffect(() => {
-        console.log('socket: ', socket)
         getMe()
     }, [session])
     useEffect(() => {

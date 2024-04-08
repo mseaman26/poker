@@ -17,19 +17,12 @@ export default function LoginForm() {
   let socket = getSocket()
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('sessoion: ', session)
-      console.log(socket.id)
-      console.log(email)
-      
-      
+    socket.on('connect', () => {  
     })
   }, [])
 
   useEffect(() => {
     if(socket && session){
-      console.log('socket: ', socket)
-      console.log('session id: ', session.user.id)
 
         socket.emit('activate user', {
           socketId: socket.id,
@@ -44,45 +37,6 @@ export default function LoginForm() {
   useEffect(() => {
     setError('')
   }, [email, password])
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if(!email || !password){
-  //     setError('email and password cannot be blank')
-  //   }
-
-  //   try {
-  //     const res = await signIn("credentials", {
-  //       email,
-  //       password,
-  //       redirect: false,
-  //       onSuccess: async () => {
-  //         console.log('on success')
-  //         console.log(session)
-  //       }
-  //     });
-  //     console.log('signing in in the auth route')
-  //     if (res.error) {
-  //       setError("Invalid Credentials");
-  //       return;
-  //     }
-  //     initializeSocket()
-  //     let socket = await getSocket()
-  //     socket.on('connect', () => {
-  //       console.log(socket.id)
-  //       console.log(email)
-  //       socket.emit('activate user', {
-  //         socketId: socket.id,
-  //         email: session.user.email,
-  //         username: session.user.name
-  //       })
-  //     })
-  //     router.push("dashboard");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const loginAsUser = async(e, email, password) => {
     e.preventDefault()
@@ -100,11 +54,9 @@ export default function LoginForm() {
         password,
         redirect: false,
         onSuccess: async () => {
-          console.log('on success')
-          console.log(session)
+          //i was console loggin here before
         }
       });
-      console.log('signing in in the auth route')
       if (res.error) {
         setError("Invalid Credentials");
         return;

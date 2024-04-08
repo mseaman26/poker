@@ -107,11 +107,9 @@ const gameSchema = new Schema(
   { timestamps: true }
 );
 gameSchema.pre('remove', async function (next) {
-  console.log('remove game', this._id);
   try {
       // Remove the game from the gameInvites arrays of other users
       const userIds = await User.find({ gameInvites: this._id }, '_id');
-      console.log('remove game', userIds);
       await User.updateMany(
           { _id: { $in: userIds } },
           { $pull: { gameInvites: this._id } }

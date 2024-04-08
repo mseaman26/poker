@@ -2,7 +2,6 @@
 import { ViewUserInfo } from "@/components/ViewUserInfo"
 
 export default function ViewUserPage  ({params})  {
-    console.log('user id: ', params.id)
     const userId = params.id
     return (
         <>

@@ -1,8 +1,14 @@
 
-
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .container main{
     display: flex;
     justify-content: space-around;
+
     padding: 0 20px;
     height: 100%;
 
@@ -31,19 +37,19 @@
 }
 .table{
     background-image: url('../../../assets/images/NicePng_poker-table-png_1898993.png');
-    background-position: center;
+
     background-size: cover;
     background-repeat: no-repeat;
     object-fit: cover;
-    min-height: calc(100vw * (300 / 625));
+    width: 90vw;
+    min-height: calc(90vw * (300 / 625));
     position: relative;
 }
 .flop{
     width: 37%;
     position: absolute;
     display: flex;
-    top: 25%;
-
+    top: 30%;
 }
 .flopCard{
     width: 20%;
@@ -54,7 +60,7 @@
     position: absolute;
     width: 20%;
     height: 10%;
-    top: 50%;
+    top: 54%;
     left: 40%;
     display: flex;
     justify-content: center;
@@ -64,3 +70,4 @@
     font-size: 2vw;
     border-radius: 10px;
 }
+

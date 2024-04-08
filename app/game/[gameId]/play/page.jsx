@@ -63,7 +63,6 @@ export default function({params}){
     const getMeData = async () => {
         if(session){
             const data = await fetchSingleUserAPI(session.user.id)
-            console.log('me data: ', data)
             setMeData(data)
         }
     }
@@ -84,10 +83,6 @@ export default function({params}){
         getGameState(); // Fetch the updated game state after the game has ended
     })};
     
- 
-    useEffect(() => {
-        console.log('me data: ', meData)
-    }, [meData])
     useEffect(() => {
         console.log('game state: ', gameState);
     }, [gameState]);
@@ -107,9 +102,6 @@ export default function({params}){
         
     }, [])
     useEffect(() => {
-        if(meData._id){
-            console.log('me data: ', meData)
-        }
 
         if(meData._id && gameState?.players){
             let amountToSubractFromPot = 0;
@@ -117,9 +109,6 @@ export default function({params}){
                 amountToSubractFromPot += player.bet
             })
             setCenterPot(gameState.pot - amountToSubractFromPot)
-            console.log('game state: ', gameState)
-            console.log('current turn: ', gameState?.players[gameState.turn]?.userId)
-            console.log(meData._id  === gameState?.players[gameState.turn]?.userId) 
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             if(gameState.handComplete){
                 if(gameState.active){
@@ -142,9 +131,7 @@ export default function({params}){
             setOffsetPlayers(adjustedPlayers);
         
     }, [meIndex, gameState.players])
-    useEffect(() => {
-        console.log('game data: ', gameData)
-    }, [gameData])
+
 
     useEffect(() => {
         getGameState()  
@@ -180,12 +167,7 @@ export default function({params}){
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
             })
-            socket.on('game ended', (data) => {
-                console.log('game ended: ', data)
-                getGameState()  
-            })
             socket.on('refresh', (data) => {
-                console.log('refreshing')
                 window.location.reload()
             })
             
@@ -204,11 +186,9 @@ export default function({params}){
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
         window.addEventListener('beforeunload', () => {
-            console.log('leaving game page')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
         })
         window.addEventListener('unload', () => {
-            console.log('leaving game page')
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
         })
         

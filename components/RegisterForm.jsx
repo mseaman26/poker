@@ -20,7 +20,6 @@ export default function RegisterForm() {
 
   useEffect(() => {
     if(session && socket){
-      console.log('registering with: ', session.user.email)
       socket.emit('activate user', {
         socketId: socket.id,
         email: session.user.email,
@@ -43,7 +42,6 @@ export default function RegisterForm() {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    console.log('start of handleSubmit')
     e.preventDefault();
     if(!isValidEmail(email)){
       setError('You must enter a valid email')
@@ -55,7 +53,6 @@ export default function RegisterForm() {
     }
 
     try {
-      console.log('start of try')
       const res = await fetch("api/users/register", {
         method: "POST",
         headers: {
@@ -67,15 +64,13 @@ export default function RegisterForm() {
           password,
         }),
       });
-      console.log('checking res')
       if (res.ok) {
         const signInRes = await signIn('credentials', {
           email,
           password,
           redirect: false,
           onSuccess: async () => {
-            console.log('rgister on success')
-
+            //i was console loggin here before
           }
         });
         if(signInRes.error){
@@ -85,8 +80,6 @@ export default function RegisterForm() {
         initializeSocket()
         let socket = await getSocket()
         socket.on('connect', () => {
-          console.log('register on success')
-          console.log(session)
         })
         router.push("/dashboard");
       } else {
@@ -106,7 +99,6 @@ export default function RegisterForm() {
     if(name){
       const data = await searchUsersAPI(name)
       for(let user of data){
-        console.log('found a matching name')
         if(user.name === name){
           setUsernameAvailable(false)
           return
@@ -120,7 +112,6 @@ export default function RegisterForm() {
     if(email){
       const data = await searchUsersAPI(email)
       for(let user of data){
-        console.log('found a matching email')
         if(user.email === email){
           setEmailAvailable(false)
           return

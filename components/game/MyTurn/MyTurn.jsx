@@ -14,11 +14,9 @@ const Myturn = ({gameState, socket, gameId}) => {
     const [chipTotal, setChipTotal] = useState(0)
 
     const fold = () => {
-        console.log('fold')
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
     }
     const call = (amount) => {
-        console.log('call')
         if(amount > gameState.players[gameState.turn].chips){
             alert('You do not have enough chips')
             return
@@ -27,15 +25,12 @@ const Myturn = ({gameState, socket, gameId}) => {
         bet(amount)
     }
     const handleBetChange = (e) => {
-        console.log('setting bet to ', parseFloat(e.target.value))
         setBetAmount(parseFloat(e.target.value))
     }
     const handleRaiseChange = (e) => {
-        console.log('setting bet to: ', parseFloat(e.target.value))
         setRaiseAmount(parseFloat(e.target.value))
     }
     const handleRaiseSubmit = (e) => {
-        console.log('raising')
         e.preventDefault()
         if((raiseAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
             alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
@@ -47,8 +42,6 @@ const Myturn = ({gameState, socket, gameId}) => {
             alert('You do not have enough chips')
             return
         }
-        console.log('raiseAmount: ', raiseAmount*100)
-        console.log('.bet: ', gameState.players[gameState.turn].bet)
         if(raiseAmount * 100 > maxRaise){
             alert(`Max raise is $${(maxRaise / 100).toFixed(2)}`)
             return
@@ -56,12 +49,9 @@ const Myturn = ({gameState, socket, gameId}) => {
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
         === gameState.players[gameState.turn].chips){
             let allInAmount = raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet
-            console.log('all in')
-            console.log('all in amount: ', allInAmount)
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: allInAmount})
         }
         
-        console.log('raiseAmount: ', raiseAmount*100)
         bet(raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
 
     }
@@ -95,23 +85,16 @@ const Myturn = ({gameState, socket, gameId}) => {
         
     }
     const bet = (amount) => { 
-        console.log('bet amount: ', amount)
-        console.log('already bet: ', gameState.players[gameState.turn].bet)
-        console.log('chips: ', gameState.players[gameState.turn].chips)
         if(amount  === gameState.players[gameState.turn].chips){
-            console.log('all in')
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
         }
-        console.log('currentBet: ', gameState.currentBet)
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
     }
     const manualWin = (turn) => {
-        console.log('manual win')   
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
     useEffect(() => {
         document.addEventListener('keydown', (e) => {
-            console.log('key: ', e.key)
             if(e.key === 'f'){
                 fold()
             }
@@ -137,45 +120,22 @@ const Myturn = ({gameState, socket, gameId}) => {
     }, [])
     useEffect(() => {
         if(gameState?.players.length === 1){
-            console.log('win game', gameState.turn)
             alert('You win!')
             socket.emit('win game', ({roomId: gameId, turn: gameState.turn}))
         }}, [gameState.players.length]) 
 
-    useEffect(() => {
-        console.log('max bet: ', gameState.maxBet)
-        console.log('my money in pot: ', gameState?.players[gameState.turn]?.moneyInPot)
-        console.log('current bet: ', gameState?.currentBet)  
+    useEffect(() => { 
         setCallAmount(gameState.currentBet - gameState?.players[gameState.turn]?.bet)
         setMaxBet(gameState.maxBet - gameState?.players[gameState.turn]?.moneyInPot)
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
-        // setCallAmount((parseFloat((gameState.currentBet / 100).toFixed(2)) - parseFloat((gameState.players[gameState.turn].bet / 100).toFixed(2))).toFixed(2))
     }, [gameState.currentBet])
     useEffect(() => {
         setMaxRaise(gameState?.maxBet - callAmount - gameState?.players[gameState.turn]?.moneyInPot)
-        console.log('call amount: ', callAmount)
     }, [callAmount])
 
-    // useEffect(() => {
-    //     console.log('bet index: ', gameState?.betIndex)
-    //     console.log('turn: ', gameState?.turn)
-    //     // if(gameState?.players[gameState.turn]?.folded){
-    //     //     nextTurn()
-    //     // }   
-    //     // if(gameState?.betIndex === gameState?.turn){
-    //     //     console.log('pot square')
-    //     //     socket.emit('next round', (gameId))
-    //     // }
-    //     if(gameState?.round > 3){
-    //         console.log('win hand', gameState.turn)
-    //         socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
-    //     }
-
-
-    // }, [gameState])
     useEffect(() => {
         if(gameState.foldedCount === gameState.players.length - 1){
-            console.log('win hand', gameState.turn)
+
             socket.emit('win hand', ({roomId: gameId, turn: gameState.turn}))
         }
     }, [gameState.foldedCount])

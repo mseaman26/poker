@@ -103,24 +103,20 @@ export default function UserInfo() {
   const searchUsers = async (e) => {
     const term = e.target.value
     setSearchTerm(term)
-    console.log('term: ', term)
     if(term){
         const data = await searchUsersAPI(term)
         if( data!== null){
           setSearchedUsers(data)
-          console.log('search users res ok, here is data: ', data)
         }
     }
   }
   const getMyGames = async () => {
     if(session){
-      console.log('inside getMyGames with session')
       const data = await getMyGamesAPI(session.user.id)
       setMyGames(data)
     }
   }
   const getMe = async () => {
-    console.log('no session? ', session)
     if(session){
       const data = await fetchSingleUserAPI(session.user.id)
       setMeData(data)
@@ -130,7 +126,6 @@ export default function UserInfo() {
     e.preventDefault()
     if(gameName){
       const data = await createGameAPI(gameName, session?.user?.id)
-      console.log(data)
       localStorage.setItem('meData', JSON.stringify(meData))
       router.push(`/game/${data._id}`)
     }
@@ -138,7 +133,6 @@ export default function UserInfo() {
   const deleteGame = async(gameId) => {
     if(gameId){
       const res = await deleteGameAPI(gameId)
-      console.log('invited users: ', res.deletedGame.invitedUsers)
       socket.emit('friends refresh', res.deletedGame.invitedUsers)
       socket.emit('room deleted', {gameId: gameId})
       getMyGames()
@@ -150,31 +144,27 @@ export default function UserInfo() {
   }
   const deleteAllGames = async () => {
     const res = await deleteAllGamesAPI()
-    console.log('delete all games res: ', res)
   }
   const respondToFriendRequest = async (currentUserId, requestorId, response) => {
     const res = await respondToFriendRequestAPI(currentUserId, requestorId, response)
-    console.log('respond to friend request res: ', res)
     socket.emit('friend refresh', {friendId: requestorId})
     getMe()
   }
  
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Connected to Socket.io, requesting active users');
       socket.emit('request active users', () => {
         return
       })
     });
     socket.on('friend refresh', () => {
-      console.log('friend refresh with session', session)
       if(session){
         getMe()
       }
     })
   
     socket.on('disconnect', () => {
-      console.log('Disconnected from Socket.io');
+      //i was console logging here before
     });
   
     return () => {
@@ -185,7 +175,6 @@ export default function UserInfo() {
   }, [])
   useEffect(() => {
     socket.on('friend refresh', () => {
-      console.log('received user refresh')
       if(session){
         getMe()
       }
@@ -194,7 +183,6 @@ export default function UserInfo() {
   useEffect(() => {
 
     if(socket && session){
-      console.log('activating user with session: ', session)
       socket.emit('activate user', {
         socketId: socket.id,
         email: session.user.email,
@@ -205,7 +193,6 @@ export default function UserInfo() {
     }
 
     socket.on('active users', (updatedActiveUsers) => {
-      console.log('updated active users: ', updatedActiveUsers)
       setActiveUsers(updatedActiveUsers)
     })
   }, [socket, session])
@@ -214,21 +201,15 @@ export default function UserInfo() {
     getMe()
   },[session])
   useEffect(() => {
-    console.log('meData: ', meData)
     setMyFriends(meData?.friends)
     setMyInvites(meData?.gameInvites)
-    console.log('gameInvites: ', meData?.gameInvites)
   }, [meData])
   useEffect(() => {
-    console.log('inside useffect for updating active friends')
     if(myFriends && activeUsers){
-      console.log('myFriends: ', myFriends)
-      console.log('active users: ', activeUsers)
       let newActiveFriends = []; 
       let newInactiveFriends = []
       for(let friend of myFriends){
         if (activeUsers.some(activeUser => activeUser.id === friend._id)) {
-          console.log('found an active friend', friend.name);
           newActiveFriends.push(friend);
         }else{
           newInactiveFriends.push(friend)
@@ -236,15 +217,12 @@ export default function UserInfo() {
       }
       setActiveFriends(newActiveFriends);
       setInactiveFriends(newInactiveFriends)
-      console.log('final active friends: ', activeFriends)
     }
     
   }, [myFriends, activeUsers])
   useEffect(() => {
-    console.log('active friends: ', activeFriends)
   }, [activeFriends])
   useEffect(() => {
-    console.log('inactive friends: ', inactiveFriends)
   }, [inactiveFriends])
   //RETURN
   return (
@@ -265,7 +243,6 @@ export default function UserInfo() {
         <h1>Active Users</h1>
         <p>
           {activeUsers.map((user) => {
-            console.log(user)
             if(user.email != session?.user?.email){
               return ` ${user.username} `
             }
@@ -370,9 +347,7 @@ export default function UserInfo() {
         } */}
         <h1>My Friends</h1>
         <ul>
-          {console.log('acive friends being rendered: ', activeFriends)}
           {activeFriends.map((friend, index) => {
-            console.log('should render something')
             return(
               <li key={index}>
                 <Link href={`/user/${friend._id}`}><button>{friend.name} &#128994;</button></Link>
