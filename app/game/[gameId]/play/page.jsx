@@ -47,7 +47,18 @@ export default function({params}){
     const stopKeepAlive = () => {
         clearInterval(startKeepAlive); // Stop the interval
     };
-
+    function requestFullScreen() {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { /* Firefox */
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+          elem.msRequestFullscreen();
+        }
+      }
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -90,6 +101,7 @@ export default function({params}){
     useEffect(() => {
         function handleOrientationChange() {
             setOrientation(getOrientation());
+            requestFullScreen()
         }
         if(typeof window !== 'undefined') {
             window.addEventListener('orientationchange', handleOrientationChange);
@@ -229,6 +241,7 @@ export default function({params}){
         console.log('chat messages: ', chatMessages)
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
+
     return (
         <div className={styles.container}>
             {/* <div className={styles.gameInfo}>

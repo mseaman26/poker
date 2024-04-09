@@ -6,7 +6,7 @@
     text-wrap: nowrap;
     max-width: 20%;
     padding: .5vw;
-    height: 13%;
+    max-height: 13%;
     border-radius: 1vw;
 }
 .playerInfo{
@@ -38,6 +38,7 @@
 }
 .moneyInPot{
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 .moneyInPot h1{
@@ -54,7 +55,13 @@
 .chipImage{
     position: absolute;
     width: 3vw;
-
+    /* top: 50%;
+    left: -56%; */
+}
+.MyChipImage{
+    position: absolute;
+    width: 3vw;
+    top: 15%;
     left: -56%;
 }
 .chipBackground{
@@ -62,9 +69,23 @@
     width: 2.8vw;
     height: 2.8vw;
     left: -55%;
+    top: 50%;
+    border-radius: 100%;
+}
+.MychipBackground{
+    position: absolute;
+    width: 2.8vw;
+    height: 2.8vw;
+    left: -55%;
+    top: 15%;
     border-radius: 100%;
 }
 .chipBlue{
+    background-color: blue;
+    color: white;
+    margin-right: 1vw;
+}
+.myChipBlue{
     background-color: blue;
     color: white;
     margin-right: 1vw;
@@ -92,12 +113,19 @@
 .pocketCard2{
     transform: translateX(20%) rotate(5deg);
 }
+.me{
+ 
+}
+.pocketContainer{
+    height: 10vw;
+    position: relative;
+}
 .myPocket{
     display: flex;
     position: absolute;
     width: 100%;
     left: -100%;
-    top: -100%;
+    top: -140%;
     height: 100%;
     justify-content: center;
     
@@ -126,7 +154,6 @@
     box-shadow: 0 0 10px 15px yellow;
 }
 .action{
-    position: absolute;
     top: 75%;
     font-size: 1.8vw;
 }
