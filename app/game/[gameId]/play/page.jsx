@@ -231,9 +231,9 @@ export default function({params}){
     }, [chatMessages]);
     return (
         <div className={styles.container}>
-            <div className={styles.gameInfo}>
+            {/* <div className={styles.gameInfo}>
                 <p>Big Blind: ${gameState?.active ? (gameState.bigBlind / 100).toFixed(2) : (gameData.bigBlind / 100).toFixed(2)}</p>
-            </div>
+            </div> */}
 
 
             <main className={styles.table}>
@@ -269,26 +269,10 @@ export default function({params}){
                 <div className={styles.players}>
                     {offsetPlayers && offsetPlayers.map((player, index) => {
                         return (
-                            // <div key={index}>
-
-                            //     <p>
-                            //     {player?.allIn && <span className={styles.allIn}>A</span>}
-                            //     {player?.folded && <span className={styles.folded}>F</span>}
-                            //     {/* <button onClick={() => manualWin(index)}>Win</button> */}
-                            //     {gameState.dealer === (index + meIndex) % offsetPlayers.length ? 'Dealer ->' : null}
-                            //     {gameState.turn === (index + meIndex) % offsetPlayers.length ? 
-                            //         <span>&#128994;</span> : null
-                            //     }
-                            //     {player?.username}
-                            //     {` chips: $${(player?.chips / 100).toFixed(2)}`}
-                            //     {`, money in pot: $${(player?.moneyInPot / 100).toFixed(2)}`}
-                            //     </p>
-                                
-                            // </div>
                             <div key={index}>
                             {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
                                 (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />)}
-                  
+
                             {/* {index !== 0 && */}
                                 <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
                             {/* } */}
@@ -321,11 +305,19 @@ export default function({params}){
                     </div> */}
                     </>
                 }
+                <div className={styles.creatorButtons}>
+                    {gameData?.creatorId === session?.user?.id && gameState.active === true &&
+                    <button onClick={endGame}>End Game</button>}
+                    {gameData?.creatorId === session?.user?.id && !gameState.active &&
+                    <button onClick={startGame}>Start Game</button>
+                    }
+                    {nextHandButtonShown && 
+                    <button onClick={nextHand}>Next Hand</button>
+                }
+                </div>
             </main>
             <div className={styles.game}>
-                {gameData?.creatorId === session?.user?.id && !gameState.active &&
-                    <button onClick={startGame}>Start Game</button>
-                }
+                
                 {/* MY TURN */}
                 {/* there is me data, game state is active, game state has players, and the current turn is me */}
                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && 
@@ -336,11 +328,7 @@ export default function({params}){
                 </>}
 
                 
-                <div className={styles.players}>
-                {gameData?.creatorId === session?.user?.id && gameState.active === true &&
-                     
-                    <button onClick={endGame}>End Game</button>}
-                </div>
+                
                 {/* <h1>
                     {gameData?.started ? 'Game started' : 'Game not started'}
                 </h1> */}
@@ -350,9 +338,7 @@ export default function({params}){
             </div>
           
             
-            {nextHandButtonShown && 
-                <button onClick={nextHand}>Next Hand</button>
-            }
+            
             {/* <h1>Orientation: {orientation}</h1> */}
             
         </div>

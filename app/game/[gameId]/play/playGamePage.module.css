@@ -4,13 +4,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-width: 100vw;
+    height: 100vh;
 }
 .container main{
     display: flex;
     justify-content: space-around;
 
-    padding: 0 20px;
-    height: 100%;
 
 }
 .mainLeft{
@@ -43,6 +43,7 @@
     object-fit: cover;
     width: 90vw;
     min-height: calc(90vw * (300 / 625));
+    max-height: 100vh;
     position: relative;
 }
 .flop{

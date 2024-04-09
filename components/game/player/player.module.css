@@ -96,8 +96,11 @@
     display: flex;
     position: absolute;
     width: 100%;
+    left: -100%;
+    top: -100%;
+    height: 100%;
     justify-content: center;
-    top: 90%;
+    
 }
 .myPocketCard{
     width: 60%;
@@ -116,7 +119,8 @@
     position: absolute;
     color: red;
     text-align: center;
-    top: -80%
+    top: 50%;
+    z-index: 5;
 }
 .yellowHalo{
     box-shadow: 0 0 10px 15px yellow;

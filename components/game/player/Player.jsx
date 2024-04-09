@@ -92,9 +92,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                     }       
                     {player.chips > 0 || player.moneyInPot > 0? 
                     <>
-                    {gameState.turn === (index + meIndex) % numPlayers &&
+                    {/* {gameState.turn === (index + meIndex) % numPlayers &&
                         <h1>my turn</h1>
-                    }
+                    } */}
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <span className={styles.dealerMarker}>D</span>
                     }

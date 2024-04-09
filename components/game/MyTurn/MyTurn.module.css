@@ -12,7 +12,7 @@
 }
 .myTurnPopup{
     z-index: 2;
-    position: fixed;
+    position: absolute;
     bottom: 0%;
     left: 50%;
     transform: translate(-50%, 0%);
@@ -33,11 +33,20 @@
     color: #ff0000;
 }
 .betForm{
-    display: inline
+    display: flex
 }
-.container button{
-    width: 30vw;
+.betForm input{
+    width: 50%;
     height: 100%;
     margin: 5px;
     border-radius: 7px;
+}
+.container button{
+    width: 50%;
+    height: 100%;
+    margin: 5px;
+    border-radius: 7px;
+}
+.betSubmit{
+    
 }

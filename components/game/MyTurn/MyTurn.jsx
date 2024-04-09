@@ -169,7 +169,7 @@ const Myturn = ({gameState, socket, gameId}) => {
                     <span>test</span>
                     <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
                         $<input type="number" placeholder='Bet Amount' step="0.01"/>
-                        <button type="submit">Bet</button>
+                        <button type="submit" className={styles.betSubmit}>Bet</button>
                         <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
                     </form>
                     <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
