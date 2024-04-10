@@ -83,12 +83,14 @@
 .chipBlue{
     background-color: blue;
     color: white;
-    margin-right: 1vw;
+
 }
 .myChipBlue{
+    position: absolute;
     background-color: blue;
     color: white;
-    margin-right: 1vw;
+    left: -54%;
+    top: 16%
 }
 .folded{
     opacity: .3;
@@ -131,7 +133,7 @@
     
 }
 .myPocketCard{
-    width: 60%;
+    width: 120%;
     top: 50%;
     height: fit-content;
     position: absolute;
@@ -156,4 +158,5 @@
 .action{
     top: 75%;
     font-size: 1.8vw;
+    text-wrap: nowrap;
 }
