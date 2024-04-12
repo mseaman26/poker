@@ -7,12 +7,16 @@ import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Myturn from '../MyTurn/MyTurn';
 
+
 const Player = ({player, index, numPlayers, meIndex, gameState}) => {
     const position = playerPositions[numPlayers][index]
     const chipPosition = chipPositions[numPlayers][index]
     const cardPosition = cardPositions[numPlayers][index]
     const [cardImage1, setCardImage1] = useState(redBack)
     const [cardImage2, setCardImage2] = useState(redBack)
+    const [buyBackFormShown, setBuyBackFormShown] = useState(false)
+    const [buyBackAmount, setBuyBackAmount] = useState(null)
+    const [meEliminated, setMeEliminated] = useState(false)
     
     const style = {
         position: 'absolute',
@@ -25,7 +29,21 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
     const cardStyle = {
         ...cardPosition
     }
-
+    const handleBuyBack = () => {
+        const wantsBackIn = confirm('would you like to buy back in?')
+        if(wantsBackIn){
+            const amount = prompt('How much would you like to buy back in for?')
+            console.log(parseFloat(amount))
+            if(typeof(parseFloat(amount)) == NaN){
+                
+                alert('you need to enter a valid number')
+                handleBuyBack()
+            }else{
+                //buyback
+            }
+        }
+        
+    }
     useEffect(() => {
         if(gameState.handComplete && player.eliminated === false && player.folded === false){
             setCardImage1(svgUrlHandler(player.pocket[0]))
@@ -36,13 +54,13 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
         }
     }, [gameState])
     return (
-        <div className={`${styles.container} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={style}>
+        <div className={`${styles.container}`} style={style}>
             
             {index !== 0 ? 
             <div className={styles.otherPlayer}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
-                    <>
+                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`}>
                     <h1 className={styles.playerInfo}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
 
@@ -61,7 +79,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                         {player.bet > 0 && <h1>${(player.bet / 100).toFixed(2)}</h1>}  
                              
                     </div>
-                </>
+                </div>
                 :
                 <>
                     <h1>Out of chips</h1>
@@ -92,30 +110,40 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                     </div>
                     }       
                     {player.chips > 0 || player.moneyInPot > 0? 
-                    <>
-                    {/* {gameState.turn === (index + meIndex) % numPlayers &&
-                        <h1>my turn</h1>
-                    } */}
-                    {gameState.dealer === (index + meIndex) % numPlayers && 
-                        <span className={styles.dealerMarker}>D</span>
-                    }
-                    
-                    {player?.folded && <span className={styles.folded}>F</span>}
-                    {player.bet > 0 && 
-                    <div className={styles.moneyInPot} style={chipStyle}>
-                        <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div>
-                        <Image src={blackChip} width={20} height={20} className={styles.MyChipImage} alt='poker chip icon'/>
-                        {player.bet > 0 && <h1>${(player.bet / 100).toFixed(2)}</h1>}
+                    <div className={styles.meInfoContainer}>
+                        {/* {gameState.turn === (index + meIndex) % numPlayers &&
+                            <h1>my turn</h1>
+                        } */}
+                        {gameState.dealer === (index + meIndex) % numPlayers && 
+                            <span className={styles.dealerMarker}>D</span>
+                        }
+                        
+                        {player?.folded && <span className={styles.folded}>F</span>}
+                        {player.bet > 0 && 
+                        <div className={styles.moneyInPot} style={chipStyle}>
+                            <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div>
+                            <Image src={blackChip} width={20} height={20} className={styles.MyChipImage} alt='poker chip icon'/>
+                            {player.bet > 0 && <h1>${(player.bet / 100).toFixed(2)}</h1>}
+                        </div>
+                        }
+                        {gameState.handComplete && player.eliminated === false && player.folded === false &&
+                        <h1>{player.actualHand?.title}</h1>
+                        }
+                        
+                        <h1 className={styles.MeInfo}>My Chips: <span className={styles.chips}>${(player.chips / 100).toFixed(2)}</span></h1>
                     </div>
-                    }
-                    {gameState.handComplete && player.eliminated === false && player.folded === false &&
-                    <h1>{player.actualHand?.title}</h1>
-                    }
-                    
-                    <h1 className={styles.playerInfo}>My Chips: <span className={styles.chips}>${(player.chips / 100).toFixed(2)}</span></h1>
-                    </>
                     :
-                    <h1>Out of chips</h1>}   
+                    // WHEN I HAVE NO CHIPS
+                    <div className={styles.buyBack}>
+                        <button onClick={() => setBuyBackFormShown(true)}>Buy back in</button>
+                        {buyBackFormShown &&
+                        <form onSubmit={handleBuyBack} className={styles.buyBackForm}>
+                            <input type="number" placeholder="Amount" onChange={(e) => setBuyBackAmount(e.target.value)}/>
+                            <button type="submit">Submit</button>
+                        </form>
+                        }
+                    </div>
+                    }   
                     
 
                 </div>

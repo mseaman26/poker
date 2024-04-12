@@ -81,6 +81,7 @@ export default function({params}){
     const startGame = async () => {
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
+        requestFullScreen()
     }
     const nextHand = () => {
         socket.emit('next hand', {roomId: params.gameId})
@@ -101,7 +102,7 @@ export default function({params}){
     useEffect(() => {
         function handleOrientationChange() {
             setOrientation(getOrientation());
-            requestFullScreen()
+            
         }
         if(typeof window !== 'undefined') {
             window.addEventListener('orientationchange', handleOrientationChange);

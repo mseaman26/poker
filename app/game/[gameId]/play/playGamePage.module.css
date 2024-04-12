@@ -14,7 +14,10 @@
     
 
 }
-
+.creatorButtons{
+    position: fixed;
+    top: 0
+}
 .pocket{
     display: flex;
     position: absolute;
