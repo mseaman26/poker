@@ -254,7 +254,7 @@ export default function({params}){
             {/* <div className={styles.gameInfo}>
                 <p>Big Blind: ${gameState?.active ? (gameState.bigBlind / 100).toFixed(2) : (gameData.bigBlind / 100).toFixed(2)}</p>
             </div> */}
-            {!gameJoined && !(gameData?.creatorId === session?.user?.id && gameState.active === true) &&
+            {/* {!gameJoined && !(gameData?.creatorId === session?.user?.id && gameState.active === true) &&
             <div className={styles.joinGameOverlay}>
                 <h1>Join Game</h1>
                 <button onClick={() => {
@@ -262,7 +262,7 @@ export default function({params}){
                     setGameJoined(true)
                     requestFullScreen()
                 }}>Join Game</button>
-            </div>}
+            </div>} */}
             <main className={styles.table}>
                 {!gameState.active &&
                     <div className={styles.usersInRoom}>
