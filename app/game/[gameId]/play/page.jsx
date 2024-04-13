@@ -34,6 +34,7 @@ export default function({params}){
     const [offsetPlayers, setOffsetPlayers] = useState([])
     const [centerPot, setCenterPot] = useState(0)
     const [gameJoined, setGameJoined] = useState(false)
+    const [vW,  setVw] = useState()
     const router = useRouter()
 
    
@@ -103,11 +104,15 @@ export default function({params}){
     useEffect(() => {
         function handleOrientationChange() {
             setOrientation(getOrientation());
-            
+            setVw(window.innerWidth)
+            document.documentElement.style.setProperty('--vw', `${vW * 0.01}px`);
+            console.log(window.innerWidth)
         }
-        if(typeof window !== 'undefined') {
-            window.addEventListener('orientationchange', handleOrientationChange);
-            getOrientation();
+
+        if(typeof window !== 'undefined') {;
+            window.addEventListener('resize', handleOrientationChange );
+            // window.addEventListener('orientationchange', handleOrientationChange);
+            // getOrientation();
             return () => {
             window.removeEventListener('orientationchange', handleOrientationChange);
             };
@@ -205,7 +210,7 @@ export default function({params}){
         window.addEventListener('unload', () => {
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id })
         })
-        
+        document.body.style.backgroundColor = 'black';
         return () => {
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id})
             socket.off('disconnect')
@@ -213,7 +218,7 @@ export default function({params}){
             socket.off('game state')
             socket.off('connect')
         }
-        
+       
     }, [params.gameId])
     useEffect(() => {
         getMeData()
