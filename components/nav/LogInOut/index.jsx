@@ -11,7 +11,7 @@ export default function LogInOut (){
             {session ? (
                 <>
                 <p>Logged in as: {session?.user?.name}</p>
-                <button onClick={() => signOut()} className="bg-red-500">Log Out</button>
+                <button onClick={() => signOut()} className={styles.logOutButton}>Log Out</button>
                 </>
             ) : (
                 <>

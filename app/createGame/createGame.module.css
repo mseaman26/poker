@@ -1,0 +1,22 @@
+.inputDiv{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+.buyInInput{
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    font-size: 16px;
+    position: relative;
+    margin-bottom: 20px;
+}
+.dollarSign{
+    position: absolute;
+    font-size: 16px;
+    margin-right: 10px;
+    left: -20px;
+    top: 8px;
+}

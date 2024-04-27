@@ -1,7 +1,22 @@
 .container{
     display: flex;
     justify-content: space-between;
-    border: 2px solid black;
-    position: absolute;
-    background-color: white;
+    padding: var(--pagePadding);
+    width: '100%';
+    color: var(--secondaryFontColor);
+    align-items: center;
+    height: 92px;
+}
+.logOutButton{
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }

@@ -10,7 +10,7 @@ export async function GET(req, {params}){
         await connectMongoDB()
         const myGames = await Game.find({
             creatorId: creatorId
-        })
+        }).populate('creatorId')
         return NextResponse.json(myGames, {status: 200})
     }catch(err){
         console.log('err: ', err)

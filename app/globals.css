@@ -5,12 +5,27 @@
 input {
   @apply w-[400px] border border-gray-200 py-2 px-6 bg-zinc-100/40;
 } 
+:root{
+  --pagePadding: 15px;
+  --goldHeader: #ffd700;
+  --secondaryFontColor: #e7e7e7;
 
+}
+*{
+  box-sizing: border-box;
+
+}
+
+html{
+  height: 100%;
+}
 body{
-  position: fixed;
+
   margin: none;
   padding: none;
-  min-height: 100vh;
+  height: 100%;
+  width: 100vw;
+  background-color: #a8a8a8 ;
 }
 
 html{
@@ -24,3 +39,84 @@ button{
 h1{
   font-weight: bolder;
 }
+.headerContainer{
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--pagePadding);
+  width: 100%;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--goldHeader);
+}
+.pageContainer{
+  display: flex;
+  height: 100%;
+
+  margin: var(--pagePadding);
+  align-items: center;
+  height: calc(100vh - 92px);
+  flex-direction: column;
+}
+.formContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+
+
+}
+.form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.input{
+  width: 100%;
+  margin-bottom: 20px;
+}
+.submitButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  margin: 15px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+.cancelButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  margin: 15px;
+  font-size: 16px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+.formLabel{
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
