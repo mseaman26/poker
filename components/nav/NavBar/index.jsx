@@ -1,26 +1,158 @@
 'use client'
-import LogInOut from "../LogInOut"
+import { useState, useEffect } from "react"
 import { signOut } from "next-auth/react"
 import styles from './NavBar.module.css'
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { slide as Menu } from 'react-burger-menu';
 
 export default function NavBar () {
     const { data: session } = useSession();
+    const [menuOpen, setMenuOpen] = useState(false)
+
+    const [windowWidth, setWindowWidth] = useState(0);
+    const showMenu = windowWidth < 768;
+
+    const menuStyles = {
+        // Position and sizing of burger button
+        bmBurgerButton: {
+            zIndex: 0,
+            position: 'relative',
+            width: '36px',
+            height: '30px',
+            color: 'white',
+        },
+        //Color/shape of burger icon bars
+        bmBurgerBars: {
+          zIndex: 0,
+          background: '#f1f1f1'
+        },
+        //Color/shape of burger icon bars on hover
+        bmBurgerBarsHover: {
+          background: '#a90000'
+        },
+        //Position and sizing of clickable cross button
+        bmCrossButton: {
+          height: '32px',
+          width: '32px'
+        },
+        // Color/shape of close button cross
+        bmCross: {
+          fontSize: '64em',
+          // fontSize: "64px",
+          background: '#bdc3c7'
+        },
+      
+        //Sidebar wrapper styles
+        // Note: Beware of modifying this element as it can     break the animations - you should not need to touch it in most cases
+    
+        bmMenuWrap: {
+          position: 'fixed',
+          height: '100%',
+          width: '80%',
+          top: 0
+        },
+        //General sidebar styles
+        bmMenu: {
+            position: 'absolute',
+            background: '#333333',
+            padding: '2.5em 1.5em 0',
+            fontSize: '1.15em',
+            width: '100%',
+            top: 0
+        },
+        //Morph shape necessary with bubble or elastic
+        bmMorphShape: {
+          fill: '#373a47'
+        },
+        //Wrapper for item list
+        bmItemList: {
+          color: '#F1EFEB',
+          padding: '0.8em'
+        },
+        //Individual item
+        bmItem: {
+          fontWeight: 700,
+          fontSize: 32,
+          marginBottom: 20,
+          color: '#f1f1f1'
+        },
+        //Styling of overlay
+        bmOverlay: {
+    
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          width: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)'
+        }
+      } 
+
+    const closeMenu = () => {
+        setMenuOpen(false)
+    }
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowWidth(window.innerWidth);
+        }
+        if(window){
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
+
     return(
-        <div className={styles.container}>
+        <>
+        {!session ?
+            <div className={styles.loggedOutNav}>
+                <Link href={'/dashboard'}><h1>TITLE</h1></Link>
+            </div>
+            :
+            <div className={styles.container} >
             <Link href={'/dashboard'}><h1>TITLE</h1></Link>
-            {session ? (
+ 
                 <>
-                <p>Logged in as: {session?.user?.name}</p>
-                <button onClick={() => signOut()} className={styles.logOutButton}>Log Out</button>
+
+                {showMenu ? (
+                    
+                    <Menu className='col-6' right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
+                        <Link className="menu-item" href="/" onClick={closeMenu}>
+                        Home
+                        </Link>
+                        <Link className="menu-item" href="/createGam" onClick={closeMenu}>
+                        Create Game
+                        </Link>
+                        <Link className="menu-item" href="/games" onClick={closeMenu}>
+                        My Games
+                        </Link>
+                        <Link className="menu-item" href="/#/contact" onClick={closeMenu}>
+                        Contact
+                        </Link>
+                    </Menu>
+                    
+                    ) : (
+                    <>
+                        <Link className='icon_link' href='/createGame'>
+                            Create Game
+                        </Link>
+                        <Link className='icon_link' href='/games'>
+                            My Games
+                        </Link>
+                        <Link className='icon_link' href='/account'>
+                            Account
+                        </Link>
+                        <button onClick={signOut}>Log Out</button>
+                    </>
+                )}
                 </>
-            ) : (
-                <>
-                <Link href={'/'}><button>Log In</button></Link>
-                <Link href={'/register'}><button>Sign Up</button></Link>
-                </>
-            )}
+
         </div>
+        }
+        
+        </>
     )
 }

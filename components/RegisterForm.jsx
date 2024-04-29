@@ -17,6 +17,7 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [usernameAvailable, setUsernameAvailable] = useState(false)
   const [emailAvailable, setEmailAvailable] = useState(false)
+  const router = useRouter();
 
   useEffect(() => {
     if(session && socket){
@@ -39,7 +40,7 @@ export default function RegisterForm() {
     setError('')
   }, [password])
 
-  const router = useRouter();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -122,46 +123,44 @@ export default function RegisterForm() {
   }
   return (
     <div>
-      <div>
-        <h1>Register</h1>
+      <h1>Register</h1>
 
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
-              type="text"
-              placeholder="Username"
-            />
-            <h1>{name ? (usernameAvailable ? 'user name is available!' : 'user name not available') : ''}</h1>
-          </div>
-          <div>
-            <input
-              onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
-              type="text"
-              placeholder="Email"
-            />
-            <h1>{email ? (emailAvailable ? 'email is available!' : 'email not available') : ''}</h1>
-          </div>
+      <form onSubmit={handleSubmit}>
+        <div>
           <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
+            onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
+            type="text"
+            placeholder="Username"
           />
-          <button onClick={handleSubmit}>
-            Register
-          </button>
+          <h1>{name ? (usernameAvailable ? 'user name is available!' : 'user name not available') : ''}</h1>
+        </div>
+        <div>
+          <input
+            onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
+            type="text"
+            placeholder="Email"
+          />
+          <h1>{email ? (emailAvailable ? 'email is available!' : 'email not available') : ''}</h1>
+        </div>
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          placeholder="Password"
+        />
+        <button onClick={handleSubmit}>
+          Register
+        </button>
 
-          {error && (
-            <div>
-              {error}
-            </div>
-          )}
+        {error && (
+          <div>
+            {error}
+          </div>
+        )}
 
-          <Link href={"/"}>
-            Already have an account? <span className="underline">Login</span>
-          </Link>
-        </form>
-      </div>
+        <Link href={"/"}>
+          Already have an account? <span className="underline">Login</span>
+        </Link>
+      </form>
     </div>
   );
 }

@@ -1,16 +1,133 @@
-import LoginForm from "@/components/LoginForm";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+"use client";
+import styles from './page(login).module.css'
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { initializeSocket, getSocket } from "@/lib/socketService";
+import { isValidEmail } from "@/lib/validators";
 
-  if (session) redirect("/dashboard");
 
+export default function LoginForm() {
+  const { data: session, status } = useSession();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true)
+  const router = useRouter();
+  initializeSocket()
+  let socket = getSocket()
+
+  useEffect(() => {
+    socket.on('connect', () => {  
+    })
+  }, [])
+
+  useEffect(() => {
+    if(socket && session){
+
+        socket.emit('activate user', {
+          socketId: socket.id,
+          email: session.user.email,
+          username: session.user.name,
+          id: session.user.id
+        })
+        router.push('/dashboard')
+    }else if (status === 'unauthenticated'){
+      setLoading(false)
+    }
+  }, [socket, session, router])
+
+  useEffect(() => {
+    setError('')
+  }, [email, password])
+
+  const loginAsUser = async(e, email, password) => {
+    e.preventDefault()
+    if(!isValidEmail(email)){
+      setError('You must enter a valid email')
+      return
+    }
+    if(!email || !password){
+      setError('email and password cannot be blank')
+      return
+    }
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        onSuccess: async () => {
+          //i was console loggin here before
+        }
+      });
+      if (res.error) {
+        setError("Invalid Credentials");
+        return;
+      }
+      
+      
+      router.push("dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const requestActiveUsers = async(e) => {
+    initializeSocket()
+    let socket = await getSocket()
+    e.preventDefault()
+    socket.emit('request active users', () => {
+      return
+    })
+  }
+
+  if(loading){
+    return <div>Loading...</div>
+  }
   return (
-    <main>
-      <LoginForm />
-    </main>
+    <div className="pageContainer">
+      <div className="headerContainer">
+        <h1>Welcome To Mike's Friendly Poker!</h1>
+      </div>
+      <div className="formContainer">
+        <form onSubmit={(e) => loginAsUser(e, email, password)} className="form">
+        <label htmlFor="email" className='formLabel'>Email</label>
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Email"
+            className='input'
+            name='email'
+          />
+          <label className="formLabel">Password</label>
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            className='input'
+          />
+          <button className='submitButton'>
+            Login
+          </button>
+          {error && (
+            <div className='errorMessage'>
+              {error}
+            </div>
+          )}
+
+          <Link href={"/register"}>
+            Don't have an account? <span className="underline">Register</span>
+          </Link>
+        </form>
+      </div>
+      <div className={styles.loginButtons}>
+        <button onClick={(e) => loginAsUser(e, 'player1@player1.com', '!Q2w3e4r')}>login as player1</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player2@player2.com', '!Q2w3e4r')}>login as player2</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player3@player3.com', '!Q2w3e4r')}>login as player3</button><br></br>
+        <button onClick={(e) => requestActiveUsers(e)}>Request active users</button>
+      </div>
+      
+    </div>
   );
 }

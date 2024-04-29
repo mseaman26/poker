@@ -1,6 +1,6 @@
 .container{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     padding: var(--pagePadding);
     width: '100%';
     color: var(--secondaryFontColor);
@@ -19,4 +19,16 @@
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+}
+.loggedOutNav{
+    display: flex;
+    justify-content: space-around;
+    padding: var(--pagePadding);
+    width: '100%';
+    color: var(--secondaryFontColor);
+    align-items: center;
+    height: 92px;
+}
+.menuContainer{
+    
 }

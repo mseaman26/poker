@@ -41,8 +41,9 @@ const CreateGame = () => {
             <span className={styles.dollarSign}>$</span><input type="number" id="bitBlinds" name="bigBlinds"  className={` ${styles.buyInInput}`} onChange={(e) => setStartingBlind(e.target.value)}/>
           </div>
           <button type="submit" className='submitButton'>Submit</button>
+          <button className='cancelButton' onClick={() => router.push('/dashboard')}>Cancel</button>
         </form>
-        <button className='cancelButton' onClick={() => router.push('/dashboard')}>Cancel</button>
+        
       </div>
     </div>
   )

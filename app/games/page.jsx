@@ -16,7 +16,7 @@ const Games = () => {
     initializeSocket()
     let socket = getSocket()
     const { data: session } = useSession();
-    const [myGames, setMyGames] = useState([])
+    const [myGames, setMyGames] = useState(undefined)
     const [meData, setMeData] = useState({})
     const [myInvites, setMyInvites] = useState([])
     const [loading, setLoading] = useState(true)
@@ -51,7 +51,6 @@ const Games = () => {
         if(session){
             getMyGames()
           
-            setLoading(false)
         }else{
             router.replace('/')
         }
@@ -72,6 +71,9 @@ const Games = () => {
     }, [myInvites])
     useEffect(() => {
         console.log('myGames: ', myGames)
+        if(myGames !== undefined){
+            setLoading(false)
+        }
     }, [myGames])
 
     useEffect(() => {
@@ -114,7 +116,7 @@ const Games = () => {
                     <ul className={styles.myGamesUL}>
                         {myGames?.length < 1 ?  <h1 className={styles.noGames}>You have no created games</h1> : 
                         
-                            myGames.map((game, index) => {
+                            myGames?.map((game, index) => {
                             return(
                                 <li className={styles.createdGameLI} key={game._id}>
                                     <Link href={`/game/${game._id}`} className={styles.createdGame}>
@@ -136,7 +138,7 @@ const Games = () => {
                 <div className={styles.gameInvitesContainer}>
                     <h2 className={styles.smallHeader}>Games I've been invited to</h2>
                     <ul className={styles.myGamesUL}>
-                        {myInvites?.length < 1 ? <h1 className={styles.noGames}>You have no invites</h1> :
+                        {myInvites?.length < 1 ? <h1 className={styles.noGames}>You have no game invites</h1> :
                             myInvites?.map((game, index) =>{
                                 return(
                                     <li className={`${styles.createdGameLI} ${styles.inviteLI}`} key={game._id}>
