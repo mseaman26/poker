@@ -42,7 +42,8 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.pre('remove', async function(next) {
+userSchema.pre('deleteOne', { document: true, query: false }, async function() {
+  console.log('Deleting doc!');
   try {
     // Ensure that the gamesCreated array contains valid ObjectId references to games
     const gameIds = this.gamesCreated.map(gameId => mongoose.Types.ObjectId(gameId));

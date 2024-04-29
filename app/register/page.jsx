@@ -25,6 +25,7 @@ export default function Register() {
   const router = useRouter();
   
   const handleSubmit = async (e) => {
+    console.log('submitting')
     e.preventDefault();
     if(!isValidEmail(email)){
       setError('You must enter a valid email')
@@ -116,6 +117,14 @@ export default function Register() {
     }
   }
 
+  const registerUser = async (e, email, password, username) => {
+    e.preventDefault()
+    setName(username)
+    setEmail(email)
+    setPassword(password)
+    setPassword2(password)
+    handleSubmit(e)
+  }
   useEffect(() => {
     if(session && socket){
       socket.emit('activate user', {
@@ -205,6 +214,9 @@ useEffect(() => {
             Already have an account? <span className="underline">Login</span>
           </Link>
         </form>
+      </div>
+      <div className={styles.loginButtons}>
+        <button onClick={(e) => registerUser(e, 'player1@player1.com', '!Q2w3e4r', 'Player1')}>Create Player 1</button><br></br>
       </div>
     </div>
   )

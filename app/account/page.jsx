@@ -3,9 +3,8 @@ import React, { use } from 'react'
 import styles from './accountPage.module.css'
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { searchUsersAPI, updateUserAPI } from '@/lib/apiHelpers'
-import { signIn } from 'next-auth/react'
-import { set } from 'mongoose'
+import { searchUsersAPI, updateUserAPI, deleteUserAPI } from '@/lib/apiHelpers'
+import { signIn, signOut } from 'next-auth/react'
 
 
 const AccountPAge= () => {
@@ -125,8 +124,16 @@ const AccountPAge= () => {
         }catch(err){
             console.log('error in update email: ', err)
         }
-        
-    
+    }
+
+    const deleteAccount = async () => {
+        try{
+            const deletedUser = await deleteUserAPI(session.user.id)
+            console.log('deleted user: ', deletedUser)
+            await signOut()
+        }catch(err){
+            console.log('error in delete account: ', err)
+        }
     }
     useEffect(() => {
         handleNameChange()
@@ -162,6 +169,7 @@ const AccountPAge= () => {
                     type="text"
                     className='input'
                     placeholder='Enter new username'
+                    value=''
                 />
                 <label className='formLabel'>{`enter password to update username`}</label>
                 <input
@@ -193,6 +201,7 @@ const AccountPAge= () => {
                 <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
                 
             </form>
+            <button className='cancelButton' onClick={deleteAccount}>Delete Account</button>
         </div>
         </>
     )

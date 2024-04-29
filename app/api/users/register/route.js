@@ -9,9 +9,9 @@ export async function POST(req) {
     const { name, email, password } = await req.json();
     const hashedPassword = await bcrypt.hash(password, 10);
     await connectMongoDB();
-    await User.create({ name, email, password: hashedPassword });
+    const newUser = await User.create({ name, email, password: hashedPassword });
 
-    return NextResponse.json({ message: "User registered." }, { status: 201 });
+    return NextResponse.json({newUser}, { status: 201 });
   } catch (error) {
     console.log(error.code)
     return NextResponse.json(
