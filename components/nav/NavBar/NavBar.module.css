@@ -1,11 +1,11 @@
 .container{
     display: flex;
-    justify-content: space-around;
-    padding: var(--pagePadding);
+    justify-content: space-between;
+    padding-inline: var(--pagePadding);
     width: '100%';
     color: var(--secondaryFontColor);
     align-items: center;
-    height: 92px;
+    height: 72px;
 }
 .logOutButton{
     background-color: #f44336;
@@ -23,12 +23,32 @@
 .loggedOutNav{
     display: flex;
     justify-content: space-around;
-    padding: var(--pagePadding);
+    padding-inline: var(--pagePadding);
     width: '100%';
     color: var(--secondaryFontColor);
     align-items: center;
     height: 92px;
 }
+.burgerLogout{
+    cursor: pointer;
+}
 .menuContainer{
     
+}
+.nav2{
+    display: flex;
+    padding-inline: var(--pagePadding);
+    width: '100%';
+    color: var(--secondaryFontColor);
+    align-items: center;
+
+}
+.emptyProfile path{
+    stroke: red;
+}
+
+@media screen and (max-width: 768px){
+    .container{
+        justify-content: space-between;
+    }
 }

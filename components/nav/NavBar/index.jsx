@@ -5,6 +5,8 @@ import styles from './NavBar.module.css'
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { slide as Menu } from 'react-burger-menu';
+import Image from "next/image"
+import emptyProfile from "../../../app/assets/icons/emptyProfile.svg"
 
 export default function NavBar () {
     const { data: session } = useSession();
@@ -112,45 +114,54 @@ export default function NavBar () {
                 <Link href={'/dashboard'}><h1>TITLE</h1></Link>
             </div>
             :
-            <div className={styles.container} >
-            <Link href={'/dashboard'}><h1>TITLE</h1></Link>
- 
-                <>
+            <>
+              <div className={styles.container} >
+              <Link href={'/dashboard'}><h1>TITLE</h1></Link>
+  
+                  <>
 
-                {showMenu ? (
-                    
-                    <Menu className='col-6' right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
-                        <Link className="menu-item" href="/" onClick={closeMenu}>
-                        Home
-                        </Link>
-                        <Link className="menu-item" href="/createGam" onClick={closeMenu}>
-                        Create Game
-                        </Link>
-                        <Link className="menu-item" href="/games" onClick={closeMenu}>
-                        My Games
-                        </Link>
-                        <Link className="menu-item" href="/#/contact" onClick={closeMenu}>
-                        Contact
-                        </Link>
-                    </Menu>
-                    
-                    ) : (
-                    <>
-                        <Link className='icon_link' href='/createGame'>
-                            Create Game
-                        </Link>
-                        <Link className='icon_link' href='/games'>
-                            My Games
-                        </Link>
-                        <Link className='icon_link' href='/account'>
-                            Account
-                        </Link>
-                        <button onClick={signOut}>Log Out</button>
-                    </>
-                )}
-                </>
+                  {showMenu ? (
+                      
+                      <Menu className='col-6' right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
+                          <Link className="menu-item" href="/" onClick={closeMenu}>
+                          Home
+                          </Link>
+                          <Link className="menu-item" href="/createGam" onClick={closeMenu}>
+                          Create Game
+                          </Link>
+                          <Link className="menu-item" href="/games" onClick={closeMenu}>
+                          My Games
+                          </Link>
+                          <Link className="menu-item" href="/#/contact" onClick={closeMenu}>
+                          Contact
+                          </Link>
+                          <div className={`menu-item ${styles.burgerLogout}`}  onClick={signOut}>Log Out</div>
+                      </Menu>
+                      
+                      ) : (
+                      <>
+                          <Link className='icon_link' href='/createGame'>
+                              Create Game
+                          </Link>
+                          <Link className='icon_link' href='/games'>
+                              My Games
+                          </Link>
+                          <Link className='icon_link' href='/games'>
+                              My Peeps
+                          </Link>
+                          <Link className='icon_link' href='/account'>
+                              Account
+                          </Link>
+                          <button onClick={signOut} className="cancelButton">Log Out</button>
+                      </>
+                  )}
+                  </>
 
-        </div>
+              </div>
+              <div className={styles.nav2}>
+                <Image src={emptyProfile} width={15} height={15} className={styles.emptyProfile} alt='empty profile'></Image><p>{session.user.name}</p>
+              </div>
+            </>
         }
         
         </>
