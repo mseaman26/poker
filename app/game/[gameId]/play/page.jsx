@@ -106,10 +106,10 @@ export default function({params}){
     useEffect(() => {
         getOrientation();
         function handleOrientationChange() {
+            if (typeof window === 'undefined') return;
             setOrientation(getOrientation());
             setVw(window.innerWidth)
             document.documentElement.style.setProperty('--vw', `${vW * 0.01}px`);
-            console.log(window.innerWidth)
         }
 
         if(typeof window !== 'undefined') {;
@@ -124,7 +124,7 @@ export default function({params}){
         }
         
         
-    }, [window])
+    }, [])
     useEffect(() => {
 
         if(meData._id && gameState?.players){
