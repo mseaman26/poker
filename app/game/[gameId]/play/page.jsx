@@ -108,7 +108,7 @@ export default function({params}){
         function handleOrientationChange() {
             if (typeof window === 'undefined') return;
             setOrientation(getOrientation());
-            setVw(window.innerWidth)
+            setVw(window?.innerWidth)
             document.documentElement.style.setProperty('--vw', `${vW * 0.01}px`);
         }
 
@@ -258,7 +258,7 @@ export default function({params}){
         console.log('socket: ', socket)
     }, [socket])
 
-    if(orientation === 'portrait' && window.innerWidth < 600){
+    if(orientation === 'portrait' && window?.innerWidth < 600){
         console.log('sidewyas')
         return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
         
