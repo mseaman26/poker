@@ -6,14 +6,14 @@ import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { slide as Menu } from 'react-burger-menu';
 import Image from "next/image"
-import emptyProfile from "../../../app/assets/icons/emptyProfile.svg"
+import EmptyProfileIcon from "@/app/assets/icons/emptyProfileIcon"
 
 export default function NavBar () {
     const { data: session } = useSession();
     const [menuOpen, setMenuOpen] = useState(false)
 
     const [windowWidth, setWindowWidth] = useState(0);
-    const showMenu = windowWidth < 768;
+    const showMenu = windowWidth < 992;
 
     const menuStyles = {
         // Position and sizing of burger button
@@ -94,6 +94,7 @@ export default function NavBar () {
         setMenuOpen(false)
     }
 
+
     useEffect(() => {
         function handleResize() {
           setWindowWidth(window.innerWidth);
@@ -126,14 +127,20 @@ export default function NavBar () {
                           <Link className="menu-item" href="/" onClick={closeMenu}>
                           Home
                           </Link>
-                          <Link className="menu-item" href="/createGam" onClick={closeMenu}>
+                          <Link className="menu-item" href="/createGame" onClick={closeMenu}>
                           Create Game
                           </Link>
                           <Link className="menu-item" href="/games" onClick={closeMenu}>
                           My Games
                           </Link>
-                          <Link className="menu-item" href="/#/contact" onClick={closeMenu}>
-                          Contact
+                          <Link className="menu-item" href="/myFriends" onClick={closeMenu}>
+                          My Friends
+                          </Link>
+                          <Link className="menu-item" href="/searchUsers" onClick={closeMenu}>
+                          Search Users
+                          </Link>
+                          <Link className="menu-item" href="/account" onClick={closeMenu}>
+                          My Account
                           </Link>
                           <div className={`menu-item ${styles.burgerLogout}`}  onClick={signOut}>Log Out</div>
                       </Menu>
@@ -149,6 +156,9 @@ export default function NavBar () {
                           <Link className='icon_link' href='/games'>
                               My Peeps
                           </Link>
+                          <Link className='icon_link' href='/searchUsers'>
+                              Search Users
+                          </Link>
                           <Link className='icon_link' href='/account'>
                               Account
                           </Link>
@@ -159,7 +169,12 @@ export default function NavBar () {
 
               </div>
               <div className={styles.nav2}>
-                <Image src={emptyProfile} width={15} height={15} className={styles.emptyProfile} alt='empty profile'></Image><p>{session.user.name}</p>
+                  
+                <Link href={'/account'}>
+                  <EmptyProfileIcon width='20px' height='20px' className={styles.navProfilePic} />
+                  {/* <Image src={emptyProfile} width={15} height={15} className={styles.navProfilePic} alt='empty profile'></Image> */}
+                  <p>{session.user.name}</p>
+                </Link>
               </div>
             </>
         }

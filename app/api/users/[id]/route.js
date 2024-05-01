@@ -5,13 +5,14 @@ import { NextResponse } from "next/server";
 
 //GET SINGLE USER
 export async function GET(req, {params}){
-  console.log('ere')
   try{
       await connectMongoDB()
       console.log('search single user route hit')
       const id = params.id
       console.log('id in route: ', id)
-      const user = await User.findById(id).populate('friends').populate({
+      const user = await User.findById(id)
+        .select('-password')
+        .populate('friends').populate({
           path: 'gameInvites',
           populate: {
             path: 'creatorId',

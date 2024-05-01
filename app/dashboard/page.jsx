@@ -18,7 +18,9 @@ export default function Dashboard() {
           <Link href={'/createGame'} className={styles.button}>CREATE NEW GAME</Link>
           <Link href={'/games'} className={styles.button}>GAMES</Link>
           <Link href={'/myFriends'} className={styles.button}>MY Friends</Link>
+          <Link href={'/searchUsers'} className={styles.button}>SEARCH USERS</Link>
           <Link href={'/account'} className={styles.button}>MY ACCOUNT</Link>
+          
         </div>
       
       {/* <div className={`h-screen ${styles.containerLeft}`}> */}

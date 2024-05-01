@@ -14,6 +14,18 @@
     margin: none;
     padding: none;
 }
+.turnSideways{
+   background-color: var(--backGround);
+   position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: fill-available;
+    min-height: 100vh;
+}
 .container main{
     display: flex;
     justify-content: center;

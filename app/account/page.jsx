@@ -169,14 +169,12 @@ const AccountPAge= () => {
                     type="text"
                     className='input'
                     placeholder='Enter new username'
-                    value=''
                 />
                 <label className='formLabel'>{`enter password to update username`}</label>
                 <input
                     onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     className='input'
-
                 />
                 <div className='errorMessage'>{nameError}</div>
                 <button className='submitButton submitButtonSmall' type='submit'>Submit</button>

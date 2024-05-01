@@ -83,7 +83,7 @@ export default function({params}){
     const startGame = async () => {
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
-        requestFullScreen()
+        // requestFullScreen()
     }
     const nextHand = () => {
         socket.emit('next hand', {roomId: params.gameId})
@@ -248,6 +248,12 @@ export default function({params}){
         console.log('chat messages: ', chatMessages)
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
+
+    if(orientation === 'portrait'){
+        console.log('sidewyas')
+        return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
+        
+    }
 
     return (
         <div className={styles.container}>

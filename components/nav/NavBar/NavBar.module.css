@@ -41,13 +41,34 @@
     width: '100%';
     color: var(--secondaryFontColor);
     align-items: center;
-
+}
+.nav2 a{
+    color: var(--secondaryFontColor);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.nav2 a svg{
+    color: var(--secondaryFontColor);
+    text-decoration: none;
+    margin-right: var(--pagePadding);
+    display: flex;
+    align-items: center;
 }
 .emptyProfile path{
     stroke: red;
 }
+.navProfilePic{
+    margin-right: var(--pagePadding);
+    height: 15px;
+    width: 15px;
+    display: flex;
+    object-fit: contain;
+    align-items: center;
+    fill: var(--secondaryFontColor);
+}
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 992px){
     .container{
         justify-content: space-between;
     }

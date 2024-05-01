@@ -110,6 +110,9 @@ const Games = () => {
             <div className='headerContainer'>
                 <h1>Games</h1>
             </div>
+            <Link href='/createGame' className={styles.createGameButton}>
+                <button className={`blueButton`}>Create New Game &#43;</button>
+            </Link>
             <main className={styles.mainContainer}>
                 <div className={`${styles.gameInvitesContainer} ${styles.myGames}`}>
                     <h2 className={styles.smallHeader}>My Games</h2>

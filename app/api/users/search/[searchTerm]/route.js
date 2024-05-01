@@ -19,6 +19,7 @@ export async function GET(req, {params}){
                 }}
             ]
         })
+        .select('-password')
         return NextResponse.json(users, {status: 200})
     }catch(err){
         console.log('err: ', err)

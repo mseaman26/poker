@@ -1,0 +1,10 @@
+.statusInfo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.friends{
+    width: fit-content;
+}

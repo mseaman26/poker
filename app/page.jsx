@@ -125,6 +125,7 @@ export default function LoginForm() {
         <button onClick={(e) => loginAsUser(e, 'player1@player1.com', '!Q2w3e4r')}>login as player1</button><br></br>
         <button onClick={(e) => loginAsUser(e, 'player2@player2.com', '!Q2w3e4r')}>login as player2</button><br></br>
         <button onClick={(e) => loginAsUser(e, 'player3@player3.com', '!Q2w3e4r')}>login as player3</button><br></br>
+        <button onClick={(e) => loginAsUser(e, 'player4@player4.com', '!Q2w3e4r')}>login as player4</button><br></br>
         <button onClick={(e) => requestActiveUsers(e)}>Request active users</button>
       </div>
       
