@@ -15,7 +15,8 @@ import Player from "@/components/game/player/Player";
 export default function({params}){
 
     const getOrientation = () => {
-        if (typeof window === 'undefined') return 'portrait';
+        if (typeof window === 'undefined') return '';
+        console.log('degrees: ', Math.abs(window.orientation))
         return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
     }
     
@@ -68,6 +69,7 @@ export default function({params}){
         }
     }
     const getGameState = async () => {
+        console.log('getting game state')
         socket.emit('game state', params.gameId, (data) => {
             setGameState(data)
         })
@@ -102,6 +104,7 @@ export default function({params}){
     }, [gameState]);
 
     useEffect(() => {
+        getOrientation();
         function handleOrientationChange() {
             setOrientation(getOrientation());
             setVw(window.innerWidth)
@@ -110,16 +113,18 @@ export default function({params}){
         }
 
         if(typeof window !== 'undefined') {;
-            window.addEventListener('resize', handleOrientationChange );
-            // window.addEventListener('orientationchange', handleOrientationChange);
-            // getOrientation();
+            
+            window.addEventListener('orientationchange', handleOrientationChange);
+            getOrientation();
+            window.addEventListener('resize', handleOrientationChange);
             return () => {
             window.removeEventListener('orientationchange', handleOrientationChange);
+            
             };
         }
         
         
-    }, [])
+    }, [window])
     useEffect(() => {
 
         if(meData._id && gameState?.players){
@@ -248,8 +253,12 @@ export default function({params}){
         console.log('chat messages: ', chatMessages)
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
+   
+    useEffect(() => {
+        console.log('socket: ', socket)
+    }, [socket])
 
-    if(orientation === 'portrait'){
+    if(orientation === 'portrait' && window.innerWidth < 600){
         console.log('sidewyas')
         return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
         
@@ -340,9 +349,9 @@ export default function({params}){
                 }
                 <div className={styles.creatorButtons}>
                     {gameData?.creatorId === session?.user?.id && gameState.active === true &&
-                    <button onClick={endGame}>End Game</button>}
+                    <button onClick={endGame} className={`cancelButton`}>End Game</button>}
                     {gameData?.creatorId === session?.user?.id && !gameState.active &&
-                    <button onClick={startGame}>Start Game</button>
+                    <button onClick={startGame} className={`submitButton`}>Start Game</button>
                     }
                     {nextHandButtonShown && 
                     <button onClick={nextHand}>Next Hand</button>
@@ -372,7 +381,8 @@ export default function({params}){
           
             
             
-            {/* <h1>Orientation: {orientation}</h1> */}
+            {/* <h1 style={{color: 'white'}}>Orientation: {orientation}</h1>
+            <h1 style={{color: 'white'}}>width: {window.innerWidth}</h1> */}
             
         </div>
     )

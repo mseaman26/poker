@@ -53,8 +53,8 @@ const ViewGameInfo = ({params}) => {
         }
     }
     const goToGame = () => {
-        //window.location.href = `/game/${gameInfo._id}/play`;
-        router.push(`/game/${gameInfo._id}/play`)
+        window.location.href = `/game/${gameInfo._id}/play`;
+        //router.push(`/game/${gameInfo._id}/play`)
 
     }
 

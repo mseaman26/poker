@@ -18,7 +18,7 @@ export default function NavBar () {
     const menuStyles = {
         // Position and sizing of burger button
         bmBurgerButton: {
-            zIndex: 0,
+            zIndex: 50,
             position: 'relative',
             width: '36px',
             height: '30px',
@@ -123,7 +123,7 @@ export default function NavBar () {
 
                   {showMenu ? (
                       
-                      <Menu className='col-6' right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
+                      <Menu className={`${styles.burgerMenu}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
                           <Link className="menu-item" href="/" onClick={closeMenu}>
                           Home
                           </Link>
