@@ -10,7 +10,7 @@
     background-color: black;
     min-height: 100vh;
     position: fixed;
-
+    z-index: 1;
     margin: none;
     padding: none;
 }
@@ -54,15 +54,18 @@
     width: 50%;
     height: 10vh;
     justify-content: center;
-    top: 90%
+    top: 90%;
+    
 }
 .pocketCard{
     width: 20%;
     top: 50%;
     height: auto;
+    
 }
 .pocketCard1{
     transform: translateX(20%) rotate(-5deg);
+    
 }
 .pocketCard2{
     transform: translateX(-20%) rotate(5deg);

@@ -135,6 +135,7 @@
     width: 60%;
     height: auto;
     height: auto;
+   
 }
 .pocketCard1{
     transform: translateX(-20%) rotate(-5deg);
@@ -161,10 +162,11 @@
     top: 50%;
     height: fit-content;
     position: absolute;
+    
 }
 .myPocketCard1{
     transform: translateX(-20%) rotate(-5deg);
-    
+    position: relative;
 }
 .myPocketCard2{
     transform: translateX(20%) rotate(5deg);

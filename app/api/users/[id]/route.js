@@ -9,7 +9,6 @@ export async function GET(req, {params}){
       await connectMongoDB()
       console.log('search single user route hit')
       const id = params.id
-      console.log('id in route: ', id)
       const user = await User.findById(id)
         .select('-password')
         .populate('friends').populate({

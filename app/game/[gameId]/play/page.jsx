@@ -9,6 +9,7 @@ import Myturn from "@/components/game/MyTurn/MyTurn";
 import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
 import Player from "@/components/game/player/Player";
+import loadingScreen from "@/components/loadingScreen/loadingScreen";
 
 
 
@@ -16,7 +17,6 @@ export default function({params}){
 
     const getOrientation = () => {
         if (typeof window === 'undefined') return '';
-        console.log('degrees: ', Math.abs(window.orientation))
         return Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait';
     }
     
@@ -35,7 +35,10 @@ export default function({params}){
     const [offsetPlayers, setOffsetPlayers] = useState([])
     const [centerPot, setCenterPot] = useState(0)
     const [gameJoined, setGameJoined] = useState(false)
+    const [isFullScreen, setIsFullScreen] = useState(false)
     const [vW,  setVw] = useState()
+    const [betFormShown, setBetFormShown] = useState(false)
+    const [loading, setLoading] = useState(true)
     const router = useRouter()
 
    
@@ -50,18 +53,30 @@ export default function({params}){
     const stopKeepAlive = () => {
         clearInterval(startKeepAlive); // Stop the interval
     };
-    function requestFullScreen() {
-        var elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.mozRequestFullScreen) { /* Firefox */
-          elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE/Edge */
-          elem.msRequestFullscreen();
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+          // If currently not in full screen, request full screen
+          const element = document.documentElement;
+          if (element.requestFullscreen) {
+            element.requestFullscreen();
+          } else if (element.webkitRequestFullscreen) { /* Safari */
+            element.webkitRequestFullscreen();
+          } else if (element.msRequestFullscreen) { /* IE11 */
+            element.msRequestFullscreen();
+          }
+          setIsFullScreen(true)
+        } else {
+          // If currently in full screen, exit full screen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+            setIsFullScreen(false)
         }
-    }
+      }
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -126,7 +141,7 @@ export default function({params}){
         
     }, [])
     useEffect(() => {
-
+        console.log('medata: ', meData)
         if(meData._id && gameState?.players){
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
@@ -147,12 +162,13 @@ export default function({params}){
         }
     }, [gameState, meData])
     useEffect(() => {
-            const adjustedPlayers = gameState.players?.map((player, idx) => {
-    
-                const newIndex = (idx + meIndex) % gameState.players.length; // Calculate new index
-                return gameState.players[newIndex]; // Reorder players based on new index
-            });
-            setOffsetPlayers(adjustedPlayers);
+        console.log('meIndex: ', meIndex)
+        const adjustedPlayers = gameState.players?.map((player, idx) => {
+
+            const newIndex = (idx + meIndex) % gameState.players.length; // Calculate new index
+            return gameState.players[newIndex]; // Reorder players based on new index
+        });
+        setOffsetPlayers(adjustedPlayers);
         
     }, [meIndex, gameState.players])
 
@@ -190,6 +206,7 @@ export default function({params}){
             })
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
+                setLoading(false)
             })
             socket.on('refresh', (data) => {
                 window.location.reload()
@@ -253,10 +270,6 @@ export default function({params}){
         console.log('chat messages: ', chatMessages)
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
-   
-    useEffect(() => {
-        console.log('socket: ', socket)
-    }, [socket])
 
     if(orientation === 'portrait' && window?.innerWidth < 600){
         console.log('sidewyas')
@@ -313,7 +326,7 @@ export default function({params}){
                         return (
                             <div key={index}>
                             {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
-                                (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} />)}
+                                (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} />)}
 
                             {/* {index !== 0 && */}
                                 <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
@@ -348,12 +361,13 @@ export default function({params}){
                     </>
                 }
                 <div className={styles.creatorButtons}>
-                <button onClick={requestFullScreen}>Full Screen</button>
+                <button onClick={toggleFullScreen}>{isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}</button>
                     {gameData?.creatorId === session?.user?.id && gameState.active === true &&
                     <button onClick={endGame} className={`cancelButton`}>End Game</button>}
                     {gameData?.creatorId === session?.user?.id && !gameState.active &&
-                    <button onClick={startGame} className={`submitButton`}>Start Game</button>
+                    <button onClick={usersInRoom.length > 1 ? startGame : null} className={`submitButton ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
                     }
+                    {!gameState.active && <p className="secondary">A minimum of 2 players is required to start the game</p>}
                     {nextHandButtonShown && 
                     <button onClick={nextHand}>Next Hand</button>
                 }

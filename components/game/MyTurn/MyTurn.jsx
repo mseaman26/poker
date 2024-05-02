@@ -1,10 +1,10 @@
 import { set } from 'mongoose'
 import styles from './MyTurn.module.css'
 import { useState, useEffect } from 'react'
+import BetForm from './BetForm/BetForm'
 
-const Myturn = ({gameState, socket, gameId}) => {
+const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
 
-    const [betFormShown, setBetFormShown] = useState(false)
     const [betAmount, setBetAmount] = useState(0)
     const [raiseFormShown, setRaiseFormShown] = useState(false)
     const [raiseAmount, setRaiseAmount] = useState(0)
@@ -150,7 +150,21 @@ const Myturn = ({gameState, socket, gameId}) => {
         <>
         {/* {(gameState?.players[gameState.turn]?.folded || gameState?.players[gameState.turn]?.allIn)  && nextTurn()} */}
         {/* {gameState?.players[gameState.turn]?.folded === false &&  */}
+        {/* BET FORM */}
+        {betFormShown && (
+                    <>
+                    {/* <span>test</span>
+                    <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
+                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                        <button type="submit" className={styles.betSubmit}>Bet</button>
+                        <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
+                    </form>
+                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button> */}
+                    <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} />
+                    </>
+                )}
         <div className={styles.container}>
+            
             <div className={styles.myTurnPopup}>
                 <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
                 {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
@@ -163,28 +177,17 @@ const Myturn = ({gameState, socket, gameId}) => {
                 ) : (
                     <></>
                 )}
-                {/* BET FORM */}
-                {betFormShown && (
-                    <>
-                    <span>test</span>
-                    <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
-                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
-                        <button type="submit" className={styles.betSubmit}>Bet</button>
-                        <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
-                    </form>
-                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
-                    </>
-                )}
+                
                 {/* RAISE FORM */}
                 {raiseFormShown && (
                     <>
-                    <span>test</span>
+                    {/* <span>test</span>
                     <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
                         $<input type="number" placeholder='Raise Amount' step="0.01"/>
                         <button type="submit">Bet</button>
                     </form>
                     <h1>Max raise: ${(maxRaise / 100).toFixed(2)}</h1>
-                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
+                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button> */}
                     </>
                 )}
                 

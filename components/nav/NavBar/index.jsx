@@ -18,7 +18,6 @@ export default function NavBar () {
     const menuStyles = {
         // Position and sizing of burger button
         bmBurgerButton: {
-            zIndex: 50,
             position: 'relative',
             width: '36px',
             height: '30px',
@@ -26,7 +25,7 @@ export default function NavBar () {
         },
         //Color/shape of burger icon bars
         bmBurgerBars: {
-          zIndex: 0,
+          
           background: '#f1f1f1'
         },
         //Color/shape of burger icon bars on hover
