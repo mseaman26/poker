@@ -348,6 +348,7 @@ export default function({params}){
                     </>
                 }
                 <div className={styles.creatorButtons}>
+                <button onClick={requestFullScreen}>Full Screen</button>
                     {gameData?.creatorId === session?.user?.id && gameState.active === true &&
                     <button onClick={endGame} className={`cancelButton`}>End Game</button>}
                     {gameData?.creatorId === session?.user?.id && !gameState.active &&
