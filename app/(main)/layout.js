@@ -1,5 +1,5 @@
-import { AuthProvider } from "./Providers";
-import "./globals.css";
+import { AuthProvider } from "../Providers";
+import "@/app/globals.css";
 import { Inter } from "next/font/google";
 import NavBar from "@/components/nav/NavBar";
 import Head from "next/head";

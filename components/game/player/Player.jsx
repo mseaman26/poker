@@ -8,7 +8,7 @@ import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Myturn from '../MyTurn/MyTurn';
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown}) => {
     const position = playerPositions[numPlayers][index]
     const chipPosition = chipPositions[numPlayers][index]
     const cardPosition = cardPositions[numPlayers][index]
@@ -107,7 +107,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState}) => {
                     <div className={styles.myPocket} style={cardStyle}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1}`}/>
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
+                    
                     </div>
+                    
                     }       
                     {player.chips > 0 || player.moneyInPot > 0? 
                     <div className={styles.meInfoContainer}>

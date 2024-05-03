@@ -10,6 +10,9 @@ import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
 import Player from "@/components/game/player/Player";
 import loadingScreen from "@/components/loadingScreen/loadingScreen";
+import GameBurger from "@/components/game/GameBurger/GameBurger";
+import fullScreen from '@/app/assets/icons/fullscreen-svgrepo-com.svg'
+import exitFullScreen from '@/app/assets/icons/exitFullScreen.svg'
 
 
 
@@ -279,6 +282,13 @@ export default function({params}){
 
     return (
         <div className={styles.container}>
+            <div className={`${styles.upperLeftButtons}`}>
+                <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="poker logo" onClick={toggleFullScreen}/>
+            </div>
+            <div className={`${styles.upperRightButtons}`}>
+                <GameBurger endGame={endGame}/>
+            </div>
+            
             {/* <div className={styles.gameInfo}>
                 <p>Big Blind: ${gameState?.active ? (gameState.bigBlind / 100).toFixed(2) : (gameData.bigBlind / 100).toFixed(2)}</p>
             </div> */}
@@ -292,35 +302,6 @@ export default function({params}){
                 }}>Join Game</button>
             </div>} */}
             <main className={styles.table}>
-                {!gameState.active &&
-                    <div className={styles.usersInRoom}>
-                        <h1>Users in room</h1>
-                        {usersInRoom.map((user, index) => {
-                            return (
-                                <div key={index}>
-                                    <p>
-                                    {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
-                                        <span>D </span>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {user?.username}{' '}{user?.chips}
-                                    {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
-                                        <span>&#128994;</span>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
-                                        <span> Small</span> : <></>}
-                                    {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
-                                        <span> Big</span> : <></>}
-                                    </p>
-                                </div>
-                            )
-                        })}
-                    </div>
-                }
-
                 <div className={styles.players}>
                     {offsetPlayers && offsetPlayers.map((player, index) => {
                         return (
@@ -329,7 +310,7 @@ export default function({params}){
                                 (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} />)}
 
                             {/* {index !== 0 && */}
-                                <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState}/>
+                                <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown}/>
                             {/* } */}
                             
                             
@@ -360,16 +341,44 @@ export default function({params}){
                     </div> */}
                     </>
                 }
-                <div className={styles.creatorButtons}>
-                <button onClick={toggleFullScreen}>{isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}</button>
-                    {gameData?.creatorId === session?.user?.id && gameState.active === true &&
-                    <button onClick={endGame} className={`cancelButton`}>End Game</button>}
-                    {gameData?.creatorId === session?.user?.id && !gameState.active &&
-                    <button onClick={usersInRoom.length > 1 ? startGame : null} className={`submitButton ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
+                <div className={`${styles.preGameInfo}`}>
+                    <div className={styles.creatorButtons}>
+                        {gameData?.creatorId === session?.user?.id && !gameState.active &&
+                        <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
+                        }
+                        {!gameState.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? 'At least two players need to be in the room to start game' : 'Waiting for users to join and for room creator to start game'}</p>}
+                        {nextHandButtonShown && 
+                        <button onClick={nextHand}>Next Hand</button>
                     }
-                    {!gameState.active && <p className="secondary">A minimum of 2 players is required to start the game</p>}
-                    {nextHandButtonShown && 
-                    <button onClick={nextHand}>Next Hand</button>
+                    
+                    </div>
+                    {!gameState.active &&
+                    <div className={styles.usersInRoom}>
+                        <h1>Users in room</h1>
+                        {usersInRoom.map((user, index) => {
+                            return (
+                                <div key={index}>
+                                    <p>
+                                    {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
+                                        <span>D </span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {user?.username}{' '}{user?.chips}
+                                    {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
+                                        <span>&#128994;</span>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
+                                        <span> Small</span> : <></>}
+                                    {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
+                                        <span> Big</span> : <></>}
+                                    </p>
+                                </div>
+                            )
+                        })}
+                    </div>
                 }
                 </div>
             </main>

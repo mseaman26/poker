@@ -94,6 +94,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
     useEffect(() => {
+        console.log(navigator)
         document.addEventListener('keydown', (e) => {
             if(e.key === 'f'){
                 fold()
@@ -151,18 +152,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
         {/* {(gameState?.players[gameState.turn]?.folded || gameState?.players[gameState.turn]?.allIn)  && nextTurn()} */}
         {/* {gameState?.players[gameState.turn]?.folded === false &&  */}
         {/* BET FORM */}
-        {betFormShown && (
-                    <>
-                    {/* <span>test</span>
-                    <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
-                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
-                        <button type="submit" className={styles.betSubmit}>Bet</button>
-                        <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
-                    </form>
-                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button> */}
-                    <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} />
-                    </>
-                )}
+        
         <div className={styles.container}>
             
             <div className={styles.myTurnPopup}>
@@ -177,7 +167,18 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
                 ) : (
                     <></>
                 )}
-                
+                {betFormShown && (
+                    <>
+                    {/* <span>test</span>
+                    <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
+                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                        <button type="submit" className={styles.betSubmit}>Bet</button>
+                        <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
+                    </form>
+                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button> */}
+                    <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} betFormShown={betFormShown} />
+                    </>
+                )}
                 {/* RAISE FORM */}
                 {raiseFormShown && (
                     <>

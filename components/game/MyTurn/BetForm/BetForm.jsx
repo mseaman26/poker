@@ -1,14 +1,14 @@
 import React from 'react'
 import styles from './BetForm.module.css'
 
-const BetForm = ({handleBetChange, handleBetSubmit, maxBet, setBetFormShown }) => {
+const BetForm = ({handleBetChange, handleBetSubmit, maxBet, setBetFormShown, betFormShown }) => {
   return (
-    <div className={`${styles.overlay}`}>
+    <div className={``}>
         <div className={`${styles.formContainer}`}>
-            <button onClick={() => setBetFormShown(false)} className={`cancelButton ${styles.cancelBet}`}>Cancel</button>
+            
         </div>
         
-
+        
     </div>
   )
 }
