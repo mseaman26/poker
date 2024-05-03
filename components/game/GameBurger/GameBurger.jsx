@@ -2,8 +2,6 @@
 import React, {useState} from 'react'
 import styles from './GameBurger.module.css'
 import { slide as Menu } from 'react-burger-menu';
-import Link from "next/link"
-import { right } from 'inquirer/lib/utils/readline';
 import { useRouter } from "next/navigation";
 
 
