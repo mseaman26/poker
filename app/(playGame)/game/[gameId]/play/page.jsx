@@ -44,7 +44,7 @@ export default function({params}){
     const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
     const [loading, setLoading] = useState(true)
-    const containerSize = Math.min(vW *.9, vH * .9)
+    const containerSize = Math.min(vW , vH )
     const router = useRouter()
 
    
