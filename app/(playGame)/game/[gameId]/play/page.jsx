@@ -13,6 +13,7 @@ import loadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import fullScreen from '@/app/assets/icons/fullscreen-svgrepo-com.svg'
 import exitFullScreen from '@/app/assets/icons/exitFullScreen.svg'
+import { set } from "mongoose";
 
 
 
@@ -40,8 +41,10 @@ export default function({params}){
     const [gameJoined, setGameJoined] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [vW,  setVw] = useState()
+    const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
     const [loading, setLoading] = useState(true)
+    const containerSize = Math.min(vW *.9, vH * .9)
     const router = useRouter()
 
    
@@ -57,7 +60,7 @@ export default function({params}){
         clearInterval(startKeepAlive); // Stop the interval
     };
     function toggleFullScreen() {
-        if (!document.fullscreenElement) {
+        if (!isFullScreen) {
           // If currently not in full screen, request full screen
           const element = document.documentElement;
           if (element.requestFullscreen) {
@@ -70,14 +73,14 @@ export default function({params}){
           setIsFullScreen(true)
         } else {
           // If currently in full screen, exit full screen
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                document.msExitFullscreen();
-            }
-            setIsFullScreen(false)
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+        setIsFullScreen(false)
         }
       }
     const getGameData = async (gameId) => {
@@ -127,11 +130,36 @@ export default function({params}){
             if (typeof window === 'undefined') return;
             setOrientation(getOrientation());
             setVw(window?.innerWidth)
+            setvH(window?.innerHeight)
             document.documentElement.style.setProperty('--vw', `${vW * 0.01}px`);
         }
 
         if(typeof window !== 'undefined') {;
-            
+            setVw(window?.innerWidth)
+            setvH(window?.innerHeight)
+            // window.addEventListener('touchmove', (e) => {
+            //     e.preventDefault()
+            //     console.log('touchmove')
+            //     socket.emit('touchmove', {roomId: params.gameId})
+            // });
+            var xPos = null;
+            var yPos = null;
+            window.addEventListener( "touchmove", function ( event ) {
+                var touch = event.originalEvent.touches[ 0 ];
+                oldX = xPos;
+                oldY = yPos;
+                xPos = touch.pageX;
+                yPos = touch.pageY;
+                if ( oldX == null && oldY == null ) {
+                    return false;
+                }
+                else {
+                    if ( Math.abs( oldX-xPos ) > Math.abs( oldY-yPos ) ) {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            } );
             window.addEventListener('orientationchange', handleOrientationChange);
             getOrientation();
             window.addEventListener('resize', handleOrientationChange);
@@ -174,7 +202,10 @@ export default function({params}){
         setOffsetPlayers(adjustedPlayers);
         
     }, [meIndex, gameState.players])
-
+    useEffect(() => {
+        console.log('vh: ', vH)
+        console.log('vw: ', vW)
+    }, [vH, vW])
 
     useEffect(() => {
         getGameState()  
@@ -274,16 +305,16 @@ export default function({params}){
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
 
-    if(orientation === 'portrait' && window?.innerWidth < 600){
-        console.log('sidewyas')
-        return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
+    // if(orientation === 'portrait' && window?.innerWidth < 600){
+    //     console.log('sidewyas')
+    //     return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
         
-    }
+    // }
 
     return (
         <div className={styles.container}>
             <div className={`${styles.upperLeftButtons}`}>
-                <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="poker logo" onClick={toggleFullScreen}/>
+                <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="toggle full screen button" onClick={toggleFullScreen}/>
             </div>
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame}/>
@@ -301,85 +332,80 @@ export default function({params}){
                     requestFullScreen()
                 }}>Join Game</button>
             </div>} */}
-            <main className={styles.table}>
-                <div className={styles.players}>
-                    {offsetPlayers && offsetPlayers.map((player, index) => {
-                        return (
-                            <div key={index}>
-                            {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
-                                (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} />)}
-
-                            {/* {index !== 0 && */}
-                                <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown}/>
-                            {/* } */}
-                            
-                            
-                            </div>
-                        )
-                    })}
-                </div>
-                {gameState.flop?.length > 0 &&
-                <div className={styles.flop}>
-                    {gameState.flop.map((card, index) => {
-                        return (
-                            <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
-                        )
-                    })}
-                </div>
-                }
-                {gameState.pot > 0 &&
-                    <div className={styles.pot}>
-                        <h1>Pot: ${centerPot / 100}</h1>
-                    </div>
-                }
-                {gameState.players && meData && myPocket?.length > 0  && 
-                    // POCKET CARDS
-                    <>
-                    {/* <div className={styles.pocket}>
-                    <Image src={svgUrlHandler(myPocket[0])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`}/>
-                    <Image src={svgUrlHandler(myPocket[1])} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`}/>
-                    </div> */}
-                    </>
-                }
-                <div className={`${styles.preGameInfo}`}>
-                    <div className={styles.creatorButtons}>
-                        {gameData?.creatorId === session?.user?.id && !gameState.active &&
-                        <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
-                        }
-                        {!gameState.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? 'At least two players need to be in the room to start game' : 'Waiting for users to join and for room creator to start game'}</p>}
-                        {nextHandButtonShown && 
-                        <button onClick={nextHand}>Next Hand</button>
-                    }
-                    
-                    </div>
-                    {!gameState.active &&
-                    <div className={styles.usersInRoom}>
-                        <h1>Users in room</h1>
-                        {usersInRoom.map((user, index) => {
+            <main className={styles.tableContainer}>
+                <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
+                    <div className={styles.players}>
+                        {offsetPlayers && offsetPlayers.map((player, index) => {
                             return (
-                                <div key={index}>
-                                    <p>
-                                    {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
-                                        <span>D </span>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {user?.username}{' '}{user?.chips}
-                                    {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
-                                        <span>&#128994;</span>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
-                                        <span> Small</span> : <></>}
-                                    {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
-                                        <span> Big</span> : <></>}
-                                    </p>
+                                <div key={index} className={`${styles.playerContainer}`}>
+                                <>
+                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
+                                    (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} />)}
+
+                                {/* {index !== 0 && */}
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize}/>
+                                {/* } */}
+                                </>
+                                
+                                
                                 </div>
                             )
                         })}
                     </div>
-                }
+                    {gameState.flop?.length > 0 &&
+                    <div className={styles.flop}>
+                        {gameState.flop.map((card, index) => {
+                            return (
+                                <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
+                            )
+                        })}
+                    </div>
+                    }
+                    {gameState.pot > 0 &&
+                        <div className={styles.pot}>
+                            <h1>Pot: ${centerPot / 100}</h1>
+                        </div>
+                    }
+                    <div className={`${styles.preGameInfo}`}>
+                        <div className={styles.creatorButtons}>
+                            {gameData?.creatorId === session?.user?.id && !gameState.active &&
+                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
+                            }
+                            {!gameState.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
+                            {nextHandButtonShown && 
+                            <button onClick={nextHand}>Next Hand</button>
+                        }
+                        
+                        </div>
+                        {!gameState.active &&
+                        <div className={styles.usersInRoom}>
+                            <h1>Users in room</h1>
+                            {usersInRoom.map((user, index) => {
+                                return (
+                                    <div key={index}>
+                                        <p>
+                                        {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
+                                            <span>D </span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {user?.username}{' '}{user?.chips}
+                                        {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
+                                            <span>&#128994;</span>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
+                                            <span> Small</span> : <></>}
+                                        {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
+                                            <span> Big</span> : <></>}
+                                        </p>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    }
+                    </div>
                 </div>
             </main>
             <div className={styles.game}>

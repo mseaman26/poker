@@ -50,7 +50,8 @@ const GameBurger = ({endGame}) => {
             position: 'fixed',
             height: '100%',
             width: '80%',
-            top: 0
+            top: 0,
+            zIndex: 10
         },
         //General sidebar styles
         bmMenu: {
@@ -59,7 +60,8 @@ const GameBurger = ({endGame}) => {
             padding: '2.5em 1.5em 0',
             fontSize: '1.15em',
             width: '100%',
-            top: 0
+            top: 0,
+            zIndex: 10
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
@@ -84,7 +86,8 @@ const GameBurger = ({endGame}) => {
             left: 0,
             top: 0,
             width: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.4)'
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            zIndex: 9
         }
     }
     return (

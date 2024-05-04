@@ -3,7 +3,7 @@ import styles from './MyTurn.module.css'
 import { useState, useEffect } from 'react'
 import BetForm from './BetForm/BetForm'
 
-const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
+const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize}) => {
 
     const [betAmount, setBetAmount] = useState(0)
     const [raiseFormShown, setRaiseFormShown] = useState(false)
@@ -156,7 +156,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
         <div className={styles.container}>
             
             <div className={styles.myTurnPopup}>
-                <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1>
+                {/* <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1> */}
                 {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
                 {/* CHECK OR BET */}
                 {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
@@ -169,14 +169,14 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
                 )}
                 {betFormShown && (
                     <>
-                    {/* <span>test</span>
+                    <span>test</span>
                     <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
                         $<input type="number" placeholder='Bet Amount' step="0.01"/>
                         <button type="submit" className={styles.betSubmit}>Bet</button>
                         <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
                     </form>
-                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button> */}
-                    <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} betFormShown={betFormShown} />
+                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
+                    {/* <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} betFormShown={betFormShown} /> */}
                     </>
                 )}
                 {/* RAISE FORM */}
@@ -198,15 +198,15 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown}) => {
 
                     {/* {gameState.currentBet - gameState?.players[gameState.turn]?.bet < gameState.players[gameState.turn].chips && */}
                     <>
-                    <h1 className={styles.toYou}>
+                    <h1 className={styles.toYou} style={{fontSize: containerSize * .05}}>
                         ${(callAmount / 100).toFixed(2)} to call
                     </h1>
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
-                    <button onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)}>Call</button>
-                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Raise</button>
+                    <button onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>
+                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>
                     </>
                     {/* } */}
-                    <button onClick={fold}>Fold</button>
+                    <button onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips &&
                     
                     <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
