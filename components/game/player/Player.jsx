@@ -61,8 +61,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`}>
-                    <h1 className={styles.playerInfo}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
-                    <h1 className={styles.playerInfo}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
+                    <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
+                    <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <span className={styles.dealerMarker}>D</span>
@@ -71,12 +71,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <div className={styles.moneyInPot} style={chipStyle}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action &&
-                        <div className={styles.action}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>
+                        <div className={styles.action} style={{fontSize: containerSize * .025}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>
                         }
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && <div className={`${styles.chipBackground} ${styles.chipBlue}`}>
                         <Image src={blackChip} width={20} height={20} className={styles.chipImage} alt='poker chip icon'/></div>}
-                        {player.bet > 0 && <h1>${(player.bet / 100).toFixed(2)}</h1>}  
+                        {player.bet > 0 && <h1 style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}  
                              
                     </div>
                 </div>
@@ -128,7 +128,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <h1>{player.actualHand?.title}</h1>
                     }
                     
-                    <h1 className={styles.MeInfo}>My Chips: <span className={styles.chips}>${(player.chips / 100).toFixed(2)}</span></h1>
+                    <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
                 </div>
                 :
                 // WHEN I HAVE NO CHIPS

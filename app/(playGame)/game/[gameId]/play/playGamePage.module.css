@@ -116,7 +116,7 @@
     position: relative;
 }
 .table{
-    background-image: url('../../../../assets/images/round-poker-table.svg');
+    background-image: url('../../../../assets/images/shutterstock_2176502011.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -126,6 +126,7 @@
     justify-content: center;
     align-items: center;
     background-image: '';
+    position: relative;
 
 }
 .players{
@@ -138,14 +139,13 @@
     height: 100%;
 }
 .flop{
-    width: 37%;
+    width: 46%;
     position: absolute;
     display: flex;
-    top: 30%;
+    top: 43.5%;
 }
 .flopCard{
     width: 20%;
-    top: 50%;
     height: auto;
 }
 .pot{

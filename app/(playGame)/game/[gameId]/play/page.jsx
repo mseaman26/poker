@@ -314,7 +314,7 @@ export default function({params}){
     return (
         <div className={styles.container}>
             <div className={`${styles.upperLeftButtons}`}>
-                <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="toggle full screen button" onClick={toggleFullScreen}/>
+                {/* <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="toggle full screen button" onClick={toggleFullScreen}/> */}
             </div>
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame}/>
