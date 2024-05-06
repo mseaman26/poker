@@ -215,9 +215,10 @@ useEffect(() => {
           </Link>
         </form>
       </div>
+      {process.env.NODE_ENV === 'development' &&
       <div className={styles.loginButtons}>
         <button onClick={(e) => registerUser(e, 'player1@player1.com', '!Q2w3e4r', 'Player1')}>Create Player 1</button><br></br>
-      </div>
+      </div>}
     </div>
   )
 }
