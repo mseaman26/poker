@@ -139,10 +139,10 @@
     height: 100%;
 }
 .flop{
-    width: 46%;
+    width: 60%;
     position: absolute;
     display: flex;
-    top: 43.5%;
+    top: 41%;
 }
 .flopCard{
     width: 20%;
@@ -152,14 +152,14 @@
     position: absolute;
     width: 20%;
     height: 10%;
-    top: 54%;
+    top: 32.5%;
     left: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
     /* background-color: rgba(0, 0, 0, 0.5); */
     color: white;
-    font-size: 2vw;
+    font-size: 4vw;
     border-radius: 10px;
 }
 
