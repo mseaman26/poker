@@ -44,7 +44,7 @@ export default function({params}){
     const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
     const [loading, setLoading] = useState(true)
-    const containerSize = Math.min(vW , vH )
+    const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
 
    
@@ -202,10 +202,7 @@ export default function({params}){
         setOffsetPlayers(adjustedPlayers);
         
     }, [meIndex, gameState.players])
-    useEffect(() => {
-        console.log('vh: ', vH)
-        console.log('vw: ', vW)
-    }, [vH, vW])
+
 
     useEffect(() => {
         getGameState()  
@@ -363,7 +360,7 @@ export default function({params}){
                     }
                     {gameState.pot > 0 &&
                         <div className={styles.pot}>
-                            <h1>Pot: ${centerPot / 100}</h1>
+                            <h1 style={{fontSize: containerSize * .05}}>Pot: ${centerPot / 100}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>

@@ -117,7 +117,12 @@ const Games = () => {
                 <div className={`${styles.gameInvitesContainer} ${styles.myGames}`}>
                     <h2 className={styles.smallHeader}>My Games</h2>
                     <ul className={styles.myGamesUL}>
-                        {myGames?.length < 1 ?  <h1 className={styles.noGames}>You have no created games</h1> : 
+                        {myGames?.length < 1 ?  
+                        <>
+                        <h1 className={styles.noGames}>You have no created games</h1> 
+                        <button className={styles.button} onClick={() => router.push('/createGame')}>Create New Game</button>
+                        </>
+                        : 
                         
                             myGames?.map((game, index) => {
                             return(

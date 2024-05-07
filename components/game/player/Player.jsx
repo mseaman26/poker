@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { playerPositions, chipPositions, cardPositions } from '@/lib/playerPositions';
 import Image from 'next/image';
 import blackChip from '@/app/assets/images/black_Poker_Chip.webp'
+import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Myturn from '../MyTurn/MyTurn';
@@ -74,8 +75,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <div className={styles.action} style={{fontSize: containerSize * .025}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>
                         }
                         {/* CHIP ICON AND MONEY IN POT*/}
-                        {player.bet > 0 && <div className={`${styles.chipBackground} ${styles.chipBlue}`}>
-                        <Image src={blackChip} width={20} height={20} className={styles.chipImage} alt='poker chip icon'/></div>}
+                        {player.bet > 0 && 
+                        <Image src={blueChip} width={20} height={20} className={styles.chipImage} alt='poker chip icon'/>}
                         {player.bet > 0 && <h1 style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}  
                              
                     </div>
@@ -113,15 +114,16 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1>my turn</h1>
                     } */}
                     {gameState.dealer === (index + meIndex) % numPlayers && 
-                        <span className={styles.dealerMarker}>D</span>
+                        <span className={styles.MydealerMarker}>D</span>
                     }
                     
                     {player?.folded && <span className={styles.folded}>F</span>}
                     {player.bet > 0 && 
                     <div className={styles.moneyInPot} style={chipStyle}>
-                        <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div>
-                        <Image src={blackChip} width={20} height={20} className={styles.MyChipImage} alt='poker chip icon'/>
-                        {player.bet > 0 && <h1>${(player.bet / 100).toFixed(2)}</h1>}
+                        {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
+                        <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon'/>
+                        {player.bet > 0 && 
+                            <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
                     </div>
                     }
                     {gameState.handComplete && player.eliminated === false && player.folded === false &&
