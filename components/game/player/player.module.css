@@ -231,6 +231,7 @@
     width: 100%;
     justify-content: center;
     top: 0%;
+    height: 10%
 }
 .pocketCard{
     position: absolute;
@@ -249,7 +250,7 @@
 .myPocket{
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 200%;
     justify-content: center;
     z-index: 2;
     
@@ -272,7 +273,9 @@
     position: absolute;
     color: red;
     text-align: center;
-    top: 50%;
+    top: -200%;
+    height: fit-content;
+    width: 200%;
     z-index: 5;
 }
 .yellowHalo{

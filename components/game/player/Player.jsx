@@ -98,7 +98,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 <div className={styles.pocketContainer}>
                     <div className={styles.pocket} style={cardStyle}>
                         {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 &&
-                        <h1 className={styles.actualHand}>{player?.actualHand?.title || "Test "}</h1>}
+                        <h1 className={styles.actualHand} style={{fontSize: basefont}}>{player?.actualHand?.title || "Test "}</h1>}
                         {player.eliminated === false &&
                         <>
                         <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`}/>
