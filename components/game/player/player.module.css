@@ -24,18 +24,17 @@
 
 }
 .otherPlayer{
+    position: absolute;
     width: 20%;
     height: 20%;
     font-size: 48px;
 }
 .playerInfoContainer{
     background-color: rgb(50, 50, 50);
-    position: absolute;
+    position: relative;
     color: white;
-    transform: translate(-50%, -50%);
     text-wrap: nowrap;
     padding: 5%;
-    border-radius: 1vw;
     width: 100%;
     
 }
@@ -69,13 +68,12 @@
     border-radius: 100%;
 }
 .dealerMarker{
-    font-size: 30%;
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    top:8%;
-    left: 120%;
+    top: -40%;
+    left: 70%;
     height: 50%;
     aspect-ratio: 1/1;
     text-align: center;
@@ -96,19 +94,55 @@
     aspect-ratio: 1/1;
     color: white;
 }
+.firstDealerMarker{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: -40%;
+    left: 150%;
+    height: 50%;
+    aspect-ratio: 1/1;
+    text-align: center;
+    border-radius: 100%;
+    background-color: brown;
+    transform: translateY(-50%);
+}
+.seventhDealerMarker{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: -40%;
+    left: -80%;
+    height: 50%;
+    aspect-ratio: 1/1;
+    text-align: center;
+    border-radius: 100%;
+    background-color: brown;
+    transform: translateY(-50%);
+}
 .chips{
     color: rgb(248, 240, 3);
+}
+.MymoneyInPotContainer{
+    width: 100%;
+    display: flex;
+    justify-self: center;
+    align-items: center;
 }
 .moneyInPot{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    /* transparent gray background */
+    padding-inline: 5%;
     width: 100%;
-    height: 50%;
+    background-color: rgba(155, 155, 155, 0.5);
 }
 
 .myMoneyInPot{
-    position: absolute;
     color: white;  
     left: 30%;
 }
@@ -121,14 +155,26 @@
     transform: translateY(-50%) translateX(-120%);
     z-index: 2;
 }
+.otherChipAndBet{
+    width: 100%;
+    display: flex;
+    height: fit-content;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    left: 5%;
+    top: -20%;
+
+}
+
 .chipImage{
-    position: absolute;
-    width: 20%;
-    left: 5%
-    
+
+    left: 0%
+}
+.otherBet{
+    display: inline;
 }
 .MyChipImage{
-    position: absolute;
     width: 12%;
     top: 4%;
     left: 10%;
@@ -166,8 +212,11 @@
     opacity: .3;
 }
 .playerContainer{
-    width: 20%;
-    height: 20%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .pocketContainer{
     height: 100%;
@@ -230,11 +279,12 @@
     box-shadow: 0 0 10px 15px yellow;
 }
 .action{
-    position: absolute;
-    top: -55%;
+    min-height: 5%;
     text-wrap: nowrap;
-    color: red;
+    color: rgb(255, 132, 0);
     font-weight: bold;
+    padding: 0px;
+    
 }
 .buyBack{
     

@@ -18,6 +18,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const [buyBackFormShown, setBuyBackFormShown] = useState(false)
     const [buyBackAmount, setBuyBackAmount] = useState(null)
     const [meEliminated, setMeEliminated] = useState(false)
+    const basefont = containerSize * .03
     
     const style = {
         position: 'absolute',
@@ -54,6 +55,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             setCardImage2(redBack)
         }
     }, [gameState])
+
     return (
         // <div className={`${styles.container}`} style={style}>
         <>   
@@ -61,24 +63,30 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             <div className={styles.otherPlayer} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
-                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`}>
+                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2}} >
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
-                        <span className={styles.dealerMarker}>D</span>
+                        <>
+                        {index === 1 &&  <span className={styles.firstDealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index === 7 && <span className={styles.seventhDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
+                        {index !== 7 && index !== 1 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
+                        </>
                     }
-                    {player?.folded && <span className={styles.folded}>F</span>}
-                    <div className={styles.moneyInPot} style={chipStyle}>
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action &&
-                        <div className={styles.action} style={{fontSize: containerSize * .025}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>
-                        }
+                            <div className={styles.action} style={{fontSize: containerSize * .03}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
+
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
-                        <Image src={blueChip} width={20} height={20} className={styles.chipImage} alt='poker chip icon'/>}
-                        {player.bet > 0 && <h1 style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}  
-                             
+                        <div className={styles.otherChipAndBet}>
+                            <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
+                        {player.bet > 0 && 
+                        <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>
+                        }  
+                        </div>}
                     </div>
                 </div>
                 :
@@ -119,9 +127,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     
                     {player?.folded && <span className={styles.folded}>F</span>}
                     {player.bet > 0 && 
-                    <div className={styles.moneyInPot} style={chipStyle}>
+                    <div className={styles.MymoneyInPotContainer} style={{...chipStyle, borderRadius: containerSize * .3}}>
                         {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
-                        <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon'/>
+                        <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>
                         {player.bet > 0 && 
                             <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
                     </div>

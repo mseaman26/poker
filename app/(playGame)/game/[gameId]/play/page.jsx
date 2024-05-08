@@ -13,7 +13,6 @@ import loadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import fullScreen from '@/app/assets/icons/fullscreen-svgrepo-com.svg'
 import exitFullScreen from '@/app/assets/icons/exitFullScreen.svg'
-import { set } from "mongoose";
 
 
 
