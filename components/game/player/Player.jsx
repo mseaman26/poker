@@ -63,7 +63,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             <div className={styles.otherPlayer} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
-                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2}} >
+                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, visibility: gameState.handComplete ? 'hidden' : 'visible'}} >
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
 
@@ -74,7 +74,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {index !== 7 && index !== 1 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
+                    {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action &&
                             <div className={styles.action} style={{fontSize: containerSize * .03}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
@@ -87,7 +87,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>
                         }  
                         </div>}
-                    </div>
+                    </div>}
                 </div>
                 :
                 <>
@@ -98,11 +98,13 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 <div className={styles.pocketContainer}>
                     <div className={styles.pocket} style={cardStyle}>
                         {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 &&
-                        <h1 className={styles.actualHand} style={{fontSize: basefont}}>{player?.actualHand?.title || "Test "}</h1>}
+                        <h1 className={styles.actualHand} style={{fontSize: basefont}}>
+                            <span style={{color: 'yellow'}}>{`${player.username}: `}</span>
+                            {`${player?.actualHand?.title}` || "Test "}</h1>}
                         {player.eliminated === false &&
                         <>
-                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`}/>
-                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`}/>
+                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
+                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
                         </>
                         }
                     </div>
@@ -116,6 +118,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 <div className={styles.myPocket} style={cardStyle}>
                 <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1}`}/>
                 <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
+                {gameState.handComplete && player.eliminated === false && player.folded === false &&
+                    <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
+                    }
                 {player.chips > 0 || player.moneyInPot > 0? 
                 <div className={styles.meInfoContainer}>
                     {/* {gameState.turn === (index + meIndex) % numPlayers &&
@@ -134,11 +139,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
                     </div>
                     }
-                    {gameState.handComplete && player.eliminated === false && player.folded === false &&
-                    <h1>{player.actualHand?.title}</h1>
-                    }
+                    
                     
                     <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
+                    
                 </div>
                 :
                 // WHEN I HAVE NO CHIPS

@@ -51,6 +51,13 @@
     height: 150%;
     position: absolute;
 }
+.myActualHand{
+    color: red;
+    font-weight: 900;
+    position: relative;
+    height: fit-content;
+    top: -10%;
+}
 .playerInfo{
 
 }
@@ -128,8 +135,10 @@
 .MymoneyInPotContainer{
     width: 100%;
     display: flex;
-    justify-self: center;
+    justify-content: center;
     align-items: center;
+    position: relative;
+    background-color: rgba(155, 155, 155, 0.5);
 }
 .moneyInPot{
     display: flex;
@@ -145,6 +154,7 @@
 .myMoneyInPot{
     color: white;  
     left: 30%;
+    
 }
 
 .turnMarker{
@@ -168,16 +178,20 @@
 }
 
 .chipImage{
-
-    left: 0%
+    position: relative;
+    margin-right: 5%;
+    top: 55%;
+    left: 0%;
+    transform: translateY(3%);
 }
 .otherBet{
     display: inline;
 }
 .MyChipImage{
+    position: relative;
     width: 12%;
-    top: 4%;
-    left: 10%;
+    transform: translateY(3%);
+    margin-right: 3%;
     z-index: 1;
 }
 .chipBackground{
@@ -236,9 +250,13 @@
 .pocketCard{
     position: absolute;
     z-index: 2;
+    max-width: 200%;
     width: 60%;
     height: auto;
-   
+}
+.pocketCardComplete{
+    width: 150%;
+
 }
 .pocketCard1{
     transform: translateX(-20%) rotate(-5deg);
@@ -275,7 +293,7 @@
     text-align: center;
     top: -200%;
     height: fit-content;
-    width: 200%;
+    width: 400%;
     z-index: 5;
 }
 .yellowHalo{
