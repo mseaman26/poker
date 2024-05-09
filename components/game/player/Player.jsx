@@ -69,9 +69,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <>
-                        {index === 1 && numPlayers >= 7 &&  <span className={styles.firstDealerMarker} style={{fontSize: basefont}}>D</span>}
-                        {index === 7 && <span className={styles.seventhDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
-                        {index !== 7 && index !== 1 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
+                        
+                        {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
+                        {index === 7 || index === 6 && numPlayers >= 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index > 1 && index < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
                     {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
@@ -127,7 +128,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1>my turn</h1>
                     } */}
                     {gameState.dealer === (index + meIndex) % numPlayers && 
-                        <span className={styles.MydealerMarker}>D</span>
+                        <span className={styles.MydealerMarker} style={{fontSize: basefont * 1.5}}>D</span>
                     }
                     
                     {player?.folded && <span className={styles.folded}>F</span>}
