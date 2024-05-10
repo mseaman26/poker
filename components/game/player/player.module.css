@@ -46,7 +46,7 @@
 .meInfoContainer{
     text-align: center;
     z-index: 5;
-    top: 10%;
+    top: 13%;
     width: 150%;
     height: 150%;
     position: absolute;
@@ -106,7 +106,7 @@
     border-radius: 100%;
     height: 30%;
     left: -20%;
-    top: 125%;
+    top: 109%;
     left: 35%;
     aspect-ratio: 1/1;
     color: white;

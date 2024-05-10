@@ -134,7 +134,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         }
                         
                         {player?.folded && <span className={styles.meFolded} style={{fontSize: basefont * 2}}>FOLDED</span>}
-                        {player.bet > 0 && 
+                        {player.bet > 0 && gameState.handComplete === false &&
                         <div className={styles.MymoneyInPotContainer} style={{...chipStyle, borderRadius: containerSize * .3}}>
                             {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
                             <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>

@@ -14,6 +14,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const [chipTotal, setChipTotal] = useState(0)
     const baseFont = containerSize * .03
     const raiseInputRef = useRef(null);
+    const betInputRef = useRef(null);
 
     const fold = () => {
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
@@ -84,8 +85,9 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         }
         
         bet(betAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet)
-        
+        setBetFormShown(!betFormShown)
     }
+
     const bet = (amount) => { 
         if(amount  === gameState.players[gameState.turn].chips){
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
@@ -122,7 +124,10 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         if(raiseFormShown){
             raiseInputRef.current.focus()
         }
-    }, [raiseFormShown])
+        if(betFormShown){
+            betInputRef.current.focus()
+        }
+    }, [raiseFormShown, betFormShown])
 
         
     
@@ -152,10 +157,20 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                 {betFormShown && (
                     <>
                     <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
-                        <div className={styles.betInputContainer}>
-                            $<input type="number" placeholder='Bet Amount' step="0.01" inputMode="numeric"/>
+  
+                    <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
+                        <h1 >Max Bet:</h1>
+                        <h1> ${(maxRaise / 100).toFixed(2)}</h1>
+                    </div>
+                        <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
+                            $
+                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="numeric" placeholder='Bet Amount'  style={{fontSize: baseFont *1.5, color: 'yellow', fontWeight: 700}} placeholderTextColor='black'/>
                         </div>
-                        <button type="submit" className={styles.betSubmit}>Bet</button>
+                        <div className={styles.betAndCancel}>
+                            <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Bet</button>
+                            <button className={`cancelButton ${styles.cancelButton}`} style={{fontSize: baseFont}} onClick={() => setBetFormShown(!betFormShown)}
+                        >Cancel</button>
+                        </div>
 
                     </form>
                     
@@ -174,10 +189,14 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         <h1> ${(maxRaise / 100).toFixed(2)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
-                            $<input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="numeric" placeholder='Raise Amount'  style={{fontSize: baseFont *1.5, color: 'yellow', fontWeight: 700}} placeholderTextColor='black'/>
+                            $
+                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="numeric" placeholder='Raise Amount'  style={{fontSize: baseFont *1.5, color: 'yellow', fontWeight: 700}} placeholderTextColor='black'/>
                         </div>
-                        <button className={`blueButton ${styles.raiseButton}`} type="submit">Raise</button>
-                        <button className={`cancelButton ${styles.cancelButton}`} onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
+                        <div className={styles.betAndCancel}>
+                            <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Raise</button>
+                            <button className={`cancelButton ${styles.cancelButton}`} style={{fontSize: baseFont}} onClick={() => setRaiseFormShown(!raiseFormShown)}
+                        >Cancel</button>
+                        </div>
                     </form>
                     
                     </>
