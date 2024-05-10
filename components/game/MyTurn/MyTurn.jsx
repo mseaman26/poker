@@ -1,6 +1,6 @@
 import { set } from 'mongoose'
 import styles from './MyTurn.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import BetForm from './BetForm/BetForm'
 
 const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize}) => {
@@ -13,6 +13,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const [maxBet, setMaxBet] = useState(0)
     const [chipTotal, setChipTotal] = useState(0)
     const baseFont = containerSize * .03
+    const raiseInputRef = useRef(null);
 
     const fold = () => {
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
@@ -94,32 +95,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const manualWin = (turn) => {
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
-    useEffect(() => {
-        console.log(navigator)
-        document.addEventListener('keydown', (e) => {
-            if(e.key === 'f'){
-                fold()
-            }
-            if(e.key === 'c'){
-                call(callAmount)
-            }
-            if(e.key === 'b'){
-                setBetFormShown(!betFormShown)
-            }
-            if(e.key === 'r'){
-                setRaiseFormShown(!raiseFormShown)
-            }
-            if(e.key === 'x'){
-                if(gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0){
-                    bet(0)
-                }
-                
-            }
-        })
-        return () => {
-            document.removeEventListener('keydown', ()=>{});
-        };
-    }, [])
+
     useEffect(() => {
         if(gameState?.players.length === 1){
             alert('You win!')
@@ -142,6 +118,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         }
     }, [gameState.foldedCount])
 
+    useEffect(() => {
+        if(raiseFormShown){
+            raiseInputRef.current.focus()
+        }
+    }, [raiseFormShown])
 
         
     
@@ -193,7 +174,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         <h1> ${(maxRaise / 100).toFixed(2)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
-                            $<input className={styles.betInput} type="number" inputMode="numeric" placeholder='Raise Amount' step="0.01" style={{fontSize: baseFont}}/>
+                            $<input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="numeric" placeholder='Raise Amount'  style={{fontSize: baseFont *1.5, color: 'yellow', fontWeight: 700}} placeholderTextColor='black'/>
                         </div>
                         <button className={`blueButton ${styles.raiseButton}`} type="submit">Raise</button>
                         <button className={`cancelButton ${styles.cancelButton}`} onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>

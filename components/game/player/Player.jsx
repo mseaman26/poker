@@ -72,7 +72,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         
                         {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
                         {index === 7 || index === 6 && numPlayers >= 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
-                        {index > 1 && index < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index > 0 && index < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
                     {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
