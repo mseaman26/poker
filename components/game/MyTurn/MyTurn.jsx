@@ -171,24 +171,30 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     <>
                     <span>test</span>
                     <form onChange={handleBetChange} onSubmit={handleBetSubmit} className={styles.betForm}>
-                        $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                        <div className={styles.betInputContainer}>
+                            $<input type="number" placeholder='Bet Amount' step="0.01"/>
+                        </div>
                         <button type="submit" className={styles.betSubmit}>Bet</button>
                         <h1>Max bet: ${(maxBet / 100).toFixed(2)}</h1>
+                        <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
                     </form>
-                    <button onClick={() => setBetFormShown(!betFormShown)}>Cancel</button>
+                    
                     {/* <BetForm handleBetChange={handleBetChange} handleBetSubmit={handleBetSubmit} maxBet={maxBet} setBetFormShown={setBetFormShown} betFormShown={betFormShown} /> */}
                     </>
                 )}
                 {/* RAISE FORM */}
                 {raiseFormShown && (
                     <>
-                    {/* <span>test</span>
+                    <span>test</span>
                     <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
+                        <div className={styles.betInputContainer}>
                         $<input type="number" placeholder='Raise Amount' step="0.01"/>
+                        </div>
                         <button type="submit">Bet</button>
+                        
                     </form>
                     <h1>Max raise: ${(maxRaise / 100).toFixed(2)}</h1>
-                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button> */}
+                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}>Cancel</button>
                     </>
                 )}
                 

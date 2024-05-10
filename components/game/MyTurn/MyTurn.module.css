@@ -41,10 +41,25 @@
     color: #ff0000;
 }
 .betForm{
-    display: flex
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    right: 0%;
+    top: -100%;
+    background-color: white;
+    padding: 2vw;
+    border-radius: 10px;
+    width: 35%;
+    height: fit-content
+}
+.betInputContainer{
+    display: flex;
+    align-items: center;
+
 }
 .betForm input{
-    width: 50%;
+    width: 100%;
     height: 100%;
     margin: 5px;
     border-radius: 7px;

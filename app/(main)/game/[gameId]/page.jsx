@@ -128,15 +128,20 @@ const ViewGameInfo = ({params}) => {
                     <div className={`headerContainer`}>
                         <h1>Invite Friends</h1>
                     </div>
-                    <div className={`formContainer`}>
-                        <form  className={`form ${styles.searchForm}`}>
-                            <input
-                            type="text"
-                            placeholder="Search friends..."
-                            className={`input ${styles.searchInput}`}
-                            />
-                        </form>
-                    </div>
+                    {gameInfo?.invitedUsers?.length < 7 ? 
+                        <div className={`formContainer`}>
+                            <form  className={`form ${styles.searchForm}`}>
+                                <input
+                                type="text"
+                                placeholder="Search friends..."
+                                className={`input ${styles.searchInput}`}
+                                />
+                            </form>
+                        </div>
+                    
+                    :
+                    <h1>{`You've reached the maximum number of invites (8 players total per room)`} </h1>
+                    }
                     <div className={`${styles.searchResults}`}>
                     {meData && meData.friends? (
                         meData.friends.map((friend, index) => 

@@ -166,9 +166,10 @@
     justify-content: center;
     align-items: center;
     /* background-color: rgba(0, 0, 0, 0.5); */
-    color: rgb(0, 217, 255);
+    color: white;
     font-size: 8%;
     border-radius: 10px;
     width: 100%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 

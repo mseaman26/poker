@@ -60,7 +60,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         // <div className={`${styles.container}`} style={style}>
         <>   
             {index !== 0 ? 
-            <div className={styles.otherPlayer} style={style}>
+            <div className={`${styles.otherPlayer} ${player.folded ? styles.folded : ''}`} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, visibility: gameState.handComplete ? 'hidden' : 'visible'}} >
@@ -78,7 +78,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action &&
-                            <div className={styles.action} style={{fontSize: containerSize * .03}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
+                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
 
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
@@ -102,7 +102,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.actualHand} style={{fontSize: basefont}}>
                             <span style={{color: 'yellow'}}>{`${player.username}: `}</span>
                             {`${player?.actualHand?.title}` || "Test "}</h1>}
-                        {player.eliminated === false &&
+                        {player.eliminated === false && player.folded === false &&
                         <>
                         <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
                         <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
@@ -116,46 +116,48 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             <div className={styles.me} style={style}>
                     {/* ME SECTION */}
                 {player.eliminated === false &&
-                <div className={styles.myPocket} style={cardStyle}>
-                <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1}`}/>
-                <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                {gameState.handComplete && player.eliminated === false && player.folded === false &&
-                    <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
-                    }
-                {player.chips > 0 || player.moneyInPot > 0? 
-                <div className={styles.meInfoContainer}>
-                    {/* {gameState.turn === (index + meIndex) % numPlayers &&
-                        <h1>my turn</h1>
-                    } */}
-                    {gameState.dealer === (index + meIndex) % numPlayers && 
-                        <span className={styles.MydealerMarker} style={{fontSize: basefont * 1.5}}>D</span>
-                    }
-                    
-                    {player?.folded && <span className={styles.folded}>F</span>}
-                    {player.bet > 0 && 
-                    <div className={styles.MymoneyInPotContainer} style={{...chipStyle, borderRadius: containerSize * .3}}>
-                        {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
-                        <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>
-                        {player.bet > 0 && 
-                            <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
+                <div className={`${styles.myPocket}`} style={{...cardStyle}} >
+                    <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
+                    <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
+                    <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
                     </div>
-                    }
-                    
-                    
-                    <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
-                    
-                </div>
-                :
-                // WHEN I HAVE NO CHIPS
-                <div className={styles.buyBack}>
-                    <button onClick={() => setBuyBackFormShown(true)}>Buy back in</button>
-                    {buyBackFormShown &&
-                    <form onSubmit={handleBuyBack} className={styles.buyBackForm}>
-                        <input type="number" placeholder="Amount" onChange={(e) => setBuyBackAmount(e.target.value)}/>
-                        <button type="submit">Submit</button>
-                    </form>
-                    }
-                </div>
+                    {gameState.handComplete && player.eliminated === false && player.folded === false &&
+                        <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
+                        }
+                    {player.chips > 0 || player.moneyInPot > 0? 
+                    <div className={styles.meInfoContainer}>
+                        {/* {gameState.turn === (index + meIndex) % numPlayers &&
+                            <h1>my turn</h1>
+                        } */}
+                        {gameState.dealer === (index + meIndex) % numPlayers && 
+                            <span className={styles.MydealerMarker} style={{fontSize: basefont * 1.5}}>D</span>
+                        }
+                        
+                        {player?.folded && <span className={styles.meFolded} style={{fontSize: basefont * 2}}>FOLDED</span>}
+                        {player.bet > 0 && 
+                        <div className={styles.MymoneyInPotContainer} style={{...chipStyle, borderRadius: containerSize * .3}}>
+                            {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
+                            <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>
+                            {player.bet > 0 && 
+                                <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
+                        </div>
+                        }
+                        
+                        
+                        <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
+                        
+                    </div>
+                    :
+                    // WHEN I HAVE NO CHIPS
+                    <div className={styles.buyBack}>
+                        <button onClick={() => setBuyBackFormShown(true)}>Buy back in</button>
+                        {buyBackFormShown &&
+                        <form onSubmit={handleBuyBack} className={styles.buyBackForm}>
+                            <input type="number" placeholder="Amount" onChange={(e) => setBuyBackAmount(e.target.value)}/>
+                            <button type="submit">Submit</button>
+                        </form>
+                        }
+                    </div>
                 } 
                 </div>
                 
