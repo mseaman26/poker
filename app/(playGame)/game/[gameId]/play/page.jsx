@@ -349,26 +349,29 @@ export default function({params}){
                             )
                         })}
                     </div>
-                    {gameState.active && <div className={styles.flopPlaceholders}>
-                    {[0,1,2,3,4].map((card, index) => {
-                            return (
-                                <div key={index} className={styles.flopPlaceholder}></div>
-                            )
-                    })}
+                    {gameState.active && 
+                    <div className={styles.flopPlaceholders}>
+                        {[0,1,2,3,4].map((card, index) => {
+                                return (
+                                    <div key={index} className={styles.flopPlaceholder}></div>
+                                )
+                        })}    
                     </div>}
-                    
-                    {gameState.flop?.length > 0 &&
                     <div className={styles.flop}>
-                        
-                        {gameState.flop.map((card, index) => {
+
+                        {gameState?.flop?.map((card, index) => {
                             return (
-                                <>
-                                <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
-                                </>
+                                <div className={styles.flopCardContainer}>
+                                    <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
+                                </div>
                             )
                         })}
                     </div>
-                    }
+
+                    
+                        
+                        
+                    
                     {gameState.pot > 0 &&
                         <div className={styles.pot}>
                             <h1 style={{fontSize: containerSize * .05}}>Pot: ${centerPot / 100}</h1>

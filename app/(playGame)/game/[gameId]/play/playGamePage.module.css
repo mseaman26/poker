@@ -133,9 +133,9 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+
     background-image: '';
-    position: relative;
+    position: absolute;
 
 }
 .players{
@@ -149,33 +149,50 @@
     position: absolute;
 }
 .flop{
-    width: 60%;
-    position: absolute;
+    width: 63.1%;   
+    position: relative;
     display: flex;
-    top: 41%;
-    gap: 1%;
+
+    top: 40.7%;
+    left: 1.2%;
+    height: fit-content;
+    padding: 0px;
+    gap: .59%;
+   
 }
 .flopPlaceholders{
-    width: 62.3%;
+    width: 62.4%;
     position: absolute;
     display: flex;
-    top: 41.3%;
+    top: 41.15%;
     left: 20%;
     gap: 1%;
 }
 .flopPlaceholder{
-    width: 19.9%;
+    width: 19.4%;
     height: auto;
     border: 1px solid white;  
-    aspect-ratio: .73;
+    aspect-ratio: .71;
     border-radius: 2px;
-
+}
+.flopCardContainer{
+    width: 19.5%;
+    position: relative;
+    height: auto;
+    top: 0%;
+    left: 0%;
+    margin: 0px
 }
 .flopCard{
-    width: 20%;
-    height: auto;
 
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0%;
+    left: 0%;
+    margin: 0px
 }
+
 .pot{
     position: absolute;
     height: 10%;
