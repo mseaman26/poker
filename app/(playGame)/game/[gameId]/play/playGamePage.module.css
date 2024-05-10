@@ -153,10 +153,26 @@
     position: absolute;
     display: flex;
     top: 41%;
+    gap: 1%;
+}
+.flopPlaceholders{
+    width: 60%;
+    position: absolute;
+    display: flex;
+    top: 41%;
+    gap: 1%;
+}
+.flopPlaceholder{
+    width: 20%;
+    height: auto;
+    border: 1px solid white;  
+    aspect-ratio: .7027;
+    border-radius: 2px;
 }
 .flopCard{
     width: 20%;
     height: auto;
+
 }
 .pot{
     position: absolute;
