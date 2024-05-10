@@ -363,7 +363,6 @@ export default function({params}){
                         {gameState.flop.map((card, index) => {
                             return (
                                 <>
-                                <div className={styles.flopPlaceholder}></div>
                                 <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
                                 </>
                             )
