@@ -68,7 +68,10 @@
     margin-right: 9%;
     border-radius: 7px;
 }
-
+.betInput:focus{
+    outline: none;
+    opacity: 1;
+}
 .betAndCancel{
     display: flex;
     justify-content: center;

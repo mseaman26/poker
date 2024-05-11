@@ -142,7 +142,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         
         <div className={styles.container}>
             
-            <div className={styles.myTurnPopup}>
+            <div className={styles.myTurnPopup} style={{bottom: betFormShown && containerSize < 500 ? '-30%' : 0}}>
                 {/* <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1> */}
                 {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
                 {/* CHECK OR BET */}
@@ -164,7 +164,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Bet Amount'  style={{fontSize: baseFont *1.5, color: 'yellow', fontWeight: 700}} placeholderTextColor='black'/>
+                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'yellow', fontWeight: 700}} placeholderTextColor='black' />
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Bet</button>

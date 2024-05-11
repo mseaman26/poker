@@ -75,7 +75,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {index > 0 && index < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
-                    {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
+                    {!gameState.handComplete && 
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
@@ -83,7 +84,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
                         <div className={styles.otherChipAndBet}>
+                            <div className={styles.chipImageContainer}>
                             <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
+                            </div>
                         {player.bet > 0 && 
                         <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>
                         }  
