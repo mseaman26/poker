@@ -212,11 +212,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         ${(callAmount / 100).toFixed(2)} to call
                     </h1>
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
-                    <button onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>
-                    <button onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>
+                    <button className='greenButton' onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>
+
+                    <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>
                     </>
                     {/* } */}
-                    <button onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
+                    <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips &&
                     
                     <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
