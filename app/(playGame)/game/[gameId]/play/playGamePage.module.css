@@ -168,6 +168,9 @@
     left: 20%;
     gap: 1%;
 }
+.InvisibleFlopPlaceholder{
+    visibility: hidden;
+}
 .flopPlaceholder{
     width: 19.4%;
     height: auto;

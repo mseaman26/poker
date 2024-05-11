@@ -352,9 +352,16 @@ export default function({params}){
                     {gameState.active && 
                     <div className={styles.flopPlaceholders}>
                         {[0,1,2,3,4].map((card, index) => {
-                                return (
-                                    <div key={index} className={styles.flopPlaceholder}></div>
-                                )
+                            if(gameState.flop.length === 0){
+                                return <div key={index} className={styles.flopPlaceholder}></div>
+                            }else if(index > gameState.flop.length){
+                                return <div key={index} className={styles.flopPlaceholder}></div>
+                            }else{
+                                <div key={index} className={`${styles.flopPlaceholder} ${styles.InvisibleFlopPlaceholder}`}></div>
+                            }
+                                // return (
+                                //     <div key={index} className={styles.flopPlaceholder}></div>
+                                // )
                         })}    
                     </div>}
                     <div className={styles.flop}>
