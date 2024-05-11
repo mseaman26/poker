@@ -148,8 +148,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                 {/* CHECK OR BET */}
                 {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
                     <div className={styles.callFoldRaise}>
-                    <button onClick={() => bet(0)}>Check</button>
-                    <button onClick={() => setBetFormShown(!betFormShown)}>Bet</button>
+                    <button onClick={() => bet(0)} className='greenButton' style={{fontSize: baseFont}}>Check</button>
+                    <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: baseFont}}>Bet</button>
                     </div>
                 ) : (
                     <></>
