@@ -281,7 +281,7 @@ export default function({params}){
         
 
         if(socket && session){
-            getGameState()
+            // getGameState()
             socket.emit('activate user', {
               socketId: socket.id,
               email: session.user.email,
@@ -369,7 +369,7 @@ export default function({params}){
 
                         {gameState?.flop?.map((card, index) => {
                             return (
-                                <div className={styles.flopCardContainer}>
+                                <div key={index} className={styles.flopCardContainer}>
                                     <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
                                 </div>
                             )

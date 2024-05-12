@@ -21,11 +21,13 @@ const GameBurger = ({endGame}) => {
             width: '36px',
             height: '30px',
             color: 'white',
+            zIndex: 10
         },
         //Color/shape of burger icon bars
         bmBurgerBars: {
           
-            background: '#f1f1f1'
+            background: '#f1f1f1',
+            zIndex: 10
         },
         //Color/shape of burger icon bars on hover
         bmBurgerBarsHover: {
@@ -34,13 +36,15 @@ const GameBurger = ({endGame}) => {
         //Position and sizing of clickable cross button
         bmCrossButton: {
             height: '32px',
-            width: '32px'
+            width: '32px',
+            zIndex: 10
         },
         // Color/shape of close button cross
         bmCross: {
             fontSize: '64em',
             // fontSize: "64px",
-            background: '#bdc3c7'
+            background: '#bdc3c7',
+            zIndex: 10
         },
       
         //Sidebar wrapper styles
@@ -65,19 +69,23 @@ const GameBurger = ({endGame}) => {
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
-            
+            zIndex: 10
         },
         //Wrapper for item list
         bmItemList: {
+            position: 'relative',
             color: '#F1EFEB',
-            padding: '0.8em'
+            padding: '0.8em',
+            zIndex: 10
         },
         //Individual item
         bmItem: {
+            position: 'relative',
             fontWeight: 700,
             fontSize: 32,
             marginBottom: 20,
-            color: '#f1f1f1'
+            color: '#f1f1f1',
+            zIndex: 10
         },
         //Styling of overlay
         bmOverlay: {
@@ -87,12 +95,12 @@ const GameBurger = ({endGame}) => {
             top: 0,
             width: '100%',
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            zIndex: 9
+            zIndex: 10
         }
     }
     return (
    
-        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)}>
+        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 10}}>
             <div className="menu-item"  onClick={() => {
                 closeMenu()
                 router.back()}}>

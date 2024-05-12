@@ -10,6 +10,12 @@ import Myturn from '../MyTurn/MyTurn';
 
 
 const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize}) => {
+
+    const handCompleteStyles = {
+        width: containerSize * .12,
+        zIndex:  0
+    }
+    
     const position = playerPositions[numPlayers][index]
     const chipPosition = chipPositions[numPlayers][index]
     const cardPosition = cardPositions[numPlayers][index]
@@ -63,7 +69,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             <div className={`${styles.otherPlayer} ${player.folded ? styles.folded : ''}`} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
-                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, visibility: gameState.handComplete ? 'hidden' : 'visible'}} >
+                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2}} >
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
 
@@ -107,8 +113,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             {`${player?.actualHand?.title}` || "Test "}</h1>}
                         {player.eliminated === false && player.folded === false &&
                         <>
-                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
-                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2} ${gameState.handComplete ? styles.pocketCardComplete : ''}`}/>
+                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`} style={gameState.handComplete? handCompleteStyles : ''}/>
+                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete? handCompleteStyles : ''}/>
                         </>
                         }
                     </div>
@@ -177,3 +183,5 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 }
 
 export default Player;
+
+

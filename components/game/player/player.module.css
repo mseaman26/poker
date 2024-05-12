@@ -37,6 +37,7 @@
     padding: 5%;
     width: fit-content;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 .me{
     width: 20%;
@@ -68,7 +69,7 @@
     text-wrap: nowrap;
 }
 .playerInfo{
-
+    position: relative;
 }
 .MeInfo{
    
@@ -331,6 +332,7 @@
     font-weight: bold;
     padding: 0px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
     
 }
 .folded{
