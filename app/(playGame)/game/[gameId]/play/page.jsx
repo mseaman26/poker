@@ -11,8 +11,7 @@ import Image from "next/image";
 import Player from "@/components/game/player/Player";
 import loadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
-import fullScreen from '@/app/assets/icons/fullscreen-svgrepo-com.svg'
-import exitFullScreen from '@/app/assets/icons/exitFullScreen.svg'
+import DealingScreen from "@/components/dealingScreen/dealingScreen";
 
 
 
@@ -43,6 +42,7 @@ export default function({params}){
     const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [dealing, setDealing] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -221,6 +221,13 @@ export default function({params}){
             socket.on('end hand', async (data) => {
                 alert('hand ended')
             })
+            socket.on('deal', async (data) => { 
+                setDealing(true)
+                setTimeout(() => {
+                    setDealing(false)
+                    socket.emit('done dealing', {roomId: params.gameId})
+                }, 2000);
+            })
             socket.on('next hand', async (data) => {
                 await updateGameAPI(params.gameId, data)
             })
@@ -307,7 +314,9 @@ export default function({params}){
     //     return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
         
     // }
-
+    if(dealing){
+        return <DealingScreen />
+    }
     return (
         <div className={styles.container}>
             <div className={`${styles.upperLeftButtons}`}>

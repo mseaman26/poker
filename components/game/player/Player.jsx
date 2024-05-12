@@ -6,7 +6,6 @@ import blackChip from '@/app/assets/images/black_Poker_Chip.webp'
 import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
-import Myturn from '../MyTurn/MyTurn';
 
 
 const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize}) => {
