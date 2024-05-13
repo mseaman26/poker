@@ -36,13 +36,14 @@ export default function({params}){
     const [meIndex, setMeIndex] = useState(null)
     const [offsetPlayers, setOffsetPlayers] = useState([])
     const [centerPot, setCenterPot] = useState(0)
-    const [gameJoined, setGameJoined] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [vW,  setVw] = useState()
     const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
     const [loading, setLoading] = useState(true)
     const [dealing, setDealing] = useState(false)
+    const [renderedFlop, setRenderedFlop] = useState([])
+    const [flopping, setFlopping] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -59,30 +60,6 @@ export default function({params}){
     const stopKeepAlive = () => {
         clearInterval(startKeepAlive); // Stop the interval
     };
-    function toggleFullScreen() {
-        if (!isFullScreen) {
-          // If currently not in full screen, request full screen
-          const element = document.documentElement;
-          if (element.requestFullscreen) {
-            element.requestFullscreen();
-          } else if (element.webkitRequestFullscreen) { /* Safari */
-            element.webkitRequestFullscreen();
-          } else if (element.msRequestFullscreen) { /* IE11 */
-            element.msRequestFullscreen();
-          }
-          setIsFullScreen(true)
-        } else {
-          // If currently in full screen, exit full screen
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-            document.msExitFullscreen();
-        }
-        setIsFullScreen(false)
-        }
-      }
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -114,6 +91,7 @@ export default function({params}){
 
     const endGame = async () => {
         const data = await updateGameAPI(params.gameId, {started: false})
+        setRenderedFlop([])
         setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
@@ -137,11 +115,7 @@ export default function({params}){
         if(typeof window !== 'undefined') {;
             setVw(window?.innerWidth)
             setvH(window?.innerHeight)
-            // window.addEventListener('touchmove', (e) => {
-            //     e.preventDefault()
-            //     console.log('touchmove')
-            //     socket.emit('touchmove', {roomId: params.gameId})
-            // });
+
             var xPos = null;
             var yPos = null;
             window.addEventListener( "touchmove", function ( event ) {
@@ -309,35 +283,28 @@ export default function({params}){
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
 
-    // if(orientation === 'portrait' && window?.innerWidth < 600){
-    //     console.log('sidewyas')
-    //     return(<div className={`${styles.turnSideways}`}>turn phone sideways</div>)
-        
-    // }
+    useEffect(() => {
+        if(gameState.flop && gameState.flop.length > renderedFlop.length){
+            console.log('setting floping to true')
+            setFlopping(true)
+            setTimeout(() => {
+                setRenderedFlop([...renderedFlop, gameState.flop[renderedFlop.length]])
+                setFlopping(false)
+            }, 2000);
+        }
+    }, [gameState, renderedFlop ])
+    useEffect(() => {
+        console.log('flopping: ', flopping)
+        console.log('rendered flop: ', renderedFlop)
+    }, [flopping, renderedFlop])
     if(dealing){
         return <DealingScreen />
     }
     return (
         <div className={styles.container}>
-            <div className={`${styles.upperLeftButtons}`}>
-                {/* <Image src={isFullScreen? exitFullScreen : fullScreen} height={36} width={36} alt="toggle full screen button" onClick={toggleFullScreen}/> */}
-            </div>
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame}/>
             </div>
-            
-            {/* <div className={styles.gameInfo}>
-                <p>Big Blind: ${gameState?.active ? (gameState.bigBlind / 100).toFixed(2) : (gameData.bigBlind / 100).toFixed(2)}</p>
-            </div> */}
-            {/* {!gameJoined && !(gameData?.creatorId === session?.user?.id && gameState.active === true) &&
-            <div className={styles.joinGameOverlay}>
-                <h1>Join Game</h1>
-                <button onClick={() => {
-                    socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
-                    setGameJoined(true)
-                    requestFullScreen()
-                }}>Join Game</button>
-            </div>} */}
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
                     <div className={styles.players}>
@@ -345,11 +312,11 @@ export default function({params}){
                             return (
                                 <div key={index} className={`${styles.playerContainer}`}>
                                 <>
-                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id &&
-                                    (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} />)}
+                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping &&
+                                    (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop}/>
                                 {/* } */}
                                 </>
                                 
@@ -376,7 +343,7 @@ export default function({params}){
                     </div>}
                     <div className={styles.flop}>
 
-                        {gameState?.flop?.map((card, index) => {
+                        {renderedFlop.map((card, index) => {
                             return (
                                 <div key={index} className={styles.flopCardContainer}>
                                     <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
