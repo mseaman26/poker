@@ -8,7 +8,7 @@ import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
@@ -106,7 +106,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     
                 <div className={styles.pocketContainer}>
                     <div className={styles.pocket} style={cardStyle}>
-                        {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 &&
+                        {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 && renderedFlop.length === 5 &&
                         <h1 className={styles.actualHand} style={{fontSize: basefont}}>
                             <span style={{color: 'yellow'}}>{`${player.username}: `}</span>
                             {`${player?.actualHand?.title}` || "Test "}</h1>}
@@ -129,7 +129,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
                     </div>
-                    {gameState.handComplete && player.eliminated === false && player.folded === false &&
+                    {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
                         }
                     {player.chips > 0 || player.moneyInPot > 0? 

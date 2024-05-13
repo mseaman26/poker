@@ -86,6 +86,7 @@ export default function({params}){
         // requestFullScreen()
     }
     const nextHand = () => {
+        setRenderedFlop([])
         socket.emit('next hand', {roomId: params.gameId})
     }
 
@@ -163,7 +164,9 @@ export default function({params}){
             if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
                 alert('You Win!')
             }
-            
+            if(gameState?.flop?.length === 0){
+                setRenderedFlop([])
+            }
         }
     }, [gameState, meData])
     useEffect(() => {
@@ -190,6 +193,7 @@ export default function({params}){
               return
             })
             socket.on('start game', async (data) => {
+                setRenderedFlop([])
                 await updateGameAPI(params.gameId, data)
             })
             socket.on('end hand', async (data) => {
@@ -328,9 +332,9 @@ export default function({params}){
                     {gameState.active && 
                     <div className={styles.flopPlaceholders}>
                         {[0,1,2,3,4].map((card, index) => {
-                            if(gameState.flop.length === 0){
+                            if(renderedFlop.length === 0){
                                 return <div key={index} className={styles.flopPlaceholder}></div>
-                            }else if(index > gameState.flop.length - 1){
+                            }else if(index > renderedFlop.length - 1){
                                 return <div key={index} className={styles.flopPlaceholder}></div>
                             }else{
 
