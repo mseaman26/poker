@@ -67,7 +67,6 @@ export default function({params}){
         }
     }
     const getGameState = async () => {
-        console.log('getting game state')
         socket.emit('game state', params.gameId, (data) => {
             setGameState(data)
         })
@@ -84,6 +83,37 @@ export default function({params}){
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
         // requestFullScreen()
+    }
+    const dealFlop = async (data) => {
+        setFlopping(true)
+        setTimeout(() => {
+            setRenderedFlop([data[0]])
+        }, 2000)
+        setTimeout(() => {
+            setRenderedFlop([data[0], data[1]])
+        }, 4000)
+        setTimeout(() => {
+            setRenderedFlop([data[0], data[1], data[2]])
+            setFlopping(false)
+            socket.emit('done flopping', {roomId: params.gameId})
+        }, 6000)
+    }
+    const dealTurn = async (data) => {
+        console.log('rendered flop should be three cards: ', renderedFlop)
+        setFlopping(true)
+        setTimeout(() => {
+            setRenderedFlop(prior => [...prior, data])
+            setFlopping(false)
+            socket.emit('done turning', {roomId: params.gameId})
+        }, 2000)
+    }
+    const dealRiver = async (data) => {
+        setFlopping(true)
+        setTimeout(() => {
+            setRenderedFlop(prior => [...prior, data])
+            setFlopping(false)
+            socket.emit('done rivering', {roomId: params.gameId})
+        }, 2000)
     }
     const nextHand = () => {
         setRenderedFlop([])
@@ -147,7 +177,6 @@ export default function({params}){
         
     }, [])
     useEffect(() => {
-        console.log('medata: ', meData)
         if(meData._id && gameState?.players){
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
@@ -170,7 +199,6 @@ export default function({params}){
         }
     }, [gameState, meData])
     useEffect(() => {
-        console.log('meIndex: ', meIndex)
         const adjustedPlayers = gameState.players?.map((player, idx) => {
 
             const newIndex = (idx + meIndex) % gameState.players.length; // Calculate new index
@@ -196,6 +224,16 @@ export default function({params}){
                 setRenderedFlop([])
                 await updateGameAPI(params.gameId, data)
             })
+            socket.on('flopping', async (data) => {
+                console.log('on flop: data: ', data)
+                dealFlop(data)
+            })
+            socket.on('turning', async (data) => {
+                dealTurn(data)
+            })
+            socket.on('rivering', async (data) => {
+                dealRiver(data)
+            })
             socket.on('end hand', async (data) => {
                 alert('hand ended')
             })
@@ -215,6 +253,7 @@ export default function({params}){
                 }, 2000);
             })
             socket.on('flip cards', async (data) => {
+                console.log('flipping cards')
                 setGameState(prevState => (data))
                 setTimeout(() => {
                     socket.emit('next flip', {roomId: params.gameId})
@@ -288,19 +327,15 @@ export default function({params}){
     }, [chatMessages]);
 
     useEffect(() => {
-        if(gameState.flop && gameState.flop.length > renderedFlop.length){
-            console.log('setting floping to true')
-            setFlopping(true)
-            setTimeout(() => {
-                setRenderedFlop([...renderedFlop, gameState.flop[renderedFlop.length]])
-                setFlopping(false)
-            }, 2000);
-        }
-    }, [gameState, renderedFlop ])
-    useEffect(() => {
-        console.log('flopping: ', flopping)
         console.log('rendered flop: ', renderedFlop)
+    }, [ renderedFlop ])
+    useEffect(() => {
     }, [flopping, renderedFlop])
+
+    useEffect(() => {
+        console.log('gamestate round: ', gameState.round)
+    }, [gameState.round])
+
     if(dealing){
         return <DealingScreen />
     }
@@ -362,7 +397,7 @@ export default function({params}){
                     
                     {gameState.pot > 0 &&
                         <div className={styles.pot}>
-                            <h1 style={{fontSize: containerSize * .05}}>Pot: ${centerPot / 100}</h1>
+                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(centerPot / 100).toFixed(2)}` : `Dealing Community Cards...`}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>
