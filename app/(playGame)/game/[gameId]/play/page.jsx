@@ -44,6 +44,7 @@ export default function({params}){
     const [dealing, setDealing] = useState(false)
     const [renderedFlop, setRenderedFlop] = useState([])
     const [flopping, setFlopping] = useState(false)
+    const [flipping, setFlipping] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -68,7 +69,7 @@ export default function({params}){
     }
     const getGameState = async () => {
         socket.emit('game state', params.gameId, (data) => {
-            setGameState(data)
+            setGameState(prior => (data))
         })
     }
 
@@ -87,32 +88,45 @@ export default function({params}){
     const dealFlop = async (data) => {
         setFlopping(true)
         setTimeout(() => {
-            setRenderedFlop([data[0]])
+            setRenderedFlop([data.flop[0]])
         }, 2000)
         setTimeout(() => {
-            setRenderedFlop([data[0], data[1]])
+            setRenderedFlop([data.flop[0], data.flop[1]])
         }, 4000)
         setTimeout(() => {
-            setRenderedFlop([data[0], data[1], data[2]])
+            setRenderedFlop([data.flop[0], data.flop[1], data.flop[2]])
             setFlopping(false)
+            
             socket.emit('done flopping', {roomId: params.gameId})
+            console.log('flipping after flopping: ', flipping)
+            if(data.flipping){
+                console.log(' emitting next flip')
+              
+                
+            }
         }, 6000)
+        
     }
     const dealTurn = async (data) => {
         console.log('rendered flop should be three cards: ', renderedFlop)
         setFlopping(true)
         setTimeout(() => {
-            setRenderedFlop(prior => [...prior, data])
+            setRenderedFlop(prior => [...prior, data.flop])
             setFlopping(false)
             socket.emit('done turning', {roomId: params.gameId})
+            if(data.flipping){
+                socket.emit('next flip', {roomId: params.gameId})
+            }
         }, 2000)
     }
     const dealRiver = async (data) => {
         setFlopping(true)
         setTimeout(() => {
-            setRenderedFlop(prior => [...prior, data])
+            console.log('dealing river')
+            setRenderedFlop(prior => [...prior, data.flop])
             setFlopping(false)
             socket.emit('done rivering', {roomId: params.gameId})
+            setFlipping(false)
         }, 2000)
     }
     const nextHand = () => {
@@ -226,18 +240,19 @@ export default function({params}){
             })
             socket.on('flopping', async (data) => {
                 console.log('on flop: data: ', data)
-                dealFlop(data)
+                dealFlop({flop: data.flop.slice(0, 3), flipping: false})
             })
             socket.on('turning', async (data) => {
-                dealTurn(data)
+                dealTurn({flop: data.flop[3], flipping: false})
             })
             socket.on('rivering', async (data) => {
-                dealRiver(data)
+                dealRiver({flop: data.flop[4], flipping: false})
             })
             socket.on('end hand', async (data) => {
                 alert('hand ended')
             })
             socket.on('deal', async (data) => { 
+                console.log('on deal')
                 setDealing(true)
                 setTimeout(() => {
                     setDealing(false)
@@ -254,10 +269,27 @@ export default function({params}){
             })
             socket.on('flip cards', async (data) => {
                 console.log('flipping cards')
-                setGameState(prevState => (data))
-                setTimeout(() => {
-                    socket.emit('next flip', {roomId: params.gameId})
-                }, 2000);
+                setFlipping(prior => true)
+                console.log('data on flip cards: ', data)
+                console.log('flipping on flip cards ', flipping)
+                console.log('gamestate on flip cards: ', gameState)
+                // setGameState(prevState => (data))
+                if(data.round === 1){
+                    console.log('flipping flip')
+                    dealFlop({flop: data.flop.slice(0, 3), flipping: true})
+                }
+                if(gameState.round === 2){
+                    console.log('flipping turn')
+                    dealTurn({flop: data.flop[3], flipping: true})
+                }
+                if(gameState.round === 3){
+                    console.log('flipping river')
+                    dealRiver(data[4])
+                }
+                // setGameState(prevState => (data))
+                // setTimeout(() => {
+                //     socket.emit('next flip', {roomId: params.gameId})
+                // }, 2000);
             })
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
@@ -330,11 +362,12 @@ export default function({params}){
         console.log('rendered flop: ', renderedFlop)
     }, [ renderedFlop ])
     useEffect(() => {
-    }, [flopping, renderedFlop])
+        console.log('flopping: ', flopping)
+    }, [flopping])
 
     useEffect(() => {
-        console.log('gamestate round: ', gameState.round)
-    }, [gameState.round])
+        console.log('flipping: ', flipping)
+    }, [flipping])
 
     if(dealing){
         return <DealingScreen />
