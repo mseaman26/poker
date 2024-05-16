@@ -248,7 +248,9 @@ export default function({params}){
             return gameState.players[newIndex]; // Reorder players based on new index
         });
         setOffsetPlayers(adjustedPlayers);
-        
+        if(gameState?.flop && !flopping && !flipping){
+            setRenderedFlop(gameState?.flop)
+        }
     }, [meIndex, gameState.players])
 
 

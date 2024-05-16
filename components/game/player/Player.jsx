@@ -100,7 +100,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 </div>
                 :
                 <>
-                    <h1>Out of chips</h1>
+                    <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} Out of chips &#128542;</h1>
                 </>
                 }
     
@@ -158,6 +158,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     :
                     // WHEN I HAVE NO CHIPS
                     <div className={styles.buyBack}>
+                        <h1>i have no chips</h1>
                         <button onClick={() => setBuyBackFormShown(true)}>Buy back in</button>
                         {buyBackFormShown &&
                         <form onSubmit={handleBuyBack} className={styles.buyBackForm}>
