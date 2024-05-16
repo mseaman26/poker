@@ -12,6 +12,7 @@ import Player from "@/components/game/player/Player";
 import loadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
+import { set } from "mongoose";
 
 
 
@@ -129,6 +130,29 @@ export default function({params}){
             setFlipping(false)
         }, 2000)
     }
+    const flipCards = async (data) => {
+        setFlopping(true)
+        // Define a function to add a card after a delay
+        const addCardWithDelay = (nextCardIndex, delay) => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const nextCard = data.flop[nextCardIndex];
+                    setRenderedFlop(prevRenderedFlop => [...prevRenderedFlop, nextCard]);
+                    resolve();
+                }, delay);
+            });
+        };
+    
+        // Define the initial delay (e.g., 2000 milliseconds)
+        const initialDelay = 2000;
+    
+        // Loop through each card in data.flop and add it with a delay
+        for (let i = renderedFlop.length; i < 5; i++) {
+            await addCardWithDelay(i, initialDelay);
+        }
+        socket.emit('done flipping', {roomId: params.gameId})
+        setFlopping(false)
+    };
     const nextHand = () => {
         setRenderedFlop([])
         socket.emit('next hand', {roomId: params.gameId})
@@ -273,19 +297,20 @@ export default function({params}){
                 console.log('data on flip cards: ', data)
                 console.log('flipping on flip cards ', flipping)
                 console.log('gamestate on flip cards: ', gameState)
+                flipCards(data)
                 // setGameState(prevState => (data))
-                if(data.round === 1){
-                    console.log('flipping flip')
-                    dealFlop({flop: data.flop.slice(0, 3), flipping: true})
-                }
-                if(gameState.round === 2){
-                    console.log('flipping turn')
-                    dealTurn({flop: data.flop[3], flipping: true})
-                }
-                if(gameState.round === 3){
-                    console.log('flipping river')
-                    dealRiver(data[4])
-                }
+                // if(data.round === 1){
+                //     console.log('flipping flip')
+                //     dealFlop({flop: data.flop.slice(0, 3), flipping: true})
+                // }
+                // if(gameState.round === 2){
+                //     console.log('flipping turn')
+                //     dealTurn({flop: data.flop[3], flipping: true})
+                // }
+                // if(gameState.round === 3){
+                //     console.log('flipping river')
+                //     dealRiver(data[4])
+                // }
                 // setGameState(prevState => (data))
                 // setTimeout(() => {
                 //     socket.emit('next flip', {roomId: params.gameId})
