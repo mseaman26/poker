@@ -131,6 +131,7 @@ export default function({params}){
         }, 2000)
     }
     const flipCards = async (data) => {
+        setFlipping(true)
         setFlopping(true)
         // Define a function to add a card after a delay
         const addCardWithDelay = (nextCardIndex, delay) => {
@@ -148,12 +149,16 @@ export default function({params}){
     
         // Loop through each card in data.flop and add it with a delay
         for (let i = renderedFlop.length; i < 5; i++) {
+            console.log('i is ', i)
             await addCardWithDelay(i, initialDelay);
         }
         socket.emit('done flipping', {roomId: params.gameId})
-        setFlopping(false)
+        setFlipping(false)
+
     };
     const nextHand = () => {
+        setFlipping(false)
+        setFlopping(false)
         setRenderedFlop([])
         socket.emit('next hand', {roomId: params.gameId})
     }
@@ -277,6 +282,9 @@ export default function({params}){
             })
             socket.on('deal', async (data) => { 
                 console.log('on deal')
+                setRenderedFlop([])
+                setFlipping(prior => false)
+                setFlopping(prior => false)
                 setDealing(true)
                 setTimeout(() => {
                     setDealing(false)
@@ -291,31 +299,7 @@ export default function({params}){
                     socket.emit('new round first turn', {roomId: params.gameId})
                 }, 2000);
             })
-            socket.on('flip cards', async (data) => {
-                console.log('flipping cards')
-                setFlipping(prior => true)
-                console.log('data on flip cards: ', data)
-                console.log('flipping on flip cards ', flipping)
-                console.log('gamestate on flip cards: ', gameState)
-                flipCards(data)
-                // setGameState(prevState => (data))
-                // if(data.round === 1){
-                //     console.log('flipping flip')
-                //     dealFlop({flop: data.flop.slice(0, 3), flipping: true})
-                // }
-                // if(gameState.round === 2){
-                //     console.log('flipping turn')
-                //     dealTurn({flop: data.flop[3], flipping: true})
-                // }
-                // if(gameState.round === 3){
-                //     console.log('flipping river')
-                //     dealRiver(data[4])
-                // }
-                // setGameState(prevState => (data))
-                // setTimeout(() => {
-                //     socket.emit('next flip', {roomId: params.gameId})
-                // }, 2000);
-            })
+            
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
                 setLoading(false)
@@ -354,6 +338,20 @@ export default function({params}){
         }
        
     }, [params.gameId])
+    useEffect(() => {
+        socket.on('flip cards', async (data) => {
+            console.log('flipping cards')
+            setFlipping(prior => true)
+            console.log('data on flip cards: ', data)
+            console.log('flipping on flip cards ', flipping)
+            console.log('gamestate on flip cards: ', gameState)
+            console.log('rendered flop on flip cards: ', renderedFlop)
+            flipCards(data)
+        })
+        return () => {
+            socket.off('flip cards')
+        }
+    }, [renderedFlop])
     useEffect(() => {
         getMeData()
         socket.on('updated users in room', (data) => {
@@ -455,7 +453,7 @@ export default function({params}){
                     
                     {gameState.pot > 0 &&
                         <div className={styles.pot}>
-                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(centerPot / 100).toFixed(2)}` : `Dealing Community Cards...`}</h1>
+                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(centerPot / 100).toFixed(2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>
