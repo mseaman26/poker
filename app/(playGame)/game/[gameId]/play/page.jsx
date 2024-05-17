@@ -348,6 +348,7 @@ export default function({params}){
             console.log('flipping on flip cards ', flipping)
             console.log('gamestate on flip cards: ', gameState)
             console.log('rendered flop on flip cards: ', renderedFlop)
+            
             flipCards(data)
         })
         return () => {
