@@ -8,7 +8,7 @@ import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
@@ -23,6 +23,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const [buyBackFormShown, setBuyBackFormShown] = useState(false)
     const [buyBackAmount, setBuyBackAmount] = useState(null)
     const [meEliminated, setMeEliminated] = useState(false)
+    const [renderedChips, setRenderedChips] = useState(0)
     const basefont = containerSize * .03
     
     const style = {
@@ -52,14 +53,20 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         
     }
     useEffect(() => {
-        if(gameState.handComplete && player.eliminated === false && player.folded === false){
+        if((gameState.handComplete || flipping) && player.eliminated === false && player.folded === false){
             setCardImage1(svgUrlHandler(player.pocket[0]))
             setCardImage2(svgUrlHandler(player.pocket[1]))
         }else{
             setCardImage1(redBack)
             setCardImage2(redBack)
         }
-    }, [gameState])
+    }, [gameState, flipping])
+
+    useEffect(() => {
+        if(!gameState.handComplete){
+            setRenderedChips(player.chips)
+        }
+    })
 
     return (
         // <div className={`${styles.container}`} style={style}>
@@ -70,7 +77,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2}} >
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
-                    <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(player.chips / 100).toFixed(2)}</span> </h1>
+                    <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(renderedChips / 100).toFixed(2)}</span> </h1>
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <>
@@ -112,8 +119,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             {`${player?.actualHand?.title}` || "Test "}</h1>}
                         {player.eliminated === false && player.folded === false &&
                         <>
-                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`} style={gameState.handComplete? handCompleteStyles : ''}/>
-                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete? handCompleteStyles : ''}/>
+                        <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
+                        <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
                         </>
                         }
                     </div>
@@ -132,7 +139,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
                         }
-                    {player.chips > 0 || player.moneyInPot > 0? 
+                    {(player.chips > 0 || player.moneyInPot > 0) &&
                     <div className={styles.meInfoContainer}>
                         {/* {gameState.turn === (index + meIndex) % numPlayers &&
                             <h1>my turn</h1>
@@ -155,23 +162,15 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
                         
                     </div>
-                    :
-                    // WHEN I HAVE NO CHIPS
-                    <div className={styles.buyBack}>
-                        <h1>i have no chips</h1>
-                        <button onClick={() => setBuyBackFormShown(true)}>Buy back in</button>
-                        {buyBackFormShown &&
-                        <form onSubmit={handleBuyBack} className={styles.buyBackForm}>
-                            <input type="number" placeholder="Amount" onChange={(e) => setBuyBackAmount(e.target.value)}/>
-                            <button type="submit">Submit</button>
-                        </form>
-                        }
-                    </div>
+                    
                 } 
-                </div>
-                
-                }       
-                  
+                </div>}       
+                {player.eliminated &&
+                    <div className={styles.eliminated} style={{fontSize: basefont * 1.5}}>
+                        <h1>Eliminated</h1>
+                        <button onClick={handleBuyBack}>{`Buy back in (Coming soon)`}</button>
+                    </div>
+                }  
                 
 
             </div>
