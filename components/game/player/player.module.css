@@ -45,6 +45,15 @@
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
+    animation: rainbow 1s infinite;
+}
+.meWinner{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    animation: rainbow 1s infinite;
 }
 .me{
     width: 20%;
@@ -374,3 +383,12 @@
     position: absolute;
     width: 200%;
 }
+@keyframes rainbow {
+    0% { color: red; }
+    16.7% { color: orange; }
+    33.3% { color: yellow; }
+    50% { color: green; }
+    66.7% { color: blue; }
+    83.3% { color: indigo; }
+    100% { color: violet; }
+  }

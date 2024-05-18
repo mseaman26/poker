@@ -24,9 +24,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const [buyBackFormShown, setBuyBackFormShown] = useState(false)
     const [buyBackAmount, setBuyBackAmount] = useState(null)
     const [meEliminated, setMeEliminated] = useState(false)
-    const [renderedChips, setRenderedChips] = useState(0)
+    const [renderedChips, setRenderedChips] = useState(null)
     const basefont = containerSize * .03
     const [isWinner, setIsWinner] = useState(false)
+    const [mounted, setMounted] = useState(false);
     
     const style = {
         position: 'absolute',
@@ -65,10 +66,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [gameState, flipping])
 
     useEffect(() => {
-        if(!gameState.handComplete){
-            setIsWinner(false)
-            setRenderedChips(player.chips)
-        }else{
+        if(gameState.handComplete){
+            //make an array of the winners (not related to chips)
             const winners = []
             console.log('player: ', player)
             gameState.handWinnerInfo.forEach(winner => {
@@ -77,8 +76,48 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             if(winners.includes(player.userId)){
                 setIsWinner(true)
             }
-        }
+        }else{
+            setIsWinner(false)
+        }    
     }, [gameState.handComplete])
+
+    useEffect(() => {
+        if (!mounted) {
+            // Set the mounted flag to true after the first render
+            setMounted(true);
+            return;
+          }
+        if(renderedChips === null) {
+            setRenderedChips(player.chips) 
+            return
+        }
+        let duration = 0; // duration of the animation in milliseconds
+        if(player.chips === renderedChips) return;
+        if(player.chips > renderedChips){
+            duration = 3000
+        }else{
+            duration = 1000
+        }
+        const frameRate = 1000 / 60; // 60 frames per second
+        const totalFrames = duration / frameRate;
+        const valueChange = player.chips - renderedChips;
+        const increment = valueChange / totalFrames;
+    
+        let currentFrame = 0;
+        const chipsInterval = setInterval(() => {
+          currentFrame += 1;
+          setRenderedChips(prevValue => {
+            const newValue = prevValue + increment;
+            if (currentFrame >= totalFrames) {
+              clearInterval(chipsInterval);
+              return player.chips;
+            }
+            return newValue;
+          });
+        }, frameRate);
+    
+        return () => clearInterval(chipsInterval);
+      }, [player.chips]);
 
     return (
         // <div className={`${styles.container}`} style={style}>
@@ -157,6 +196,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {/* {gameState.turn === (index + meIndex) % numPlayers &&
                             <h1>my turn</h1>
                         } */}
+                        {isWinner && <h1 className={styles.meWinner} style={{fontSize: basefont*4}}>WINNER!!</h1>}
                         {gameState.dealer === (index + meIndex) % numPlayers && 
                             <span className={styles.MydealerMarker} style={{fontSize: basefont * 1.5}}>D</span>
                         }
@@ -172,7 +212,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         }
                         
                         
-                        <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(player.chips / 100).toFixed(2)}</span></h1>
+                        <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(renderedChips / 100).toFixed(2)}</span></h1>
                         
                     </div>
                     

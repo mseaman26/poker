@@ -94,7 +94,7 @@
 .nextHandButton{
     width: 100%;
     position: relative;
-    top: -15%;
+    top: 0%;
 }
 .startGame{
     
@@ -154,7 +154,7 @@
     display: flex;
 
     top: 40.7%;
-    left: 1.2%;
+    left: .3%;
     height: fit-content;
     padding: 0px;
     gap: .59%;
