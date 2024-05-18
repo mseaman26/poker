@@ -283,6 +283,9 @@ export default function({params}){
             socket.on('end hand', async (data) => {
                 alert('hand ended')
             })
+            socket.on('end game', () => {
+                setRenderedFlop([])
+            })
             socket.on('deal', async (data) => { 
                 console.log('on deal')
                 setRenderedFlop([])
