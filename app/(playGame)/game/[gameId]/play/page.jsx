@@ -49,6 +49,7 @@ export default function({params}){
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
+    const delayTime = 1000
 
    
     const startKeepAlive = () => {
@@ -90,10 +91,10 @@ export default function({params}){
         setFlopping(true)
         setTimeout(() => {
             setRenderedFlop([data.flop[0]])
-        }, 2000)
+        }, delayTime)
         setTimeout(() => {
             setRenderedFlop([data.flop[0], data.flop[1]])
-        }, 4000)
+        }, delayTime * 2)
         setTimeout(() => {
             setRenderedFlop([data.flop[0], data.flop[1], data.flop[2]])
             setFlopping(false)
@@ -105,7 +106,7 @@ export default function({params}){
               
                 
             }
-        }, 6000)
+        }, delayTime * 3)
         
     }
     const dealTurn = async (data) => {
@@ -118,7 +119,7 @@ export default function({params}){
             if(data.flipping){
                 socket.emit('next flip', {roomId: params.gameId})
             }
-        }, 2000)
+        }, delayTime)
     }
     const dealRiver = async (data) => {
         setFlopping(true)
@@ -128,7 +129,7 @@ export default function({params}){
             setFlopping(false)
             socket.emit('done rivering', {roomId: params.gameId})
             setFlipping(false)
-        }, 2000)
+        }, delayTime)
     }
     const flipCards = async (data) => {
         setFlipping(true)
@@ -145,7 +146,7 @@ export default function({params}){
         };
     
         // Define the initial delay (e.g., 2000 milliseconds)
-        const initialDelay = 2000;
+        const initialDelay = delayTime;
     
         // Loop through each card in data.flop and add it with a delay
         for (let i = renderedFlop.length; i < 5; i++) {
@@ -291,7 +292,7 @@ export default function({params}){
                 setTimeout(() => {
                     setDealing(false)
                     socket.emit('done dealing', {roomId: params.gameId})
-                }, 2000);
+                }, delayTime);
             })
             socket.on('next hand', async (data) => {
                 await updateGameAPI(params.gameId, data)

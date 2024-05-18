@@ -6,6 +6,7 @@ import blackChip from '@/app/assets/images/black_Poker_Chip.webp'
 import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
+import Games from '@/app/(main)/games/page';
 
 
 const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping}) => {
@@ -25,6 +26,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const [meEliminated, setMeEliminated] = useState(false)
     const [renderedChips, setRenderedChips] = useState(0)
     const basefont = containerSize * .03
+    const [isWinner, setIsWinner] = useState(false)
     
     const style = {
         position: 'absolute',
@@ -64,9 +66,19 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 
     useEffect(() => {
         if(!gameState.handComplete){
+            setIsWinner(false)
             setRenderedChips(player.chips)
+        }else{
+            const winners = []
+            console.log('player: ', player)
+            gameState.handWinnerInfo.forEach(winner => {
+                winners.push(winner.player.userId)
+            })
+            if(winners.includes(player.userId)){
+                setIsWinner(true)
+            }
         }
-    })
+    }, [gameState.handComplete])
 
     return (
         // <div className={`${styles.container}`} style={style}>
@@ -76,6 +88,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2}} >
+                    {isWinner && <h1 className={styles.winner} style={{fontSize: basefont*2}}>WINNER!!</h1>}
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(renderedChips / 100).toFixed(2)}</span> </h1>
 
