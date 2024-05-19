@@ -39,6 +39,9 @@
     color: #ff0000;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     margin-right: 1%;
+    background-color: white;
+    padding: 1%;
+    border-radius: 5px;
 }
 .betForm{
     display: flex;
@@ -67,10 +70,15 @@
     height: 100%;
     margin-right: 9%;
     border-radius: 7px;
+    opacity: 1;
+    background-color: white;
+    opacity: 1;
+    color: rgb(72, 30, 72)
 }
 .betInput:focus{
     outline: none;
-    opacity: 1;
+    color: rgb(72, 30, 72)
+
 }
 .betAndCancel{
     display: flex;

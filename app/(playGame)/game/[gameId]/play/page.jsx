@@ -221,7 +221,7 @@ export default function({params}){
         
     }, [])
     useEffect(() => {
-        if(meData._id && gameState?.players){
+        if(meData?._id && gameState?.players){
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
                 amountToSubractFromPot += player.bet
@@ -469,7 +469,7 @@ export default function({params}){
                             <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
                             }
                             {!gameState.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
-                            {gameState.handComplete && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
+                            {gameState.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
                         
                         </div>
                         {!gameState.active &&

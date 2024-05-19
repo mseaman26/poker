@@ -117,7 +117,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         }, frameRate);
     
         return () => clearInterval(chipsInterval);
-      }, [player.chips]);
+      }, [player.chips, gameState]);
 
     return (
         // <div className={`${styles.container}`} style={style}>
@@ -130,36 +130,44 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {isWinner && <h1 className={styles.winner} style={{fontSize: basefont*2}}>WINNER!!</h1>}
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips:<span className={styles.chips}>{(renderedChips / 100).toFixed(2)}</span> </h1>
+                    {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
                         <>
                         
                         {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
-                        {index === 7 || index === 6 && numPlayers >= 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
-                        {index > 0 && index < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index === 7 && numPlayers > 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index === 6 && numPlayers === 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index > 1 && index < 7 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
                     {!gameState.handComplete && 
                     <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
                         {/* ACTION AND ACTION AMOUNT */}
-                        {player.action &&
+                        {player.action && !player.allIn &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
+                        {player.allIn && 
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1>
+                        }
+                        {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: $${(player.maxWin / 100).toFixed(2)})`}</h1>}
 
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
                         <div className={styles.otherChipAndBet}>
-                            <div className={styles.chipImageContainer}>
+                            {!player.maxWin && <div className={styles.chipImageContainer}>
                             <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
-                            </div>
-                        {player.bet > 0 && 
+                            </div>}
+                        {player.bet > 0 && !player.maxWin &&
                         <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>
                         }  
+                        
                         </div>}
+                        
                     </div>}
                 </div>
                 :
                 <>
-                    <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} Out of chips &#128542;</h1>
+                    <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>
                 </>
                 }
     
