@@ -110,7 +110,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
     }, [gameState.currentBet])
     useEffect(() => {
-        setMaxRaise(Math.min(gameState?.maxBet - callAmount - gameState?.players[gameState.turn]?.moneyInPot, gameState?.players[gameState.turn]?.chips))
+        setMaxRaise(Math.min(gameState?.maxBet - callAmount - gameState?.players[gameState.turn]?.moneyInPot, gameState?.players[gameState.turn]?.chips - callAmount))
     }, [callAmount])
 
     useEffect(() => {
