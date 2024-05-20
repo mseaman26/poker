@@ -348,10 +348,9 @@ export default function({params}){
         socket.on('flip cards', async (data) => {
             console.log('flipping cards')
             setFlipping(prior => true)
-            console.log('data on flip cards: ', data)
-            console.log('flipping on flip cards ', flipping)
-            console.log('gamestate on flip cards: ', gameState)
-            console.log('rendered flop on flip cards: ', renderedFlop)
+            for(let i = 0; i < data.players.length; i++){
+                gameState.players[i].maxWin = data.players[i].maxWin
+            }
             
             flipCards(data)
         })
