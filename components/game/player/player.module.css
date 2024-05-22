@@ -37,13 +37,16 @@
     padding: 5%;
     width: fit-content;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    z-index: 10;
 }
 .maxWin{
     color: white;
     position: relative;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     background-color: green;
+    padding-inline: 5%;
+    border-radius: 1vw;
+    width: fit-content;
 }
 .winner{
     position: absolute;
@@ -92,6 +95,9 @@
 }
 .playerInfo{
     position: relative;
+    z-index: 10;
+    background-color: rgb(50, 50, 50);
+
 }
 .MeInfo{
    
@@ -105,6 +111,13 @@
     background-color: red;
     color:  white;
     border-radius: 100%;
+}
+.meAllIn{
+    position: absolute;
+    background-color: rgba(155, 155, 155, 0.7);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    top: 70%;
+    text-align: center;
 }
 .dealerMarker{
     position: absolute;
@@ -178,10 +191,11 @@
     left: 50%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;    
     /* transparent gray background */
     padding-inline: 5%;
+    padding-bottom: 5%;
     width: fit-content;
     background-color: rgba(155, 155, 155, 0.5);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -225,6 +239,7 @@
 
 }
 .chipImage{
+    max-width: 200%;
     width: 100%;
     height: 100%;
     transform: translateY(5%);
@@ -281,7 +296,7 @@
 .pocketContainer{
     height: 100%;
     width: 40%;
-    position: relative;
+    position: absolute;
     z-index: 0;
 }
 .pocket{
@@ -291,24 +306,30 @@
     width: 100%;
     justify-content: center;
     top: 0%;
-    height: 10%
+    height: 10%;
+    z-index: 1;
 }
 .pocketCard{
     position: absolute;
-    z-index: 2;
+    z-index: 0;
     max-width: 200%;
     width: 60%;
     height: auto;
 }
 .pocketCardComplete{
+    position: relative;
     width: 150%;
+    z-index: 0;
 
 }
 .pocketCard1{
+    position: absolute;
     transform: translateX(-20%) rotate(-5deg);
+    z-index: 0;
 }
 .pocketCard2{
     transform: translateX(20%) rotate(5deg);
+    z-index: 0;
 }
 
 .myPocket{
@@ -337,7 +358,7 @@
     position: absolute;
     color: red;
     text-align: center;
-    top: -200%;
+    top: -320%;
     height: fit-content;
     width: 400%;
     z-index: 5;
