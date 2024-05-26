@@ -1,7 +1,7 @@
 'use client'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { getGameAPI, fetchSingleUserAPI, updateGameAPI } from "@/lib/apiHelpers";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
 import { useRouter } from "next/navigation";
@@ -270,6 +270,10 @@ export default function({params}){
                 setRenderedFlop([])
                 await updateGameAPI(params.gameId, data)
             })
+            //room id test
+            socket.on('room id test', (roomId)=>{
+                console.log('room id: ', roomId)
+            })
             socket.on('flopping', async (data) => {
                 console.log('on flop: data: ', data)
                 dealFlop({flop: data.flop.slice(0, 3), flipping: false})
@@ -279,6 +283,12 @@ export default function({params}){
             })
             socket.on('rivering', async (data) => {
                 dealRiver({flop: data.flop[4], flipping: false})
+            })
+            socket.on('win by fold', () => {
+                console.log('win by fold')
+                setTimeout(() => {
+                    setNextHandButtonShown(true)
+                }, 3200);
             })
             socket.on('end hand', async (data) => {
                 alert('hand ended')
@@ -379,7 +389,7 @@ export default function({params}){
         getGameData(params.gameId)
         setTimeout(() => {
             getGameState();
-        }, 100);
+        }, 1000);
       }, [socket, session, params.gameId])
 
     useEffect(() => {
