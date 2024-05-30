@@ -1,17 +1,17 @@
 'use client'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styles from './GameBurger.module.css'
 import { slide as Menu } from 'react-burger-menu';
 import { useRouter } from "next/navigation";
 
 
-const GameBurger = ({endGame}) => {
+const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => {
 
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false)
 
     const closeMenu = () => {
-        setMenuOpen(false)
+        setMenuOpen(false)  
     }
 
     const menuStyles = {
@@ -21,7 +21,7 @@ const GameBurger = ({endGame}) => {
             width: '36px',
             height: '30px',
             color: 'white',
-            zIndex: 10
+            zIndex: 0
         },
         //Color/shape of burger icon bars
         bmBurgerBars: {
@@ -35,13 +35,13 @@ const GameBurger = ({endGame}) => {
         },
         //Position and sizing of clickable cross button
         bmCrossButton: {
-            height: '32px',
-            width: '32px',
-            zIndex: 10
+            height: '64px',
+            width: '64px',
+            zIndex: 200
         },
         // Color/shape of close button cross
         bmCross: {
-            fontSize: '64em',
+            fontSize: '128em',
             // fontSize: "64px",
             background: '#bdc3c7',
             zIndex: 10
@@ -55,7 +55,7 @@ const GameBurger = ({endGame}) => {
             height: '100%',
             width: '80%',
             top: 0,
-            zIndex: 10
+            zIndex: '100 !important'
         },
         //General sidebar styles
         bmMenu: {
@@ -65,7 +65,7 @@ const GameBurger = ({endGame}) => {
             fontSize: '1.15em',
             width: '100%',
             top: 0,
-            zIndex: 10
+            zIndex: 100
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
@@ -76,7 +76,7 @@ const GameBurger = ({endGame}) => {
             position: 'relative',
             color: '#F1EFEB',
             padding: '0.8em',
-            zIndex: 10
+            zIndex: 100
         },
         //Individual item
         bmItem: {
@@ -85,7 +85,8 @@ const GameBurger = ({endGame}) => {
             fontSize: 32,
             marginBottom: 20,
             color: '#f1f1f1',
-            zIndex: 10
+            zIndex: 10,
+            cursor: 'pointer'
         },
         //Styling of overlay
         bmOverlay: {
@@ -95,21 +96,27 @@ const GameBurger = ({endGame}) => {
             top: 0,
             width: '100%',
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            zIndex: 10
+            zIndex: 0
         }
     }
+
+    useEffect(() => {
+        if(menuOpen !== burgerOpen) setBurgerOpen(menuOpen)
+    }, [menuOpen])
+
     return (
    
-        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 10}}>
+        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 20}}>
             <div className="menu-item"  onClick={() => {
                 closeMenu()
-                router.back()}}>
+                router.push(`/game/${gameId}`)}}>
             Leave Game Room
             </div>
+            {isCreator && 
             <div className="menu-item" onClick={() => {
                 closeMenu()
                 endGame()
-            }} style={{color: 'red'}}>End Game</div>
+            }} style={{color: 'red'}}>End Game</div>}
             {/* <Link className="menu-item" href="/createGame" onClick={closeMenu}>
             Create Game
             </Link>

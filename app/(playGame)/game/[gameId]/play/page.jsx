@@ -46,6 +46,7 @@ export default function({params}){
     const [renderedFlop, setRenderedFlop] = useState([])
     const [flopping, setFlopping] = useState(false)
     const [flipping, setFlipping] = useState(false)
+    const [burgerOpen, setBurgerOpen] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -414,7 +415,7 @@ export default function({params}){
     return (
         <div className={styles.container}>
             <div className={`${styles.upperRightButtons}`}>
-                <GameBurger endGame={endGame}/>
+                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen}/>
             </div>
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
@@ -427,7 +428,7 @@ export default function({params}){
                                     (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} burgerOpen={burgerOpen}/>
                                 {/* } */}
                                 </>
                                 

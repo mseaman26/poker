@@ -37,7 +37,7 @@
     padding: 5%;
     width: fit-content;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 10;
+    z-index: 5;
 }
 .maxWin{
     color: white;
@@ -95,7 +95,7 @@
 }
 .playerInfo{
     position: relative;
-    z-index: 10;
+    z-index: 1;
     background-color: rgb(50, 50, 50);
 
 }
@@ -373,6 +373,7 @@
 }
 .yellowHalo{
     box-shadow: 0 0 10px 15px yellow;
+    animation: pulse 2s infinite;
 }
 .action{
     min-height: 5%;
@@ -420,4 +421,19 @@
     66.7% { color: blue; }
     83.3% { color: indigo; }
     100% { color: violet; }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
