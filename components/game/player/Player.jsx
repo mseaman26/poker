@@ -9,7 +9,7 @@ import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Games from '@/app/(main)/games/page';
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, burgerOpen}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, burgerOpen, winByFold}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
@@ -57,7 +57,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         
     }
     useEffect(() => {
-        if((gameState.handComplete || flipping) && player.eliminated === false && player.folded === false){
+        if((gameState.handComplete || flipping) && player.eliminated === false && player.folded === false && winByFold === false){
             setCardImage1(svgUrlHandler(player.pocket[0]))
             setCardImage2(svgUrlHandler(player.pocket[1]))
         }else{
@@ -127,7 +127,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             <div className={`${styles.otherPlayer} ${player.folded ? styles.folded : ''}`} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
-                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
+                <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 && !gameState.handComplete ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
                     {isWinner && <h1 className={styles.winner} style={{fontSize: basefont*2}}>WINNER!!</h1>}
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>{player?.allIn > 0 && <span className={styles.allIn}>A</span>} {player.username}</h1>
                     {(!player.allIn || gameState.handComplete) &&<h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>{(renderedChips / 100).toFixed(2)}</span> </h1>}
@@ -143,7 +143,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         </>
                     }
                     {!gameState.handComplete && 
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2}}>
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.action && !player.moneyInPot ? 'hidden': 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action && (!player.allIn || gameState.handComplete) &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   

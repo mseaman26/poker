@@ -47,6 +47,7 @@ export default function({params}){
     const [flopping, setFlopping] = useState(false)
     const [flipping, setFlipping] = useState(false)
     const [burgerOpen, setBurgerOpen] = useState(false)
+    const [winByFold, setWinByFold] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -162,6 +163,7 @@ export default function({params}){
         setFlipping(false)
         setFlopping(false)
         setRenderedFlop([])
+        setWinByFold(false)
         socket.emit('next hand', {roomId: params.gameId})
     }
 
@@ -287,6 +289,7 @@ export default function({params}){
             })
             socket.on('win by fold', () => {
                 console.log('win by fold')
+                setWinByFold(true)
                 setTimeout(() => {
                     setNextHandButtonShown(true)
                 }, 3200);
@@ -322,7 +325,7 @@ export default function({params}){
                 setLoading(false)
             })
             socket.on('refresh', (data) => {
-                window.location.reload()
+                window?.location?.reload()
             })
             
             socket.emit('game state', params.gameId)
@@ -423,11 +426,11 @@ export default function({params}){
                             return (
                                 <div key={index} className={`${styles.playerContainer}`}>
                                 <>
-                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping && !burgerOpen &&
+                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping && !burgerOpen && !gameState.handComplete && !flipping &&
                                     (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} burgerOpen={burgerOpen}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} burgerOpen={burgerOpen} winByFold={winByFold}/>
                                 {/* } */}
                                 </>
                                 

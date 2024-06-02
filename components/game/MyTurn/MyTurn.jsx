@@ -190,7 +190,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="numeric" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholderTextColor='black'/>
+                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholderTextColor='black'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Raise</button>
