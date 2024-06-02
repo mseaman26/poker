@@ -46,7 +46,6 @@ const Games = () => {
     }
 
     useEffect(() => {
-        console.log('session: ', session)
         getMe()
         if(session){
             getMyGames()
@@ -66,9 +65,6 @@ const Games = () => {
         setMyInvites(meData?.gameInvites)
     }, [meData])
 
-    useEffect(() => {
-        console.log('myInvites: ', myInvites)
-    }, [myInvites])
     useEffect(() => {
         console.log('myGames: ', myGames)
         if(myGames !== undefined){

@@ -70,7 +70,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         if(gameState.handComplete){
             //make an array of the winners (not related to chips)
             const winners = []
-            console.log('player: ', player)
+
             gameState.handWinnerInfo.forEach(winner => {
                 winners.push(winner.player.userId)
             })

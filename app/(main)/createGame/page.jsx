@@ -16,9 +16,7 @@ const CreateGame = () => {
   const createGame = async (e) => {
     e.preventDefault()
     if(gameName && buyIn && startingBlind){
-        console.log('starting blind: ', startingBlind)
         const data = await createGameAPI(gameName, session?.user?.id, buyIn*100, startingBlind*100)
-        console.log(data)
         router.push(`/game/${data._id}`)
     }
   }

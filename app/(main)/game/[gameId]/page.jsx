@@ -100,10 +100,7 @@ const ViewGameInfo = ({params}) => {
       }, [socket, session])
 
     useEffect(() => {
-        console.log('creatorInfo ', creatorInfo)
-    }, [creatorInfo])
-    useEffect(() => {
-        console.log('gameInfo ', gameInfo)
+
         if(gameInfo){
             if(gameInfo.invitedUsers && gameInfo.invitedUsers.length > 0){
                 setCanEnter(true)

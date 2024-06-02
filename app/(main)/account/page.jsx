@@ -55,24 +55,20 @@ const AccountPAge= () => {
         try{
             if(usernameAvailable){
                 const data = {name: newUsername}
-                console.log('data: ', data)
                 const res = await signIn("credentials", {
                     email: session.user.email,
                     password,
                     redirect: false,
                     onSuccess: async () => {
-                      console.log('login sucess while already logged in')
                     }
 
                 });
-                console.log('res: ', res)
                 if (res.error) {
                     setNameError("Invalid Credentials");
                     return;
                 }
                 const updatedUser = await updateUserAPI(session.user.id, data)
                 setNewUsername('')
-                console.log('updated user: ', updatedUser)
                 const res2 = await signIn("credentials", {
                     email: session.user.email,
                     password,
@@ -100,18 +96,15 @@ const AccountPAge= () => {
                     password,
                     redirect: false,
                     onSuccess: async () => {
-                      console.log('login sucess while already logged in')
                     }
 
                 });
-                console.log('res: ', res)
                 if (res.error) {
                     setEmailError("Invalid Credentials");
                     return;
                 }
                 const updatedUser = await updateUserAPI(session.user.id, data)
                 setNewEmail('')
-                console.log('updated user: ', updatedUser)
                 const res2 = await signIn("credentials", {
                     email: newEmail,
                     password,
@@ -130,7 +123,6 @@ const AccountPAge= () => {
     const deleteAccount = async () => {
         try{
             const deletedUser = await deleteUserAPI(session.user.id)
-            console.log('deleted user: ', deletedUser)
             await signOut()
         }catch(err){
             console.log('error in delete account: ', err)
@@ -144,14 +136,10 @@ const AccountPAge= () => {
     }, [newEmail])
 
     useEffect(() => {
-            console.log('session: ',session?.user)
             if(session){
                 setLoading(false)
             }
     }, [session])
-    useEffect(() => {
-        console.log('nameError: ', nameError)
-    }, [nameError])
 
     return (
         <>
