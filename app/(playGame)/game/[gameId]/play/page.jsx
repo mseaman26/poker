@@ -52,11 +52,13 @@ export default function({params}){
     const router = useRouter()
     const baseFont = containerSize * .03
     const delayTime = 2000
+    const production = process.env.NODE_ENV === 'production'
 
    
     const startKeepAlive = () => {
         setInterval(() => {
-            console.log('heartbeat')
+            if(!production) console.log('heartbeat')
+            
             socket.emit('keep-alive'); // Send keep-alive message to the server
         }, 5000); // Send keep-alive message every 5 seconds
     };
@@ -102,9 +104,8 @@ export default function({params}){
             setFlopping(false)
             
             socket.emit('done flopping', {roomId: params.gameId})
-            console.log('flipping after flopping: ', flipping)
             if(data.flipping){
-                console.log(' emitting next flip')
+                //previously console logging here
               
                 
             }
@@ -112,7 +113,6 @@ export default function({params}){
         
     }
     const dealTurn = async (data) => {
-        console.log('rendered flop should be three cards: ', renderedFlop)
         setFlopping(true)
         setTimeout(() => {
             setRenderedFlop(prior => [...prior, data.flop])
@@ -126,7 +126,6 @@ export default function({params}){
     const dealRiver = async (data) => {
         setFlopping(true)
         setTimeout(() => {
-            console.log('dealing river')
             setRenderedFlop(prior => [...prior, data.flop])
             setFlopping(false)
             socket.emit('done rivering', {roomId: params.gameId})
@@ -152,7 +151,6 @@ export default function({params}){
     
         // Loop through each card in data.flop and add it with a delay
         for (let i = renderedFlop.length; i < 5; i++) {
-            console.log('i is ', i)
             await addCardWithDelay(i, initialDelay);
         }
         socket.emit('done flipping', {roomId: params.gameId})
@@ -177,7 +175,7 @@ export default function({params}){
     })};
     
     useEffect(() => {
-        console.log('game state: ', gameState);
+        if(!production) console.log('game state: ', gameState);
     }, [gameState]);
 
     useEffect(() => {
@@ -275,10 +273,9 @@ export default function({params}){
             })
             //room id test
             socket.on('room id test', (roomId)=>{
-                console.log('room id: ', roomId)
+
             })
             socket.on('flopping', async (data) => {
-                console.log('on flop: data: ', data)
                 dealFlop({flop: data.flop.slice(0, 3), flipping: false})
             })
             socket.on('turning', async (data) => {
@@ -288,7 +285,6 @@ export default function({params}){
                 dealRiver({flop: data.flop[4], flipping: false})
             })
             socket.on('win by fold', () => {
-                console.log('win by fold')
                 setWinByFold(true)
                 setTimeout(() => {
                     setNextHandButtonShown(true)
@@ -301,7 +297,6 @@ export default function({params}){
                 setRenderedFlop([])
             })
             socket.on('deal', async (data) => { 
-                console.log('on deal')
                 setRenderedFlop([])
                 setFlipping(prior => false)
                 setFlopping(prior => false)
@@ -331,14 +326,13 @@ export default function({params}){
             socket.emit('game state', params.gameId)
         });
         socket.on('chat message', (data) => {
-            console.log('chat message recieved: ', data)
             setChatMessages((prev) => {
                 return [...prev, {username: data.username, message: data.message}]
             })
         })
 
         socket.on('disconnect', () => {
-            console.log('Socket disconnected');
+            if(!production) console.log('Socket disconnected');
             // stopKeepAlive(); 
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
@@ -360,7 +354,6 @@ export default function({params}){
     }, [params.gameId])
     useEffect(() => {
         socket.on('flip cards', async (data) => {
-            console.log('flipping cards')
             setFlipping(prior => true)
             for(let i = 0; i < data.players.length; i++){
                 gameState.players[i].maxWin = data.players[i].maxWin
@@ -397,20 +390,8 @@ export default function({params}){
       }, [socket, session, params.gameId])
 
     useEffect(() => {
-        console.log('chat messages: ', chatMessages)
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
-
-    useEffect(() => {
-        console.log('rendered flop: ', renderedFlop)
-    }, [ renderedFlop ])
-    useEffect(() => {
-        console.log('flopping: ', flopping)
-    }, [flopping])
-
-    useEffect(() => {
-        console.log('flipping: ', flipping)
-    }, [flipping])
 
 
     return (
