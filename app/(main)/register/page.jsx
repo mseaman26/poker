@@ -9,6 +9,7 @@ import { initializeSocket, getSocket } from "@/lib/socketService";
 import { socket } from "@/socket";
 import { searchUsersAPI } from "@/lib/apiHelpers";
 import { isValidEmail } from "@/lib/validators";
+import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 
 export default function Register() {
   const { data: session } = useSession();
@@ -161,9 +162,9 @@ useEffect(() => {
   }
 },[password, password2])
 
-  if(loading) return <h1>Loading...</h1>
   return (
     <div className='pageContainer'>
+      {loading && <LoadingScreen />}
       <div className='headerContainer'>
         <h1>Register</h1>
       </div>

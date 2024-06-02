@@ -9,7 +9,7 @@ import Myturn from "@/components/game/MyTurn/MyTurn";
 import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
 import Player from "@/components/game/player/Player";
-import loadingScreen from "@/components/loadingScreen/loadingScreen";
+import loadingScreen from "@/components/loadingScreen/LoadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
 import { set } from "mongoose";
@@ -424,7 +424,7 @@ export default function({params}){
                             return (
                                 <div key={index} className={`${styles.playerContainer}`}>
                                 <>
-                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping &&
+                                {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping && !burgerOpen &&
                                     (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}

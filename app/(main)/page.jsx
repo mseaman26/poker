@@ -7,6 +7,8 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { isValidEmail } from "@/lib/validators";
+import LoadingScreen from '@/components/loadingScreen/loadingScreen';
+import { load } from 'cheerio';
 
 
 export default function LoginForm() {
@@ -36,6 +38,7 @@ export default function LoginForm() {
         router.push('/dashboard')
     }else if (status === 'unauthenticated'){
       setLoading(false)
+      
     }
   }, [socket, session, router])
 
@@ -82,11 +85,11 @@ export default function LoginForm() {
     })
   }
 
-  if(loading){
-    return <div>Loading...</div>
-  }
+ 
   return (
+    
     <div className="pageContainer">
+      {loading && <LoadingScreen/>}
       <div className="headerContainer">
         <h1>Welcome To Mike's Friendly Poker!</h1>
       </div>

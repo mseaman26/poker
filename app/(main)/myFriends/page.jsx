@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { fetchSingleUserAPI, respondToFriendRequestAPI } from '@/lib/apiHelpers'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import Link from 'next/link'
+import LoadingScreen from '@/components/loadingScreen/loadingScreen'
 
 const MyFriends = () => {
 
@@ -51,11 +52,10 @@ const MyFriends = () => {
     console.log('friend requests shown: ', showFriendRequests)
   }, [showFriendRequests])
 
-  if(loading){
-    return <div>Loading...</div>
-  }
+
   return (
     <div className={`pageContainer ${styles.container}`}>
+      {loading && <LoadingScreen />}
       <div className={styles.toggleButtonContainer}>
         <button
           className={`${styles.toggleButton} ${showFriendRequests ? styles.activeButton : styles.inactiveButton}`}

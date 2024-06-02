@@ -7,7 +7,7 @@ import { getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI } from '@/lib/apiHelpe
 import { formatDateFromMongo } from '@/lib/helpers'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useRouter } from 'next/navigation'
-import { set } from 'mongoose'
+import LoadingScreen from '@/components/loadingScreen/loadingScreen'
 
 
 const Games = () => {
@@ -102,11 +102,10 @@ const Games = () => {
           socket.off('disconnect');
         };
       }, [])
-    if(loading){
-        return <h1>Loading...</h1>
-    }
+
     return (
         <div className='pageContainer'>
+            {loading && <LoadingScreen />}
             <div className='headerContainer'>
                 <h1>Games</h1>
             </div>

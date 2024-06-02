@@ -7,6 +7,8 @@ import { initializeSocket, getSocket } from "@/lib/socketService";
 import styles from './gamePage.module.css'
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import LoadingScreen from "@/components/loadingScreen/loadingScreen";
+import { set } from "mongoose";
 
 const ViewGameInfo = ({params}) => {
     const id = params.gameId
@@ -18,6 +20,7 @@ const ViewGameInfo = ({params}) => {
     const [meData, setMeData] = useState({})
     const [creatorInfo, setCreatorInfo] = useState({})
     const [canEnter, setCanEnter] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const getGameInfo = async (gameId) => {
         if(gameId){
@@ -107,11 +110,17 @@ const ViewGameInfo = ({params}) => {
             }else{
                 setCanEnter(false)
             }
+            if(gameInfo?._id){
+                setLoading(false)
+            
+            }
+
         }
     }, [gameInfo])
 
     return(
         <div className={`pageContainer`}>
+            {loading && <LoadingScreen />}
             <div className={styles.containerLeft}>
                 <div className={`headerContainer`}>
                     <h1>{gameInfo?.name}</h1>
@@ -128,18 +137,18 @@ const ViewGameInfo = ({params}) => {
                     <div className={`headerContainer`}>
                         <h1>Invite Friends</h1>
                     </div>
-                    {gameInfo?.invitedUsers?.length < 7 ? 
-                        <div className={`formContainer`}>
-                            <form  className={`form ${styles.searchForm}`}>
-                                <input
-                                type="text"
-                                placeholder="Search friends..."
-                                className={`input ${styles.searchInput}`}
-                                />
-                            </form>
-                        </div>
+                    {gameInfo?.invitedUsers?.length < 7 &&
+                    //     <div className={`formContainer`}>
+                    //         <form  className={`form ${styles.searchForm}`}>
+                    //             <input
+                    //             type="text"
+                    //             placeholder="Search friends..."
+                    //             className={`input ${styles.searchInput}`}
+                    //             />
+                    //         </form>
+                    //     </div>
                     
-                    :
+                    // :
                     <h1>{`You've reached the maximum number of invites (8 players total per room)`} </h1>
                     }
                     <div className={`${styles.searchResults}`}>

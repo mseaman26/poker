@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { searchUsersAPI, updateUserAPI, deleteUserAPI } from '@/lib/apiHelpers'
 import { signIn, signOut } from 'next-auth/react'
+import LoadingScreen from '@/components/loadingScreen/loadingScreen'
 
 
 const AccountPAge= () => {
@@ -152,11 +153,9 @@ const AccountPAge= () => {
         console.log('nameError: ', nameError)
     }, [nameError])
 
-    if(loading){
-        return <div>Loading...</div>
-    }
     return (
         <>
+        {loading && <LoadingScreen />}
         <div className='headerContainer'>
             <h1>Edit My Account</h1>
         </div>

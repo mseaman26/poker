@@ -86,9 +86,17 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => 
             marginBottom: 20,
             color: '#f1f1f1',
             zIndex: 10,
-            cursor: 'pointer'
+            cursor: 'pointer',
+            border: '1px solid #f1f1f1',
+            padding: '10px',
+            borderRadius: '5px',
+            transition: 'background 0.3s, color 0.3s'
         },
         //Styling of overlay
+        bmItemHover: {
+            background: '#a90000',
+            color: '#ffffff'
+        },
         bmOverlay: {
     
             position: 'fixed',
