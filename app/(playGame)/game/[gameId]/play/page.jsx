@@ -9,10 +9,10 @@ import Myturn from "@/components/game/MyTurn/MyTurn";
 import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
 import Player from "@/components/game/player/Player";
-import loadingScreen from "@/components/loadingScreen/LoadingScreen";
+import LoadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
-import { set } from "mongoose";
+
 
 
 
@@ -50,7 +50,7 @@ export default function({params}){
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
-    const delayTime = 1000
+    const delayTime = 2000
 
    
     const startKeepAlive = () => {
@@ -409,11 +409,10 @@ export default function({params}){
         console.log('flipping: ', flipping)
     }, [flipping])
 
-    if(dealing){
-        return <DealingScreen />
-    }
+
     return (
         <div className={styles.container}>
+            {dealing && <DealingScreen />}
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen}/>
             </div>
