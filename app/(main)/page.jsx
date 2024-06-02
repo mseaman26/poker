@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { isValidEmail } from "@/lib/validators";
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
-import { load } from 'cheerio';
 
 
 export default function LoginForm() {
