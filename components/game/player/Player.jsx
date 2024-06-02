@@ -167,7 +167,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     </div>}
                     <div className={styles.pocketContainer}>
                         <div className={styles.pocket} style={cardStyle}>
-                            {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 && renderedFlop.length === 5 &&
+                            {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 && renderedFlop.length === 5 && !winByFold &&
                             <h1 className={styles.actualHand} style={{fontSize: basefont}}>
                                 <span style={{color: 'yellow'}}>{`${player.username}: `}</span>
                                 {`${player?.actualHand?.title}` || "Test "}</h1>}
