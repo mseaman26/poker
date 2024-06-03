@@ -137,6 +137,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <>
                         
                         {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
+                        {index === 1  && numPlayers < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont, right: '500%'}}>D</span>}
                         {index === 7 && numPlayers > 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
                         {index === 6 && numPlayers === 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
                         {index > 1 && index < 7 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
