@@ -144,7 +144,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         </>
                     }
                     {!gameState.handComplete && 
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.action && !player.moneyInPot ? 'hidden': 'visible'}}>
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.action  ? 'hidden': 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
                         {player.action && (!player.allIn || gameState.handComplete) &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
