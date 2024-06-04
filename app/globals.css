@@ -146,6 +146,15 @@ h1{
   border: none;
   border-radius: 5px;
 }
+.redButton{
+  font-size: 16px;
+  padding: 10px 15px;
+  margin: 0px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
 .cancelButton{
   display: flex;
   justify-content: center;

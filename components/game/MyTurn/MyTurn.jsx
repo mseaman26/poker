@@ -1,4 +1,4 @@
-import { set } from 'mongoose'
+
 import styles from './MyTurn.module.css'
 import { useState, useEffect, useRef } from 'react'
 import BetForm from './BetForm/BetForm'
@@ -218,9 +218,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </>
                     {/* } */}
                     <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
-                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips &&
+                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips ?
                     
                     <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
+                    :
+                    <button className='redButton' onClick={() => bet(maxRaise + gameState.currentBet)}>Raise Max Amount</button>
                     }
                     </div>
                 }

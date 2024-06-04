@@ -25,6 +25,9 @@ const ViewGameInfo = ({params}) => {
     const getGameInfo = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
+            if(!data){
+                router.replace('/dashboard')
+            }
             const creator = await fetchSingleUserAPI(data.creatorId)
             setCreatorInfo(creator)
             setGameInfo(data)

@@ -83,20 +83,20 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [gameState.handComplete])
 
     useEffect(() => {
-        if (!mounted) {
-            // Set the mounted flag to true after the first render
-            setMounted(true);
-            return;
-          }
+        console.log('rendered chips: ', renderedChips)
+
         if(renderedChips === null) {
+            console.log('rendered chips was null')
             setRenderedChips(player.chips) 
             return
         }
         let duration = 0; // duration of the animation in milliseconds
         if(player.chips === renderedChips) return;
         if(player.chips > renderedChips){
+            console.log('chip increase')
             duration = 3000
         }else{
+            console.log('chip decrease')
             duration = 1000
         }
         const frameRate = 1000 / 60; // 60 frames per second
