@@ -307,6 +307,7 @@ export default function({params}){
                 }, delayTime);
             })
             socket.on('next hand', async (data) => {
+                setWinByFold(false)
                 await updateGameAPI(params.gameId, data)
             })
             socket.on('round change', async (data) => {
