@@ -1,7 +1,6 @@
 
 import styles from './MyTurn.module.css'
 import { useState, useEffect, useRef } from 'react'
-import BetForm from './BetForm/BetForm'
 
 const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize}) => {
 
@@ -15,6 +14,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const baseFont = containerSize * .03
     const raiseInputRef = useRef(null);
     const betInputRef = useRef(null);
+    const canCover = maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet < gameState?.players[gameState?.turn].chips
 
     const fold = () => {
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
@@ -52,6 +52,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
         === gameState.players[gameState.turn].chips){
             let allInAmount = raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet
+            console.log('all in amount', allInAmount )
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: allInAmount})
         }
         
@@ -89,7 +90,9 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
 
     const bet = (amount) => { 
+        console.log('bet amount', amount)
         if(amount  === gameState.players[gameState.turn].chips){
+            console.log('all in amount: ', amount)
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
         }
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
@@ -164,7 +167,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholderTextColor='black' />
+                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' />
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Bet</button>
@@ -190,7 +193,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholderTextColor='black'/>
+                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Raise</button>
@@ -212,18 +215,19 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         ${(callAmount / 100).toFixed(2)} to call
                     </h1>
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
-                    <button className='greenButton' onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>
+                    {callAmount < gameState.players[gameState.turn].chips && <button className='greenButton' onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>}
 
-                    <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>
+                    {maxRaise > 0 && <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
                     </>
                     {/* } */}
-                    <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
+                    
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips ?
                     
-                    <button onClick={() => call(gameState.players[gameState.turn].chips)}>All In</button>
+                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In</button>
                     :
-                    <button className='redButton' onClick={() => bet(maxRaise + gameState.currentBet)}>Raise Max Amount</button>
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: containerSize * .05}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? 'Max Raise' : 'All In'}</button>
                     }
+                    <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
                     </div>
                 }
             </div>

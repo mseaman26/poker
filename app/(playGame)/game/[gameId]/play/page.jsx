@@ -269,6 +269,8 @@ export default function({params}){
             })
             socket.on('start game', async (data) => {
                 setRenderedFlop([])
+                setFlipping(false)
+                setFlopping(false)
                 await updateGameAPI(params.gameId, data)
             })
             //room id test
@@ -355,6 +357,7 @@ export default function({params}){
     }, [params.gameId])
     useEffect(() => {
         socket.on('flip cards', async (data) => {
+            console.log('flip cards! ')
             setFlipping(prior => true)
             for(let i = 0; i < data.players.length; i++){
                 gameState.players[i].maxWin = data.players[i].maxWin
