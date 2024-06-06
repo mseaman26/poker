@@ -232,7 +232,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? 'Max Raise!' : 'All In!'}</button>
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .025 : containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? (
+                        <>
+                        Max Raise! <br/>
+                        (${(maxRaise / 100).toFixed(2)})
+                        </>)
+                        : 'All In!'}</button>
                     }
                     <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
                     </div>
