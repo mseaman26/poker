@@ -174,7 +174,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' />
+                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Bet</button>
@@ -200,7 +200,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black'/>
+                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Raise</button>
@@ -232,7 +232,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .025 : containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? (
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? (
                         <>
                         Max Raise! <br/>
                         (${(maxRaise / 100).toFixed(2)})
