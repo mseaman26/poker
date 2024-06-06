@@ -54,7 +54,11 @@ export default function({params}){
     const delayTime = 2000
     const production = process.env.NODE_ENV === 'production'
 
-   
+    useEffect(() => {
+        console.log('flipping: ', flipping)
+        console.log('flopping: ', flopping)
+    }, [flipping, flopping])
+
     const startKeepAlive = () => {
         setInterval(() => {
             if(!production) console.log('heartbeat')

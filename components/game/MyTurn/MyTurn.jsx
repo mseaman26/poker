@@ -91,6 +91,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
 
     const bet = (amount) => { 
+        console.log('turn in bet function: ', gameState.turn)
+        console.log('current players chips: ', gameState.players[gameState.turn].chips)
         console.log('bet amount', amount)
         if(amount  === gameState.players[gameState.turn].chips){
             console.log('all in amount: ', amount)
@@ -133,7 +135,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         }
     }, [raiseFormShown, betFormShown])
 
-        
+    useEffect(() => {
+        console.log('max raise: ', maxRaise)
+        console.log('max bet: ', maxBet)
+
+    }, [maxRaise])
     
     // if(gameState.players[gameState.turn].folded){
     //     nextTurn()
@@ -155,9 +161,9 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     <button onClick={() => bet(0)} className={`greenButton ${styles.bannerButton}`} style={{fontSize: containerSize * .05}}>Check</button>
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips ?
                     
-                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In</button>
+                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In!</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={() => bet(maxBet)}>{canCoverBet ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!'}</button>
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={() => bet(maxRaise)}>{canCoverBet ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>
