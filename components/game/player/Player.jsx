@@ -56,6 +56,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         }
         
     }
+
+    useEffect(() => {
+        console.log('win by fold: ', winByFold)
+    }, [winByFold])
     useEffect(() => {
         if((gameState.handComplete || flipping) && player.eliminated === false && player.folded === false && winByFold === false){
             setCardImage1(svgUrlHandler(player.pocket[0]))
@@ -175,7 +179,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             {player.eliminated === false && player.folded === false &&
                             <>
                             <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
-                            <Image src={cardImage2} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
+                            <Image src={cardImage2} height={200} width={100} alt="card2 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
 
                             </>
                             }

@@ -59,6 +59,10 @@ export default function({params}){
         console.log('flopping: ', flopping)
     }, [flipping, flopping])
 
+    useEffect(() => {
+        console.log('wind by fold: ', winByFold)
+    }, [winByFold])
+
     const startKeepAlive = () => {
         setInterval(() => {
             if(!production) console.log('heartbeat')
@@ -275,6 +279,7 @@ export default function({params}){
                 setRenderedFlop([])
                 setFlipping(false)
                 setFlopping(false)
+                setWinByFold(false)
                 await updateGameAPI(params.gameId, data)
             })
             //room id test
@@ -304,6 +309,7 @@ export default function({params}){
             })
             socket.on('deal', async (data) => { 
                 setRenderedFlop([])
+                setWinByFold(false)
                 setFlipping(prior => false)
                 setFlopping(prior => false)
                 setDealing(true)
