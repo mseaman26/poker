@@ -71,13 +71,28 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [gameState, flipping])
 
     useEffect(() => {
+        
         if(gameState.handComplete){
             //make an array of the winners (not related to chips)
             const winners = []
-
-            gameState.handWinnerInfo.forEach(winner => {
-                winners.push(winner.player.userId)
-            })
+    
+            for(let i = 0; i < gameState.handWinnerInfo.length; i++){
+                
+                if(i === 0  ){
+                    winners.push(gameState.handWinnerInfo[i].player.userId)
+                }else{
+                    const stringifiedRankedlHand = JSON.stringify(gameState.handWinnerInfo[i].player.actualHand.rank)
+                    console.log('stringifiedActualHand: ', stringifiedRankedlHand)
+                    if(stringifiedRankedlHand === JSON.stringify(gameState.handWinnerInfo[0].player.actualHand.rank)){
+                        winners.push(gameState.handWinnerInfo[i].player.userId)
+                    }
+                }
+                
+            }
+            console.log('winners: ', winners)
+            // gameState.handWinnerInfo.forEach(winner => {
+            //     winners.push(winner.player.userId)
+            // })
             if(winners.includes(player.userId)){
                 setIsWinner(true)
             }
@@ -128,7 +143,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         // <div className={`${styles.container}`} style={style}>
         <>   
             {index !== 0 ? 
-            <div className={`${styles.otherPlayer} ${player.folded ? styles.folded : ''}`} style={style}>
+            <div className={`${styles.otherPlayer}`} style={style}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 && !gameState.handComplete && !flipping && !flopping ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
@@ -147,11 +162,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {index > 1 && index < 7 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
                         </>
                     }
-                    {!gameState.handComplete && 
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.action && !player.actionAmount && !player.allIn && ((player.moneyInPot != gameState.bigBlind && player.moneyInPot != gameState.bigBlind/2 || gameState.round != 0)) ? 'hidden': 'visible'}}>
+                   
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action && !player.moneyInPot? 'hidden' : 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
-                        {player.action && (!player.allIn || gameState.handComplete) &&
-                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
+
+                        {(!player.allIn || gameState.handComplete) &&
+                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
                         {player.allIn && 
                             <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1>
                         }
@@ -169,7 +185,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         
                         </div>}
                         
-                    </div>}
+                    </div>
                     <div className={styles.pocketContainer}>
                         <div className={styles.pocket} style={cardStyle}>
                             {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 && renderedFlop.length === 5 && !winByFold &&
