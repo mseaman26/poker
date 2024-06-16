@@ -308,6 +308,8 @@ export default function({params}){
                 setRenderedFlop([])
             })
             socket.on('deal', async (data) => { 
+                console.log('dealing, gamedata: ', data)
+                setGameState(prevState => (data))
                 setRenderedFlop([])
                 setWinByFold(false)
                 setFlipping(prior => false)

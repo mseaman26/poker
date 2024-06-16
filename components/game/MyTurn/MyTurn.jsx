@@ -1,6 +1,6 @@
 
 import styles from './MyTurn.module.css'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, use } from 'react'
 
 const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize}) => {
 
@@ -103,7 +103,10 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const manualWin = (turn) => {
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
+    useEffect(() => {
+        socket.emit('game state', gameId)
 
+    }, [])
     useEffect(() => {
         if(gameState?.players.length === 1){
             alert('You win!')
@@ -112,12 +115,13 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
     useEffect(() => { 
         setCallAmount(gameState.currentBet - gameState?.players[gameState.turn]?.bet)
-        setMaxBet(gameState.maxBet - gameState?.players[gameState.turn]?.moneyInPot)
+        setMaxBet(prior => gameState.maxBet - gameState.players[gameState.turn].bet)
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
-    }, [gameState.currentBet])
+        console.log('max bet: ', maxBet)
+    }, [gameState])
     useEffect(() => {
-        setMaxRaise(Math.min(gameState?.maxBet - callAmount - gameState?.players[gameState.turn]?.moneyInPot, gameState?.players[gameState.turn]?.chips - callAmount))
-    }, [callAmount])
+        setMaxRaise(Math.min(maxBet - callAmount, gameState?.players[gameState.turn]?.chips - callAmount))
+    }, [callAmount, gameState.turn])
 
     useEffect(() => {
         if(gameState.foldedCount === gameState.players.length - 1){
@@ -135,11 +139,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         }
     }, [raiseFormShown, betFormShown])
 
-    useEffect(() => {
-        console.log('max raise: ', maxRaise)
-        console.log('max bet: ', maxBet)
 
-    }, [maxRaise])
+  
     
     // if(gameState.players[gameState.turn].folded){
     //     nextTurn()
@@ -176,7 +177,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
   
                     <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
                         <h1 >Max Bet:</h1>
-                        <h1> ${(maxRaise / 100).toFixed(2)}</h1>
+                        <h1> ${(maxBet / 100).toFixed(2)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
@@ -230,7 +231,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
                     {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>}
 
-                    {maxRaise > 0 && <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
+                    { <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
                     </>
                     {/* } */}
                     

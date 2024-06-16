@@ -17,7 +17,7 @@ export default function Dashboard() {
         <div className={styles.buttonContainer}>
           <Link href={'/createGame'} className={styles.button}>CREATE NEW GAME</Link>
           <Link href={'/games'} className={styles.button}>GAMES</Link>
-          <Link href={'/myFriends'} className={styles.button}>MY Friends</Link>
+          <Link href={'/myFriends'} className={styles.button}>MY FRIENDS</Link>
           <Link href={'/searchUsers'} className={styles.button}>SEARCH USERS</Link>
           <Link href={'/account'} className={styles.button}>MY ACCOUNT</Link>
           

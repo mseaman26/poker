@@ -152,7 +152,7 @@ export default function NavBar () {
                           <Link className='icon_link' href='/games'>
                               My Games
                           </Link>
-                          <Link className='icon_link' href='/games'>
+                          <Link className='icon_link' href='/myFriends'>
                               My Peeps
                           </Link>
                           <Link className='icon_link' href='/searchUsers'>
