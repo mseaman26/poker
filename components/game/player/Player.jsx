@@ -7,9 +7,10 @@ import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Games from '@/app/(main)/games/page';
+import { socket } from '@/socket';
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
@@ -32,6 +33,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     
     const style = {
         position: 'absolute',
+        zIndex: 10,
         ...position,
     }
     const chipStyle = {
@@ -42,17 +44,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         ...cardPosition
     }
     const handleBuyBack = () => {
-        const wantsBackIn = confirm('would you like to buy back in?')
+        console.log('buy back?')
+        const wantsBackIn = confirm(`Buy-in amount is $${(gameState.buyIn / 100).toFixed(2)}. Are you sure you want to buy back in? `)
         if(wantsBackIn){
-            const amount = prompt('How much would you like to buy back in for?')
-            console.log(parseFloat(amount))
-            if(typeof(parseFloat(amount)) == NaN){
-                
-                alert('you need to enter a valid number')
-                handleBuyBack()
-            }else{
-                //buyback
-            }
+            socket.emit('buy back', {roomId: roomId, playerIndex: meIndex, amount: gameState.buyIn})
         }
         
     }
@@ -163,7 +158,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         </>
                     }
                    
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action && !player.moneyInPot? 'hidden' : 'visible'}}>
+                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action  && !player.bet && !player.allIn ? 'hidden' : 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
 
                         {(!player.allIn || gameState.handComplete) &&
@@ -212,14 +207,14 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 
             </div>
             :
-            <div className={styles.me} style={style}>
+            <div className={styles.me} style={{...style, display: burgerOpen ? 'none': 'flex'}} >
                     {/* ME SECTION */}
                 {player.eliminated === false &&
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.allIn / 100).toFixed(2) : ''}`}</h1><h1>{`Max Win: ${player.maxWin}`}</h1></>}
+                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1><h1>{`Max Win: ${player.maxWin}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
@@ -252,9 +247,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 } 
                 </div>}       
                 {player.eliminated &&
-                    <div className={styles.eliminated} style={{fontSize: basefont * 1.5}}>
-                        <h1>Eliminated</h1>
-                        <button onClick={handleBuyBack}>{`Buy back in (Coming soon)`}</button>
+                    <div className={styles.eliminated} style={{fontSize: basefont * 1.5}}  >
+                        <h1 className={styles.eliminatedHeader}>{`${player.inBuybackQueue ? `You will be dealt in when the next hand starts! 😃` : 'Eliminated'}`}</h1>
+                        {!player.inBuybackQueue && <button onClick={handleBuyBack} className={`${styles.buyBackButton}`} style={{zIndex: 10, position: 'relative', fontSize: basefont * 1.5}}  >{`Buy back in ($${(gameState.buyIn / 100).toFixed(2)})`}</button>}
                     </div>
                 }  
                 

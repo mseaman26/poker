@@ -28,6 +28,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
         bet(amount)
     }
+    const handleAllIn = () => {
+        if(confirm('Are you sure you want to go all in?')){
+            bet(gameState.players[gameState.turn].chips)
+        }
+        return
+    }
     const handleBetChange = (e) => {
         setBetAmount(parseFloat(e.target.value))
     }
@@ -115,7 +121,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
     useEffect(() => { 
         setCallAmount(gameState.currentBet - gameState?.players[gameState.turn]?.bet)
-        setMaxBet(prior => gameState.maxBet - gameState.players[gameState.turn].bet)
+        setMaxBet(prior => Math.min(gameState.maxBet - gameState.players[gameState.turn].bet, gameState.players[gameState.turn].chips ))
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
         console.log('max bet: ', maxBet)
     }, [gameState])
@@ -160,11 +166,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                 {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
                     <div className={styles.callFoldRaise}>
                     <button onClick={() => bet(0)} className={`greenButton ${styles.bannerButton}`} style={{fontSize: containerSize * .05}}>Check</button>
-                    {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips ?
+                    {true ?
                     
-                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In!</button>
+                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={() => bet(maxRaise)}>{canCoverBet ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!'}</button>
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxRaise) : handleAllIn}>{canCoverBet ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>
@@ -231,15 +237,15 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
                     {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>}
 
-                    { <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
+                    {maxRaise > 0 && <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
                     </>
                     {/* } */}
                     
                     {gameState.currentBet - gameState?.players[gameState.turn]?.bet >= gameState.players[gameState.turn].chips ?
                     
-                    <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(gameState.players[gameState.turn].chips)}>All In</button>
+                    <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={handleAllIn}>All In</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={() => bet(maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet)}>{canCover ? (
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? () => bet(maxRaise) : handleAllIn}>{canCover ? (
                         <>
                         Max Raise! <br/>
                         (${(maxRaise / 100).toFixed(2)})
