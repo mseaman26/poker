@@ -52,6 +52,14 @@ export async function POST(req){
                   }
                 }
               );
+            await User.updateOne(
+                { _id: requestingUserObj._id },
+                {
+                  $pull: {
+                    friendRequests: currentUserObj._id
+                  }
+                }
+              );
               return NextResponse.json({message: 'friend request declined'}, {status: 200})
         }
     }catch(err){

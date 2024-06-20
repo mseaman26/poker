@@ -2,9 +2,10 @@
 import styles from './userPage.module.css'
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI, fetchSingleUserAPI } from "@/lib/apiHelpers"
+import { removeFriendAPI, requestFriendAPI, cancelFriendRequestAPI, fetchSingleUserAPI, respondToFriendRequestAPI } from "@/lib/apiHelpers"
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import EmptyProfileIcon from '@/app/assets/icons/emptyProfileIcon'
+import { set } from 'mongoose'
 
 export const SingleUserPage = ({params}) => {
     const {id} = params
@@ -30,6 +31,7 @@ export const SingleUserPage = ({params}) => {
             for(let friend of me?.friends){
                 if(friend._id.toString() === userData._id.toString()){
                     setFriendStatus('friends')
+    
                 }
             }
             if(userData.friendRequests){
@@ -37,6 +39,11 @@ export const SingleUserPage = ({params}) => {
                     if(request._id.toString() === me?._id.toString()){
                         setFriendStatus('pending')
                     }
+                }
+            }
+            for(let request of me.friendRequests){
+                if(request._id.toString() === userData._id.toString()){
+                    setFriendStatus('requested')
                 }
             }
             setButtonVisible(true)
@@ -73,6 +80,15 @@ export const SingleUserPage = ({params}) => {
             setFriendStatus('notFriends')
         }
     }
+    const respondToFriendRequest = async (currentUserId, requestorId, response) => {
+        const res = await respondToFriendRequestAPI(currentUserId, requestorId, response)
+        socket.emit('friend refresh', {friendId: requestorId})
+        if(response === 'decline'){
+            setFriendStatus('notFriends')
+        }
+        getCurrentUserData(session?.user?.id)
+    }
+
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -112,7 +128,7 @@ export const SingleUserPage = ({params}) => {
                 friendId: id,
               });
         }
-    }, [removeFriend, requestFriend])
+    }, [removeFriend, requestFriend, respondToFriendRequest, cancelFriendRequest])
 
     useEffect(() => {
         getCurrentUserData(session?.user?.id)
@@ -131,7 +147,7 @@ export const SingleUserPage = ({params}) => {
         <EmptyProfileIcon />
         {userData && session && buttonVisible &&
             <>
-            {friendStatus === 'friends' ? (
+            {/* {friendStatus === 'friends' ? (
                 <div className={`${styles.statusInfo} `}>
                 <span className={`submitButton ${styles.friends}`}>Friends &#x2713;</span>
                     <button onClick={removeFriend} className={`cancelButton`}>remove friend</button>
@@ -142,7 +158,23 @@ export const SingleUserPage = ({params}) => {
                 </>)
             :(
                 <button onClick={requestFriend} className={`greenButton`}>Add Friend &#43;</button>
-            )}
+            )} */}
+            {friendStatus === 'friends' && 
+                <div className={`${styles.statusInfo} `}>
+                    <span className={`submitButton ${styles.friends}`}>Friends &#x2713;</span>
+                    <button onClick={removeFriend} className={`cancelButton`}>unfriend {userData.name}</button>
+                </div>}
+            {friendStatus === 'pending' &&
+                <div className={`${styles.statusInfo} `}>
+                    <span>Friend Request Pending...</span><button onClick={cancelFriendRequest} className={`cancelButton`}>Cancel Request</button>
+                </div>}
+            {friendStatus === 'requested' &&
+                <div className={`${styles.statusInfo} `}>
+                    <button className='greenButton' onClick={() => respondToFriendRequest(session.user.id, userData._id, 'accept')}>Accept Friend Request</button>
+                    <button onClick={() => respondToFriendRequest(session.user.id, userData._id, 'decline')} className={`cancelButton`}>Decline Request</button>
+                </div>}
+            {friendStatus !== 'notFriends' && friendStatus !== 'friends' && friendStatus !== 'pending' && friendStatus !== 'requested' && 
+                <button onClick={requestFriend} className={`greenButton`}>Add Friend &#43;</button>}
             </>  
             
         }

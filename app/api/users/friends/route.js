@@ -20,6 +20,9 @@ export async function POST(req){
             {
               $addToSet: {
                 friends: { $each: [userToAddObj._id] }
+              },
+              $pull: {
+                friendRequests: userToAddObj._id
               }
             }
           );
@@ -29,6 +32,9 @@ export async function POST(req){
             {
               $addToSet: {
                 friends: { $each: [currentUserObj._id] }
+              },
+              $pull: {
+                friendRequests: currentUserObj._id
               }
             }
           );

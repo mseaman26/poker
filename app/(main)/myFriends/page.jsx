@@ -77,7 +77,9 @@ const MyFriends = () => {
           {meData?.friendRequests?.map((friendRequest, index) => {
             return(
               <li key={index} className={`${styles.friendItem} `}>
-                <span>{friendRequest.name}</span>
+                <Link href={`/user/${friendRequest._id}`}>
+                  <div className={styles.profileButton}>{friendRequest.name}</div>
+                </Link>
                 <div>
                   <button onClick={() => respondToFriendRequest(meData._id, friendRequest._id, 'accept')} className={styles.friendAccept}>Accept</button>
                   <button onClick={() => respondToFriendRequest(meData._id, friendRequest._id, 'decline')} className={styles.friendDeny}>Deny</button>
