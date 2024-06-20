@@ -214,7 +214,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1><h1>{`Max Win: ${player.maxWin}`}</h1></>}
+                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(2)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>

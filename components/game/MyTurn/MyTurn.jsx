@@ -114,6 +114,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
     }, [])
     useEffect(() => {
+        console.log('max raise: ', maxRaise)
+    }, maxRaise)
+    useEffect(() => {
+        console.log('call amount: ', callAmount)
+    }, callAmount)
+    useEffect(() => {
         if(gameState?.players.length === 1){
             alert('You win!')
             socket.emit('win game', ({roomId: gameId, turn: gameState.turn}))
@@ -166,11 +172,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                 {gameState.currentBet - gameState?.players[gameState.turn]?.bet === 0 ? (
                     <div className={styles.callFoldRaise}>
                     <button onClick={() => bet(0)} className={`greenButton ${styles.bannerButton}`} style={{fontSize: containerSize * .05}}>Check</button>
-                    {true ?
+                    {!canCoverBet ?
                     
-                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!</button>
+                    <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!!</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxRaise) : handleAllIn}>{canCoverBet ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!!'}</button>
+                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxBet) : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>
@@ -245,10 +251,10 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={handleAllIn}>All In</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? () => bet(maxRaise) : handleAllIn}>{canCover ? (
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? () => bet(maxBet) : handleAllIn}>{canCover ? (
                         <>
-                        Max Raise! <br/>
-                        (${(maxRaise / 100).toFixed(2)})
+                        Max Raise!! <br/>
+                        (${((maxBet - callAmount) / 100).toFixed(2)})
                         </>)
                         : 'All In!'}</button>
                     }

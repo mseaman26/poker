@@ -287,7 +287,11 @@ export default function({params}){
 
             })
             socket.on('flopping', async (data) => {
-                dealFlop({flop: data.flop.slice(0, 3), flipping: false})
+                console.log('data.flop: ', data.flop)
+                if(data.flop.length > 0){
+                    dealFlop({flop: data.flop.slice(0, 3), flipping: false})
+                }
+                
             })
             socket.on('turning', async (data) => {
                 dealTurn({flop: data.flop[3], flipping: false})
