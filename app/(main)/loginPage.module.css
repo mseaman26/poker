@@ -1,0 +1,22 @@
+/* .container{
+    background-image: url('/images/aceKingClubs.jpg');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: fit-content;
+    padding: 0px;
+} */
+
+.loginButtons{
+    width: 100%;
+    
+}
+.formContainer{
+    /* translucent background */
+    background-color: rgba(255, 255, 255, 0.4);
+    width: fit-content;
+    border-radius: 15px;
+}
+.form{
+    background-color: transparent;
+}

@@ -1,5 +1,5 @@
 'use client'
-import React, {useState, useEffect, use} from 'react'
+import React, {useState, useEffect} from 'react'
 import styles from './myFriends.module.css'
 import { useSession } from 'next-auth/react'
 import { fetchSingleUserAPI, respondToFriendRequestAPI } from '@/lib/apiHelpers'
@@ -35,6 +35,7 @@ const MyFriends = () => {
   const handleToggle = () => {
     setShowFriendRequests(!showFriendRequests);
   };
+
 
   useEffect(() => {
     getMe()

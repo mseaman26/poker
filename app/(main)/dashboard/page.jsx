@@ -2,9 +2,6 @@
 'use client'
 import styles from './dashboard.module.css'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { useState } from 'react'
-import { getMyGamesAPI, deleteGameAPI } from '@/lib/apiHelpers'
 
 
 export default function Dashboard() {

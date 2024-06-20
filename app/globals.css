@@ -28,6 +28,13 @@ body{
   height: 100%;
   width: 100vw;
   background-color: #a8a8a8 ;
+  background-image: url('/images/aceKingClubs.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; 
+  height: 100vh; width: 100vw; 
+  overflow: hidden;
+
 }
 
 html{

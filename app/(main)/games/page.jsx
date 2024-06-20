@@ -45,6 +45,7 @@ const Games = () => {
         }
     }
 
+
     useEffect(() => {
         getMe()
         if(session){

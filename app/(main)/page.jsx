@@ -1,5 +1,5 @@
 "use client";
-import styles from './page(login).module.css'
+import styles from './loginPage.module.css'
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -45,6 +45,7 @@ export default function LoginForm() {
     setError('')
   }, [email, password])
 
+
   const loginAsUser = async(e, email, password) => {
     e.preventDefault()
     if(!isValidEmail(email)){
@@ -87,13 +88,13 @@ export default function LoginForm() {
  
   return (
     
-    <div className="pageContainer">
+    <div className={`pageContainer ${styles.container}`}>
       {loading && <LoadingScreen/>}
       <div className="headerContainer">
         <h1>Welcome To Mike's Friendly Poker!</h1>
       </div>
-      <div className="formContainer">
-        <form onSubmit={(e) => loginAsUser(e, email, password)} className="form">
+      <div className={`formContainer ${styles.formContainer}`}>
+        <form onSubmit={(e) => loginAsUser(e, email, password)} className={`form ${styles.form}`}>
         <label htmlFor="email" className='formLabel'>Email</label>
           <input
             onChange={(e) => setEmail(e.target.value)}

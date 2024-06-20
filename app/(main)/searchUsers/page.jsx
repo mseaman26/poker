@@ -45,6 +45,10 @@ const SearchUsers = () => {
         await getMe()
     }
 } 
+
+useEffect(() => {
+  document.body.setAttribute('style', "background-image: url('/images/aceKingClubs.jpg'); background-size: cover;background-position: center;background-repeat: no-repeat; height: 100vh; width: 100vw; overflow: hidden;")
+}, [])
   useEffect(() => {
     //update searchresults when searchQuery changes
     //fetch data from backend

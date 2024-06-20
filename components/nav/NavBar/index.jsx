@@ -111,12 +111,12 @@ export default function NavBar () {
         <>
         {!session ?
             <div className={styles.loggedOutNav}>
-                <Link href={'/dashboard'}><h1>TITLE</h1></Link>
+                <Link href={'/dashboard'}><h1>Mike's Friendly Poker</h1></Link>
             </div>
             :
             <>
               <div className={styles.container} >
-              <Link href={'/dashboard'}><h1>TITLE</h1></Link>
+              <Link href={'/dashboard'}><h1>Mike's Friendly Poker</h1></Link>
   
                   <>
 
