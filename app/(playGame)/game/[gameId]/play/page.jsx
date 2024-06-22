@@ -431,7 +431,7 @@ export default function({params}){
                                     (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId} socket={socket}/>
                                 {/* } */}
                                 </>
                                 

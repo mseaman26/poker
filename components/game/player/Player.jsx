@@ -7,10 +7,9 @@ import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Games from '@/app/(main)/games/page';
-import { socket } from '@/socket';
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId, socket}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
