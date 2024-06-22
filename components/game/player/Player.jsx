@@ -95,6 +95,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             setIsWinner(false)
         }    
     }, [gameState.handComplete])
+    useEffect(() => {
+        console.log('gamestate from player component: ', gameState)
+    }, [gameState])
 
     useEffect(() => {
         console.log('rendered chips: ', renderedChips)

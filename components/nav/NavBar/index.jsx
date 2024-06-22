@@ -76,7 +76,9 @@ export default function NavBar () {
           fontWeight: 700,
           fontSize: 32,
           marginBottom: 20,
-          color: '#f1f1f1'
+          border: '1px solid #f1f1f1',
+          color: '#f1f1f1',
+          padding: 10
         },
         //Styling of overlay
         bmOverlay: {

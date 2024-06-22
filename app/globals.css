@@ -27,11 +27,14 @@ body{
   padding: none;
   height: 100%;
   width: 100vw;
-  background-color: #a8a8a8 ;
+  /* background-color: #a8a8a8 ; */
+  background-color: black;
   background-image: url('/images/aceKingClubs.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat; 
+  background-attachment: fixed;
+
   min-height: 100vh; 
   height: 100%;
   width: 100vw; 
