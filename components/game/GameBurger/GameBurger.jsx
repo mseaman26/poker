@@ -55,7 +55,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => 
             height: '100%',
             width: '80%',
             top: 0,
-            zIndex: '100 !important'
+            zIndex: 100
         },
         //General sidebar styles
         bmMenu: {
@@ -69,7 +69,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => 
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
-            zIndex: 10
+            zIndex: 11
         },
         //Wrapper for item list
         bmItemList: {
@@ -85,7 +85,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => 
             fontSize: 32,
             marginBottom: 20,
             color: '#f1f1f1',
-            zIndex: 10,
+            zIndex: 11,
             cursor: 'pointer',
             border: '1px solid #f1f1f1',
             padding: '10px',
@@ -114,7 +114,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen}) => 
 
     return (
    
-        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 20}}>
+        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 20, position: 'relative'}}>
             <div className="menu-item"  onClick={() => {
                 closeMenu()
                 router.push(`/game/${gameId}`)}}>

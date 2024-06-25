@@ -16,6 +16,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const betInputRef = useRef(null);
     const canCover = maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet < gameState?.players[gameState?.turn].chips
     const canCoverBet = gameState?.players[gameState?.turn].chips > maxBet
+    const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2 
 
     const fold = () => {
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
@@ -34,6 +35,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         }
         return
     }
+    const handleMaxBet = () => {
+        if(confirm('Are you sure you want to bet the max?')){
+            bet(maxBet)
+        }
+    }
     const handleBetChange = (e) => {
         setBetAmount(parseFloat(e.target.value))
     }
@@ -43,7 +49,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const handleRaiseSubmit = (e) => {
         e.preventDefault()
         if((raiseAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
-            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
+            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(decimalAmount)}`)
+            return
+        }
+        if(decimalAmount === 0 && raiseAmount !== Math.floor(raiseAmount)){
+            alert('for games with a big blind of $2 or more, bets and raises must be in increments of 1$')
             return
         }
         // if entered bet plus what's already in the pot is greater than the player's chips
@@ -53,13 +63,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             return
         }
         if(raiseAmount * 100 > maxRaise){
-            alert(`Max raise is $${(maxRaise / 100).toFixed(2)}`)
+            alert(`Max raise is $${(maxRaise / 100).toFixed(decimalAmount)}`)
             return
         }
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
         === gameState.players[gameState.turn].chips){
             let allInAmount = raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet
-            console.log('all in amount', allInAmount )
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: allInAmount})
         }
         
@@ -70,10 +79,13 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const handleBetSubmit = (e) => {
         e.preventDefault()
         if((betAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
-            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(2)}`)
+            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(decimalAmount)}`)
             return
         }
-        
+        if(decimalAmount === 0 && betAmount !== Math.floor(betAmount)){
+            alert('for games with a big blind of $2 or more, bets and raises must be in increments of 1$')
+            return
+        }
         // if entered bet plus what's already in the pot is greater than the player's chips
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
         // + gameState.currentBet 
@@ -82,7 +94,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             return
         }
         if(betAmount * 100 > maxBet){
-            alert(`Max bet is $${(maxBet / 100).toFixed(2)}`)
+            alert(`Max bet is $${(maxBet / 100).toFixed(decimalAmount)}`)
             return
         }
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
@@ -97,11 +109,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
 
     const bet = (amount) => { 
-        console.log('turn in bet function: ', gameState.turn)
-        console.log('current players chips: ', gameState.players[gameState.turn].chips)
-        console.log('bet amount', amount)
         if(amount  === gameState.players[gameState.turn].chips){
-            console.log('all in amount: ', amount)
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
         }
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
@@ -109,16 +117,10 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const manualWin = (turn) => {
         socket.emit('win hand', ({roomId: gameId, turn: turn}))
     }
-    useEffect(() => {
-        socket.emit('game state', gameId)
 
-    }, [])
     useEffect(() => {
-        console.log('max raise: ', maxRaise)
-    }, maxRaise)
-    useEffect(() => {
-        console.log('call amount: ', callAmount)
-    }, callAmount)
+        console.log('decimal amount: ', decimalAmount)
+    }, [decimalAmount])
     useEffect(() => {
         if(gameState?.players.length === 1){
             alert('You win!')
@@ -129,7 +131,6 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         setCallAmount(gameState.currentBet - gameState?.players[gameState.turn]?.bet)
         setMaxBet(prior => Math.min(gameState.maxBet - gameState.players[gameState.turn].bet, gameState.players[gameState.turn].chips ))
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
-        console.log('max bet: ', maxBet)
     }, [gameState])
     useEffect(() => {
         setMaxRaise(Math.min(maxBet - callAmount, gameState?.players[gameState.turn]?.chips - callAmount))
@@ -176,7 +177,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!!</button>
                     :
-                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxBet) : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(2)})` : 'All In!'}</button>
+                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxBet) : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(decimalAmount)})` : 'All In!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>
@@ -189,11 +190,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
   
                     <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
                         <h1 >Max Bet:</h1>
-                        <h1> ${(maxBet / 100).toFixed(2)}</h1>
+                        <h1> ${(maxBet / 100).toFixed(decimalAmount)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode="decimal"   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
+                            <input ref={betInputRef} className={styles.betInput} type="number" inputMode='decimal'   style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Bet</button>
@@ -211,15 +212,15 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     <>
                     <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
                     <h1 className={styles.toYou} style={{fontSize: containerSize * .05}}>
-                        ${(callAmount / 100).toFixed(2)} to call
+                        ${(callAmount / 100).toFixed(decimalAmount)} to call
                     </h1>
                     <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
                         <h1 >Max raise:</h1>
-                        <h1> ${(maxRaise / 100).toFixed(2)}</h1>
+                        <h1> ${(maxRaise / 100).toFixed(decimalAmount)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
-                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode="decimal" placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
+                            <input ref={raiseInputRef} className={styles.betInput} type="number" inputMode='decimal' placeholder='Raise Amount'  style={{fontSize: baseFont *3, color: 'black', fontWeight: 700}} placeholdertextcolor='black' step='any'/>
                         </div>
                         <div className={styles.betAndCancel}>
                             <button className={`blueButton ${styles.raiseButton}`} style={{fontSize: baseFont}} type="submit">Raise</button>
@@ -238,7 +239,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     {/* {gameState.currentBet - gameState?.players[gameState.turn]?.bet < gameState.players[gameState.turn].chips && */}
                     <>
                     <h1 className={styles.toYou} style={{fontSize: containerSize * .05}}>
-                        ${(callAmount / 100).toFixed(2)} to call
+                        ${(callAmount / 100).toFixed(decimalAmount)} to call
                     </h1>
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
                     {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}>Call</button>}
@@ -251,10 +252,10 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05, textWrap: 'nowrap'}} onClick={handleAllIn}>All In</button>
                     :
-                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? () => bet(maxBet) : handleAllIn}>{canCover ? (
+                    maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? handleMaxBet : handleAllIn}>{canCover ? (
                         <>
                         Max Raise!! <br/>
-                        (${((maxBet - callAmount) / 100).toFixed(2)})
+                        (${((maxBet - callAmount) / 100).toFixed(decimalAmount)})
                         </>)
                         : 'All In!'}</button>
                     }

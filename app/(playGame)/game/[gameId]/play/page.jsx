@@ -37,7 +37,6 @@ export default function({params}){
     const [meIndex, setMeIndex] = useState(null)
     const [offsetPlayers, setOffsetPlayers] = useState([])
     const [centerPot, setCenterPot] = useState(0)
-    const [isFullScreen, setIsFullScreen] = useState(false)
     const [vW,  setVw] = useState()
     const [vH, setvH] = useState()
     const [betFormShown, setBetFormShown] = useState(false)
@@ -48,20 +47,12 @@ export default function({params}){
     const [flipping, setFlipping] = useState(false)
     const [burgerOpen, setBurgerOpen] = useState(false)
     const [winByFold, setWinByFold] = useState(false)
+    const [playerAdded, setPlayerAdded] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
     const delayTime = 2000
     const production = process.env.NODE_ENV === 'production'
-
-    useEffect(() => {
-        console.log('flipping: ', flipping)
-        console.log('flopping: ', flopping)
-    }, [flipping, flopping])
-
-    useEffect(() => {
-        console.log('wind by fold: ', winByFold)
-    }, [winByFold])
 
     const startKeepAlive = () => {
         setInterval(() => {
@@ -181,6 +172,7 @@ export default function({params}){
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
     })};
+
     
     useEffect(() => {
         if(!production) console.log('game state: ', gameState);
@@ -242,9 +234,17 @@ export default function({params}){
                     setNextHandButtonShown(true)
                 }
             }
-            setMeIndex(gameState.players.findIndex(player => player.userId === meData._id))
+            setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
+            console.log('meIndex: ', meIndex)
+            if(meIndex === -1 && !playerAdded){
+                console.log('adding player')
+                socket.emit('add player', {roomId: params.gameId, player: {id: session?.user?.id, username: session?.user?.name}})
+                setPlayerAdded(prior => true)
+                
+            }
             if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
-                alert('You Win!')
+                alert('You Win!!')
+                endGame()
             }
             if(gameState?.flop?.length === 0){
                 setRenderedFlop([])

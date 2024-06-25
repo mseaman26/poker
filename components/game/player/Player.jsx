@@ -22,14 +22,11 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const cardPosition = cardPositions[numPlayers][index]
     const [cardImage1, setCardImage1] = useState(redBack)
     const [cardImage2, setCardImage2] = useState(redBack)
-    const [buyBackFormShown, setBuyBackFormShown] = useState(false)
-    const [buyBackAmount, setBuyBackAmount] = useState(null)
-    const [meEliminated, setMeEliminated] = useState(false)
     const [renderedChips, setRenderedChips] = useState(null)
     const basefont = containerSize * .03
     const [isWinner, setIsWinner] = useState(false)
-    const [mounted, setMounted] = useState(false);
-    
+    const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2
+    console.log('number of players: ', numPlayers)
     const style = {
         position: 'absolute',
         zIndex: 10,
@@ -43,8 +40,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         ...cardPosition
     }
     const handleBuyBack = () => {
-        console.log('buy back?')
-        const wantsBackIn = confirm(`Buy-in amount is $${(gameState.buyIn / 100).toFixed(2)}. Are you sure you want to buy back in? `)
+        const wantsBackIn = confirm(`Buy-in amount is $${(gameState.buyIn / 100).toFixed(decimalAmount)}. Are you sure you want to buy back in? `)
         if(wantsBackIn){
             socket.emit('buy back', {roomId: roomId, playerIndex: meIndex, amount: gameState.buyIn})
         }
@@ -52,10 +48,11 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }
 
     useEffect(() => {
-        console.log('win by fold: ', winByFold)
-    }, [winByFold])
+        console.log('burger open: ', burgerOpen)
+    }, [burgerOpen])
+
     useEffect(() => {
-        if((gameState.handComplete || flipping) && player.eliminated === false && player.folded === false && winByFold === false){
+        if((gameState.handComplete || flipping) && player?.eliminated === false && player?.folded === false && winByFold === false){
             setCardImage1(svgUrlHandler(player.pocket[0]))
             setCardImage2(svgUrlHandler(player.pocket[1]))
         }else{
@@ -76,14 +73,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     winners.push(gameState.handWinnerInfo[i].player.userId)
                 }else{
                     const stringifiedRankedlHand = JSON.stringify(gameState.handWinnerInfo[i].player.actualHand.rank)
-                    console.log('stringifiedActualHand: ', stringifiedRankedlHand)
                     if(stringifiedRankedlHand === JSON.stringify(gameState.handWinnerInfo[0].player.actualHand.rank)){
                         winners.push(gameState.handWinnerInfo[i].player.userId)
                     }
                 }
                 
             }
-            console.log('winners: ', winners)
             // gameState.handWinnerInfo.forEach(winner => {
             //     winners.push(winner.player.userId)
             // })
@@ -96,25 +91,21 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [gameState.handComplete])
 
     useEffect(() => {
-        console.log('rendered chips: ', renderedChips)
 
         if(renderedChips === null) {
-            console.log('rendered chips was null')
             setRenderedChips(player.chips) 
             return
         }
         let duration = 0; // duration of the animation in milliseconds
-        if(player.chips === renderedChips) return;
-        if(player.chips > renderedChips){
-            console.log('chip increase')
+        if(player?.chips === renderedChips) return;
+        if(player?.chips > renderedChips){
             duration = 3000
         }else{
-            console.log('chip decrease')
             duration = 1000
         }
         const frameRate = 1000 / 60; // 60 frames per second
         const totalFrames = duration / frameRate;
-        const valueChange = player.chips - renderedChips;
+        const valueChange = player?.chips - renderedChips;
         const increment = valueChange / totalFrames;
     
         let currentFrame = 0;
@@ -124,7 +115,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             const newValue = prevValue + increment;
             if (currentFrame >= totalFrames) {
               clearInterval(chipsInterval);
-              return player.chips;
+              return player?.chips;
             }
             return newValue;
           });
@@ -143,7 +134,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 && !gameState.handComplete && !flipping && !flopping ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
                     {isWinner && <h1 className={styles.winner} style={{fontSize: basefont*2}}>WINNER!!</h1>}
                     <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
-                  <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>{(renderedChips / 100).toFixed(2)}</span> </h1>
+                  <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
@@ -161,11 +152,11 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {/* ACTION AND ACTION AMOUNT */}
 
                         {(!player.allIn || gameState.handComplete) &&
-                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(2)}</span>}</div>  }   
+                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1>
                         }
-                        {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(2)}`}</h1>}
+                        {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
@@ -174,7 +165,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
                             </div>}
                         {player.bet > 0 && !player.maxWin &&
-                        <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>
+                        <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(decimalAmount)}</h1>
                         }  
                         
                         </div>}
@@ -198,7 +189,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 </div>
                 :
                 <>
-                    <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>
+                    {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>}
                 </>
                 }
     
@@ -208,12 +199,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             :
             <div className={styles.me} style={{...style, display: burgerOpen ? 'none': 'flex'}} >
                     {/* ME SECTION */}
-                {player.eliminated === false &&
+                {player?.eliminated === false &&
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(2) : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(2)}`}</h1></>}
+                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
@@ -234,21 +225,21 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
                             <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>
                             {player.bet > 0 && 
-                                <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(2)}</h1>}
+                                <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed(decimalAmount)}</h1>}
                         </div>
                         }
                         
                         
-                        <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(renderedChips / 100).toFixed(2)}</span></h1>
+                        <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(renderedChips / 100).toFixed(decimalAmount)}</span></h1>
                         
                     </div>
                     
                 } 
                 </div>}       
-                {player.eliminated &&
+                {player?.eliminated && !burgerOpen &&
                     <div className={styles.eliminated} style={{fontSize: basefont * 1.5}}  >
                         <h1 className={styles.eliminatedHeader}>{`${player.inBuybackQueue ? `You will be dealt in when the next hand starts! 😃` : 'Eliminated'}`}</h1>
-                        {!player.inBuybackQueue && <button onClick={handleBuyBack} className={`${styles.buyBackButton}`} style={{zIndex: 10, position: 'relative', fontSize: basefont * 1.5}}  >{`Buy back in ($${(gameState.buyIn / 100).toFixed(2)})`}</button>}
+                        {!player.inBuybackQueue && <button onClick={handleBuyBack} className={`${styles.buyBackButton}`} style={{zIndex: 1, position: 'relative', fontSize: basefont * 1.5}}  >{`Buy back in ($${(gameState.buyIn / 100).toFixed(decimalAmount)})`}</button>}
                     </div>
                 }  
                 

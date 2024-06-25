@@ -149,8 +149,8 @@ const Games = () => {
                                         <Link href={`/game/${game._id}`} className={styles.createdGame}>
                                             <h1>{game.name}</h1>
                                             <div className={styles.myGameInfo1}>
-                                                <p>Buy In: ${(game.bigBlind / 100).toFixed(0)}</p>
-                                                <p>Blinds: ${(game.bigBlind / 200).toFixed(0)}/${(game.bigBlind / 100).toFixed(0)}</p>
+                                                <p>Buy In: ${(game.buyIn / 100).toFixed(2)}</p>
+                                                <p>Blinds: ${(game.bigBlind / 200).toFixed(2)}/${(game.bigBlind / 100).toFixed(2)}</p>
                                             </div>
                                             <div className={styles.myGameInfo2}>
                                                 <p>creator: {game.creatorId.name}</p>

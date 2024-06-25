@@ -33,11 +33,11 @@ const CreateGame = () => {
           <input type="text" id="gameName" name="gameName" className='input' onChange={(e) => setGameName(e.target.value)}/>
           <label htmlFor="buyIn" className='formLabel'>Buy In amount</label>
           <div className={styles.inputDiv}>
-            <span className={styles.dollarSign}>$</span><input type="number" id="buyIn" name="buyIn"  className={` ${styles.buyInInput}`} onChange={(e) => setBuyIn(e.target.value)}/>
+            <span className={styles.dollarSign}>$</span><input type='number' inputMode='decimal' id="buyIn" name="buyIn"  className={` ${styles.buyInInput}`} onChange={(e) => setBuyIn(e.target.value)}/>
           </div>
           <label htmlFor="bigBlinds" className='formLabel'>Starting Big Blinds</label>
           <div className={styles.inputDiv}>
-            <span className={styles.dollarSign}>$</span><input type="number" id="bitBlinds" name="bigBlinds"  className={` ${styles.buyInInput}`} onChange={(e) => setStartingBlind(e.target.value)}/>
+            <span className={styles.dollarSign}>$</span><input type="decimal" inputMode='decimal' id="bitBlinds" name="bigBlinds"  className={` ${styles.buyInInput}`} onChange={(e) => setStartingBlind(e.target.value)}/>
           </div>
           <button type="submit" className='submitButton'>Submit</button>
           <button className='cancelButton' onClick={() => router.push('/dashboard')}>Cancel</button>
