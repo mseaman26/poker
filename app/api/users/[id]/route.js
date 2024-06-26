@@ -26,19 +26,54 @@ export async function GET(req, {params}){
     
 }
 //UPDATE USER
-export async function PUT(req, {params}){
-  const body = await req.json()
+// export async function PUT(req, {params}){
+//   const body = await req.json()
 
-  console.log("body: ",body)
-  try{
-      await connectMongoDB()
-      console.log('update user route hit')
-      const id = params.id
-      console.log('id in route: ', id)
-      const user = await User.findByIdAndUpdate(id, body, {new: true})
-      return NextResponse.json(user)
-  }catch(err){
-      console.log('error in update user fetch: ', err)
+//   console.log("body: ",body)
+//   try{
+//       await connectMongoDB()
+//       console.log('update user route hit')
+//       const id = params.id
+//       console.log('id in route: ', id)
+//       const user = await User.findByIdAndUpdate(id, body, {new: true})
+//       return NextResponse.json(user)
+//   }catch(err){
+//       console.log('error in update user fetch: ', err)
+//   }
+// }
+export async function PUT(req, { params }) {
+  const body = await req.json();
+  const updateFields = { ...body }; // Copy all fields from the body
+  try {
+    await connectMongoDB();
+    console.log('update user route hit');
+    const id = params.id;
+    console.log('id in route: ', id);
+
+    const update = {};
+
+    // Check if amount for chips update is provided
+    if (updateFields.chipsAmount) {
+      console.log('chips update, amount: ', updateFields.chipsAmount);
+      update.$inc = { cash: updateFields.chipsAmount };
+      delete updateFields.chipsAmount; // Remove the amount field from the other updates
+    }
+
+    // Add other fields to the update object using $set
+    if (Object.keys(updateFields).length > 0) {
+      update.$set = updateFields;
+    }
+
+    const user = await User.findByIdAndUpdate(id, update, { new: true });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return NextResponse.json(user);
+  } catch (err) {
+    console.log('error in update user fetch: ', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 //DELETE USER

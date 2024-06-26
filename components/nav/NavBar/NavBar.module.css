@@ -42,6 +42,7 @@
     width: '100%';
     color: var(--secondaryFontColor);
     align-items: center;
+    justify-content: space-between;
 }
 .nav2 a{
     color: var(--secondaryFontColor);
@@ -67,6 +68,10 @@
     object-fit: contain;
     align-items: center;
     fill: var(--secondaryFontColor);
+}
+.navProfilePicAndName{
+    display: flex;
+    align-items: center;
 }
 
 @media screen and (max-width: 992px){

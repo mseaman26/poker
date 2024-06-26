@@ -1,6 +1,6 @@
 'use client'
 import { initializeSocket, getSocket } from "@/lib/socketService";
-import { getGameAPI, fetchSingleUserAPI, updateGameAPI } from "@/lib/apiHelpers";
+import { getGameAPI, fetchSingleUserAPI, updateGameAPI, updateUserAPI } from "@/lib/apiHelpers";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import styles from './playGamePage.module.css'
@@ -86,10 +86,15 @@ export default function({params}){
     }
 
     const startGame = async () => {
+        console.log('starting game')
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
+        for(let user of usersInRoom){
+            await updateUserAPI(user.userId, {chipsAmount: data.buyIn * -1})
+        }
         // requestFullScreen()
     }
+
     const dealFlop = async (data) => {
         setFlopping(true)
         setTimeout(() => {

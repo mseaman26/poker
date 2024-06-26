@@ -1,9 +1,9 @@
 'use client'
-import React, { use } from 'react'
+import React from 'react'
 import styles from './accountPage.module.css'
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { searchUsersAPI, updateUserAPI, deleteUserAPI } from '@/lib/apiHelpers'
+import { searchUsersAPI, updateUserAPI, deleteUserAPI, fetchSingleUserAPI } from '@/lib/apiHelpers'
 import { signIn, signOut } from 'next-auth/react'
 import LoadingScreen from '@/components/loadingScreen/loadingScreen'
 
@@ -14,6 +14,7 @@ const AccountPAge= () => {
     const [newUsername, setNewUsername] = useState("");
     const [newEmail, setNewEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [newCashBalance, setNewCashBalance] = useState('')
     const [password2, setPassword2] = useState('')
     const [error, setError] = useState("");
     const [passwordError, setPasswordError] = useState('')
@@ -22,6 +23,7 @@ const AccountPAge= () => {
     const [usernameAvailable, setUsernameAvailable] = useState(false)
     const [emailAvailable, setEmailAvailable] = useState(false)
     const [loading, setLoading] = useState(true);
+    const [meData, setMeData] = useState({})
 
     const handleNameChange = async () => {
         setError('')
@@ -128,6 +130,23 @@ const AccountPAge= () => {
             console.log('error in delete account: ', err)
         }
     }
+    const getMeData = async () => {
+        const me = await fetchSingleUserAPI(session.user.id)
+        setMeData(me)
+    
+    }
+    const handleCashSubmit = async (e) => {
+        e.preventDefault()
+        try{
+            const data = {cash: newCashBalance * 100}
+            await updateUserAPI(session.user.id, data)
+            getMeData()
+            setNewCashBalance('')
+        }catch(err){
+            console.log('error in update cash: ', err)
+        }
+    
+    }
     useEffect(() => {
         handleNameChange()
     }, [newUsername])
@@ -138,7 +157,9 @@ const AccountPAge= () => {
     useEffect(() => {
             if(session){
                 setLoading(false)
+                getMeData()
             }
+            
     }, [session])
 
     return (
@@ -147,47 +168,57 @@ const AccountPAge= () => {
         <div className='headerContainer'>
             <h1>Edit My Account</h1>
         </div>
-            <div className='formContainer'>
-            <form className='form' onSubmit={(e) => updateUsername(e)}>
-                <label className='formLabel'>{`Update Username (currently: ${session?.user?.name})`}</label>
-                <h1>{newUsername ? (usernameAvailable ? <span style={{color: 'green'}}>username is available!</span>: <span style={{color: 'red'}}>username not available</span>) : ''}</h1>
-                <input
-                    onChange={(e) => setNewUsername(e.target.value.toLocaleLowerCase())}
-                    type="text"
-                    className='input'
-                    placeholder='Enter new username'
-                />
-                <label className='formLabel'>{`enter password to update username`}</label>
-                <input
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    className='input'
-                />
-                <div className='errorMessage'>{nameError}</div>
-                <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
-                
-            </form>
-            <form className='form' onSubmit={(e) => updateEmail(e)}>
-                <label className='formLabel'>{`Update Email (currently: ${session?.user?.email})`}</label>
-                <h1>{newEmail ? (emailAvailable ? <span style={{color: 'green'}}>email is available!</span>: <span style={{color: 'red'}}>email not available</span>) : ''}</h1>
-                <input
-                    onChange={(e) => setNewEmail(e.target.value.toLocaleLowerCase())}
-                    type="email"
-                    className='input'
-                    placeholder='Enter new email'
-                />
-                <label className='formLabel'>{`enter password to update email`}</label>
-                <input
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    className='input'
-                />
-                <div className='errorMessage'>{emailError}</div>
-                <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
-                
-            </form>
-            <button className='cancelButton' onClick={deleteAccount}>Delete Account</button>
-        </div>
+            
+            {meData && <div className='formContainer'>
+                {meData?.cash !== undefined && <div className='formContainer'>
+                    <form className='form' onSubmit={handleCashSubmit}>
+                        <label className='formLabel'>{`Update your cash balance: (currently $${(meData?.cash / 100).toFixed(2)})`}</label>
+                        <div style={{display: 'flex', width: '100%', alignItems: 'center', marginBottom: 12}}>
+                            $ <input type='number' inputMode='decimal' className={`input ${styles.cashInput}`} onChange={(e) => setNewCashBalance(e.target.value)} value={`${newCashBalance}`}></input>
+                        </div>
+                        <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
+                    </form>
+                </div>}
+                <form className='form' onSubmit={(e) => updateUsername(e)}>
+                    {session?.user?.name && <label className='formLabel'>{`Update Username (currently: ${session?.user?.name})`}</label>}
+                    <h1>{newUsername ? (usernameAvailable ? <span style={{color: 'green'}}>username is available!</span>: <span style={{color: 'red'}}>username not available</span>) : ''}</h1>
+                    <input
+                        onChange={(e) => setNewUsername(e.target.value.toLocaleLowerCase())}
+                        type="text"
+                        className='input'
+                        placeholder='Enter new username'
+                    />
+                    <label className='formLabel'>{`enter password to update username`}</label>
+                    <input
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password"
+                        className='input'
+                    />
+                    <div className='errorMessage'>{nameError}</div>
+                    <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
+                    
+                </form>
+                <form className='form' onSubmit={(e) => updateEmail(e)}>
+                    <label className='formLabel'>{`Update Email (currently: ${session?.user?.email})`}</label>
+                    <h1>{newEmail ? (emailAvailable ? <span style={{color: 'green'}}>email is available!</span>: <span style={{color: 'red'}}>email not available</span>) : ''}</h1>
+                    <input
+                        onChange={(e) => setNewEmail(e.target.value.toLocaleLowerCase())}
+                        type="email"
+                        className='input'
+                        placeholder='Enter new email'
+                    />
+                    <label className='formLabel'>{`enter password to update email`}</label>
+                    <input
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password"
+                        className='input'
+                    />
+                    <div className='errorMessage'>{emailError}</div>
+                    <button className='submitButton submitButtonSmall' type='submit'>Submit</button>
+                    
+                </form>
+                <button className='cancelButton' onClick={deleteAccount}>Delete Account</button>
+            </div>}
         </>
     )
 }

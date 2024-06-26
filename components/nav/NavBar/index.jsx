@@ -185,13 +185,14 @@ export default function NavBar () {
               <div className={styles.nav2}>
                   
                 <Link href={'/account'}>
-                  <div>
-                    <EmptyProfileIcon width='20px' height='20px' className={styles.navProfilePic} />
-                    {/* <Image src={emptyProfile} width={15} height={15} className={styles.navProfilePic} alt='empty profile'></Image> */}
-                    <p>{session.user.name} </p>
-                    <p>Cash: ${(meData.cash / 100).toFixed(2)}</p>
-                  </div>
+                    <div className={styles.navProfilePicAndName}>
+                      <EmptyProfileIcon width='20px' height='20px' className={styles.navProfilePic} />
+                      {/* <Image src={emptyProfile} width={15} height={15} className={styles.navProfilePic} alt='empty profile'></Image> */}
+                      <p style={{display: 'inline'}}>{session.user.name} </p>
+                    </div>
+                    
                 </Link>
+                {meData?.cash !== undefined && <p>{`Cash: $${(meData?.cash / 100).toFixed(2)}`}</p>}
               </div>
             </>
         }
