@@ -163,6 +163,9 @@ export default function({params}){
         setWinByFold(false)
         socket.emit('next hand', {roomId: params.gameId})
     }
+    const cashOut = async () => {
+        socket.emit('remove player', {roomId: params.gameId, playerIndex: meIndex})
+    }
 
     const endGame = async () => {
         const data = await updateGameAPI(params.gameId, {started: false})
@@ -173,7 +176,9 @@ export default function({params}){
         getGameState(); // Fetch the updated game state after the game has ended
     })};
 
-    
+    useEffect(() => {
+        console.log(usersInRoom)
+    }, [usersInRoom])
     useEffect(() => {
         if(!production) console.log('game state: ', gameState);
     }, [gameState]);
@@ -418,7 +423,7 @@ export default function({params}){
         <div className={styles.container}>
             {dealing && <DealingScreen />}
             <div className={`${styles.upperRightButtons}`}>
-                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen}/>
+                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut}/>
             </div>
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>

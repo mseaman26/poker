@@ -1,6 +1,21 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema, models } from "mongoose";
 
+const playedGameSchema = new Schema(
+  {
+    gameId: {
+      type: ObjectId,
+      ref: 'Game',
+      required: true
+    },
+    chips: {
+      type: Number,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
 const userSchema = new Schema(
   {
     name: {
@@ -36,7 +51,11 @@ const userSchema = new Schema(
       type: [ObjectId],
       ref: 'Game',
       default: []
-    }
+    },
+    cash: {
+      type: Number,
+      default: 0
+    },
 
   },
   { timestamps: true }

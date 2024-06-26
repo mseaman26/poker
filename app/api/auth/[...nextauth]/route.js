@@ -4,6 +4,8 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
+let cash
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -17,7 +19,6 @@ export const authOptions = {
         try {
           await connectMongoDB();
           const user = await User.findOne({ email });
-
           if (!user) {
             return null;
           }
@@ -27,7 +28,8 @@ export const authOptions = {
           if (!passwordsMatch) {
             return null;
           }
-          return { ...user.toObject(), id: user._id.toString() };
+          cash = user.cash
+          return { ...user.toObject(), id: user._id.toString(), cash: user.cash};
         } catch (error) {
           console.log("Error: ", error);
         }
@@ -39,13 +41,16 @@ export const authOptions = {
       if (account) {
         token.accessToken = account.access_token
         token.id = user?._id
+        token.cash = user?.cash
       }
       return token
     },
     session({ session, token }) {
+      console.log('the session: ', session)
         // I skipped the line below coz it gave me a TypeError
         // session.accessToken = token.accessToken;
         session.user.id = token.id;
+        session.user.cash = cash
   
         return session;
       },

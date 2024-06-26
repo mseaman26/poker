@@ -69,13 +69,14 @@ export async function DELETE(){
     return NextResponse.json({message: err}, {status: 500})
   }
 }
+//for updating existing users if you change the model
 export async function PUT(){
   try {
     await connectMongoDB();
     console.log('updating users...');
     const updateResult = await User.updateMany(
-      { friendRequests: { $exists: false } }, // filter for existing users without the new property
-      { $set: { friendRequests: [] } } // set the default value for the new property
+      { cash: { $exists: false } }, // filter for existing users without the new property
+      { $set: { cash: 0 } } // set the default value for the new property
     );
     
     console.log(`users updated: ${updateResult}`);

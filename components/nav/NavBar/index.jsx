@@ -5,13 +5,13 @@ import styles from './NavBar.module.css'
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { slide as Menu } from 'react-burger-menu';
-import Image from "next/image"
 import EmptyProfileIcon from "@/app/assets/icons/emptyProfileIcon"
+import { fetchSingleUserAPI } from '@/lib/apiHelpers'
 
 export default function NavBar () {
     const { data: session } = useSession();
     const [menuOpen, setMenuOpen] = useState(false)
-
+    const [meData, setMeData] = useState({})
     const [windowWidth, setWindowWidth] = useState(0);
     const showMenu = windowWidth < 992;
 
@@ -104,8 +104,21 @@ export default function NavBar () {
             setWindowWidth(window.innerWidth);
         }
         window.addEventListener('resize', handleResize);
+        
         return () => window.removeEventListener('resize', handleResize);
+        
     }, []);
+    useEffect(() => {
+      console.log('medata', meData)
+    }, [meData])
+    useEffect(() => {
+      if(session){
+        fetchSingleUserAPI(session.user.id).then((res) => {
+            setMeData(res)
+        })
+      }
+      console.log('session', session)
+    }, [session])
 
 
 
@@ -172,9 +185,12 @@ export default function NavBar () {
               <div className={styles.nav2}>
                   
                 <Link href={'/account'}>
-                  <EmptyProfileIcon width='20px' height='20px' className={styles.navProfilePic} />
-                  {/* <Image src={emptyProfile} width={15} height={15} className={styles.navProfilePic} alt='empty profile'></Image> */}
-                  <p>{session.user.name}</p>
+                  <div>
+                    <EmptyProfileIcon width='20px' height='20px' className={styles.navProfilePic} />
+                    {/* <Image src={emptyProfile} width={15} height={15} className={styles.navProfilePic} alt='empty profile'></Image> */}
+                    <p>{session.user.name} </p>
+                    <p>Cash: ${(meData.cash / 100).toFixed(2)}</p>
+                  </div>
                 </Link>
               </div>
             </>

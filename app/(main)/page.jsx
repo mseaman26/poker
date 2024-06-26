@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { isValidEmail } from "@/lib/validators";
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
+import {updateUsersAPI} from '../../lib/apiHelpers'
 
 
 export default function LoginForm() {
@@ -84,6 +85,11 @@ export default function LoginForm() {
       return
     })
   }
+  const handleUpdateUsers = async() => {
+    if(confirm('Are you sure you want to update all users?')){
+      await updateUsersAPI()
+    }
+  }
 
  
   return (
@@ -130,7 +136,9 @@ export default function LoginForm() {
         <button onClick={(e) => loginAsUser(e, 'player2@player2.com', '!Q2w3e4r')}>login as player2</button><br></br>
         <button onClick={(e) => loginAsUser(e, 'player3@player3.com', '!Q2w3e4r')}>login as player3</button><br></br>
         <button onClick={(e) => loginAsUser(e, 'player4@player4.com', '!Q2w3e4r')}>login as player4</button><br></br>
-        <button onClick={(e) => requestActiveUsers(e)}>Request active users</button>
+        <button onClick={(e) => requestActiveUsers(e)}>Request active users</button><br/>
+        <button onClick={handleUpdateUsers}>Update Users</button>
+        
       </div>}
       
     </div>

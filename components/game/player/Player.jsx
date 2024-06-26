@@ -189,7 +189,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 </div>
                 :
                 <>
-                    {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>}
+                    {/* {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>} */}
+                    {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username}: {`(Spectating)`}</h1>}
                 </>
                 }
     
@@ -238,8 +239,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 </div>}       
                 {player?.eliminated && !burgerOpen &&
                     <div className={styles.eliminated} style={{fontSize: basefont * 1.5}}  >
-                        <h1 className={styles.eliminatedHeader}>{`${player.inBuybackQueue ? `You will be dealt in when the next hand starts! 😃` : 'Eliminated'}`}</h1>
-                        {!player.inBuybackQueue && <button onClick={handleBuyBack} className={`${styles.buyBackButton}`} style={{zIndex: 1, position: 'relative', fontSize: basefont * 1.5}}  >{`Buy back in ($${(gameState.buyIn / 100).toFixed(decimalAmount)})`}</button>}
+                        <h1 className={styles.eliminatedHeader}>{`${player.inBuybackQueue ? `You will be dealt in when the next hand starts! 😃` : 'Spectating'}`}</h1>
+                        {!player.inBuybackQueue && <button onClick={handleBuyBack} className={`${styles.buyBackButton}`} style={{zIndex: 1, position: 'relative', fontSize: basefont * 1.5}}  >{`Buy in ($${(gameState.buyIn / 100).toFixed(decimalAmount)})`}</button>}
                     </div>
                 }  
                 
