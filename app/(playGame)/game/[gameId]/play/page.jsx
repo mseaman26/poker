@@ -428,7 +428,7 @@ export default function({params}){
         <div className={styles.container}>
             {dealing && <DealingScreen />}
             <div className={`${styles.upperRightButtons}`}>
-                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut}/>
+                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length}/>
             </div>
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
