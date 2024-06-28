@@ -259,7 +259,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         </>)
                         : 'All In!'}</button>
                     }
-                    <button className='blueButton' onClick={fold} style={{fontSize: containerSize * .05}}>Fold</button>
+                    <button className={`blueButton`} onClick={fold} style={{fontSize: containerSize * .05, backgroundColor: 'blue'}}>Fold</button>
                     </div>
                 }
             </div>
