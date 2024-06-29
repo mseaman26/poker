@@ -9,6 +9,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
 
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false)
+    const [menuHovered, setMenuHovered] = useState(false)
 
     const closeMenu = () => {
         setMenuOpen(false)  
@@ -21,13 +22,13 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             width: '36px',
             height: '30px',
             color: 'white',
-            zIndex: 0
+            zIndex: 10
         },
         //Color/shape of burger icon bars
         bmBurgerBars: {
           
             background: '#f1f1f1',
-            zIndex: 10
+            zIndex: 0
         },
         //Color/shape of burger icon bars on hover
         bmBurgerBarsHover: {
@@ -37,7 +38,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
         bmCrossButton: {
             height: '64px',
             width: '64px',
-            zIndex: 200
+            zIndex: 20
         },
         // Color/shape of close button cross
         bmCross: {
@@ -55,7 +56,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             height: '100%',
             width: '80%',
             top: 0,
-            zIndex: 100
+            zIndex: 10
         },
         //General sidebar styles
         bmMenu: {
@@ -65,7 +66,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             fontSize: '1.15em',
             width: '100%',
             top: 0,
-            zIndex: 100
+            zIndex: 10
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
@@ -113,8 +114,8 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
     }, [menuOpen])
 
     return (
-   
-        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{zIndex: 20, position: 'relative'}}>
+        <div className={styles.menuContainer}>
+        <Menu className={`${styles.gameBurger}`} right isOpen={menuOpen} onClose={()=>setMenuOpen(false)} styles={menuStyles} onOpen={()=>setMenuOpen(true)} style={{ position: 'relative'}}>
             <div className="menu-item"  onClick={() => {
                 closeMenu()
                 router.push(`/game/${gameId}`)}}>
@@ -158,7 +159,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             My Account
             </Link> */}
         </Menu>
-                   
+        </div>       
     )
 }
 
