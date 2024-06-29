@@ -104,7 +104,7 @@ export default function LoginForm() {
         <label htmlFor="email" className='formLabel'>Email</label>
           <input
             onChange={(e) => setEmail(e.target.value)}
-            type="text"
+            type="email"
             placeholder="Email"
             className='input'
             name='email'

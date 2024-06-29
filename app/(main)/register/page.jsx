@@ -180,7 +180,7 @@ useEffect(() => {
           <label className='formLabel'>Email</label>
           <input
             onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
-            type="text"
+            type="email"
             className='input'
           />
           <h1>{email ? (emailAvailable ? <span style={{color: 'green'}}>email is available!</span> : <span style={{color: 'red'}}>email not available</span>) : ''}</h1>
