@@ -151,7 +151,7 @@ export default function NavBar () {
                           My Friends
                           </Link>
                           <Link className="menu-item" href="/searchUsers" onClick={closeMenu}>
-                          Search Users
+                          Add Friends
                           </Link>
                           <Link className="menu-item" href="/account" onClick={closeMenu}>
                           My Account
@@ -168,10 +168,10 @@ export default function NavBar () {
                               My Games
                           </Link>
                           <Link className='icon_link' href='/myFriends'>
-                              My Peeps
+                              My Friends
                           </Link>
                           <Link className='icon_link' href='/searchUsers'>
-                              Search Users
+                              Add Friends
                           </Link>
                           <Link className='icon_link' href='/account'>
                               Account
@@ -192,7 +192,7 @@ export default function NavBar () {
                     </div>
                     
                 </Link>
-                {meData?.cash !== undefined && <p>{`Cash: $${(meData?.cash / 100).toFixed(2)}`}</p>}
+                {/* {meData?.cash !== undefined && <p>{`Cash: $${(meData?.cash / 100).toFixed(2)}`}</p>} */}
               </div>
             </>
         }

@@ -48,6 +48,7 @@
     padding-inline: 5%;
     border-radius: 1vw;
     width: fit-content;
+    margin-bottom: 10%;
 }
 .meMaxWin{
     color: white;
@@ -200,12 +201,13 @@
     color: rgb(248, 240, 3);
 }
 .MymoneyInPotContainer{
-    width: 100%;
+    
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     background-color: rgba(155, 155, 155, 0.5);
+
 }
 .moneyInPot{
     position: relative;
@@ -465,6 +467,36 @@
     position: absolute;
     width: 200%;
 }
+.showCards {
+    position: absolute;
+    font-weight: 700;
+    top: -30%;
+    width: 200%;
+    height: 40%;
+    z-index: 10;
+    background-color: red; /* Bright color to catch attention */
+    color: white;              /* White text for contrast */
+    font-size: 1.2em;          /* Increase font size for readability */
+    padding: 10px 20px;        /* Add padding for better click area */
+    border: none;              /* Remove default border */
+    border-radius: 1.5vw;        /* Slightly round corners */
+    cursor: pointer;           /* Pointer cursor to indicate it's clickable */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition effects */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .showCards:hover {
+    background-color: darkred; /* Darken color on hover */
+    transform: scale(1.05);    /* Slightly increase size on hover */
+  }
+  
+  .showCards:active {
+    background-color: #8b0000; /* Even darker color when clicked */
+    transform: scale(1);       /* Return to original size when clicked */
+  }
 @keyframes rainbow {
     0% { color: red; }
     16.7% { color: orange; }

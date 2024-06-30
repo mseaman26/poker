@@ -10,7 +10,8 @@ input {
   --goldHeader: #ffd700;
   --secondaryFontColor: #e7e7e7;
   --maxFormWidth: 600px;
-  --backGround: #a8a8a8 
+  --backGround: #a8a8a8;
+  --bootstrapBlue: #007bff;
 
 }
 *{

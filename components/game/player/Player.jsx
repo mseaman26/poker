@@ -46,6 +46,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         }
         
     }
+    const flipOnWinByFold = () => {
+        console.log('sending from player')
+        socket.emit('flip on win by fold', {roomId: roomId})
+    }
 
     useEffect(() => {
         console.log('burger open: ', burgerOpen)
@@ -59,7 +63,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             setCardImage1(redBack)
             setCardImage2(redBack)
         }
-    }, [gameState, flipping])
+    }, [gameState, flipping, winByFold])
 
     useEffect(() => {
         
@@ -154,9 +158,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {(!player.allIn || gameState.handComplete) &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${!gameState.handComplete ? '$' : ''}${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1>
                         }
-                        {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
+                        {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
                         {/* CHIP ICON AND MONEY IN POT*/}
                         {player.bet > 0 && 
@@ -202,6 +206,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {/* ME SECTION */}
                 {player?.eliminated === false &&
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >
+                    {winByFold && isWinner && <button style={{fontSize: basefont}} className={styles.showCards} onClick={flipOnWinByFold}>Show your Cards?</button>}
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>

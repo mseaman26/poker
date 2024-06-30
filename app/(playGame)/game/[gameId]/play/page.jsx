@@ -343,7 +343,9 @@ export default function({params}){
                     socket.emit('new round first turn', {roomId: params.gameId})
                 }, 2000);
             })
-            
+            socket.on('flip on win by fold', async (data) => {
+                setWinByFold(false)
+            })
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
                 setLoading(false)
@@ -441,7 +443,7 @@ export default function({params}){
                                     (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId} socket={socket}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId} socket={socket} setWinByFold={setWinByFold}/>
                                 {/* } */}
                                 </>
                                 
@@ -483,7 +485,8 @@ export default function({params}){
                     
                     {gameState.pot > 0 &&
                         <div className={styles.pot}>
-                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(centerPot / 100).toFixed(2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
+                            {/* I was originally using the centerPot variable here for displaying the pot amount */}
+                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed(2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>
