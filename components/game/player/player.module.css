@@ -31,7 +31,7 @@
     z-index: 1;
 }
 .playerInfoContainer{
-    background-color: rgb(50, 50, 50);
+   
     position: relative;
     color: white;
     text-wrap: nowrap;
@@ -117,7 +117,15 @@
     position: relative;
     z-index: 1;
     background-color: rgb(50, 50, 50);
+    
 
+}
+.nameAndChips{
+    position: relative;
+    z-index: 1;
+    background-color: rgb(50, 50, 50);
+    width: fit-content;
+    border-radius: 10px;
 }
 .MeInfo{
    

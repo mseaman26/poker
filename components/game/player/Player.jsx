@@ -137,8 +137,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 && !gameState.handComplete && !flipping && !flopping ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
                     {isWinner && <h1 className={styles.winner} style={{fontSize: basefont*2}}>WINNER!!</h1>}
-                    <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
-                  <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
+                    {/* PLAYER NAME AND CHIPS */}
+                    <div className={styles.nameAndChips}>
+                        <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
+                        {/* CHIPS */}
+                        <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
+                    </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
                     {gameState.dealer === (index + meIndex) % numPlayers && 
@@ -158,7 +162,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {(!player.allIn || gameState.handComplete) &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${!gameState.handComplete ? '$' : ''}${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1>
                         }
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
