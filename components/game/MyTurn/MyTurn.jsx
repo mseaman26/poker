@@ -14,8 +14,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const baseFont = containerSize * .03
     const raiseInputRef = useRef(null);
     const betInputRef = useRef(null);
-    const canCover = maxRaise + gameState.currentBet - gameState?.players[gameState?.turn].bet < gameState?.players[gameState?.turn].chips
-    const canCoverBet = gameState?.players[gameState?.turn].chips > maxBet
+    const canCover = maxRaise + gameState.currentBet - gameState?.players[gameState?.turn]?.bet < gameState?.players[gameState?.turn]?.chips
+    const canCoverBet = gameState?.players[gameState?.turn]?.chips > maxBet
     const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2 
 
     const fold = () => {
@@ -129,7 +129,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
     useEffect(() => { 
         setCallAmount(gameState.currentBet - gameState?.players[gameState.turn]?.bet)
-        setMaxBet(prior => Math.min(gameState.maxBet - gameState.players[gameState.turn].bet, gameState.players[gameState.turn].chips ))
+        setMaxBet(prior => Math.min(gameState.maxBet - gameState.players[gameState.turn]?.bet, gameState.players[gameState.turn]?.chips ))
         setChipTotal(gameState?.players[gameState.turn]?.chips + gameState?.players[gameState.turn]?.moneyInPot)
     }, [gameState])
     useEffect(() => {
