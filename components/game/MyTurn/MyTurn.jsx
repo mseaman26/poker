@@ -123,6 +123,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }, [decimalAmount])
     useEffect(() => {
         if(gameState?.players.length === 1){
+            console.log('youwin1')
             alert('You win!')
             socket.emit('win game', ({roomId: gameId, turn: gameState.turn}))
         }}, [gameState.players.length]) 

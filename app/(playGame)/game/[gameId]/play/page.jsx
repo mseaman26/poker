@@ -253,6 +253,7 @@ export default function({params}){
                 
             }
             if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
+                console.log('youwin2')
                 alert('You Win!!')
                 endGame()
             }
@@ -271,7 +272,7 @@ export default function({params}){
         if(gameState?.flop && !flopping && !flipping){
             setRenderedFlop(gameState?.flop)
         }
-    }, [meIndex, gameState.players])
+    }, [meIndex, gameState?.players])
 
 
     useEffect(() => {
@@ -452,7 +453,7 @@ export default function({params}){
                             )
                         })}
                     </div>
-                    {gameState.active && 
+                    {gameState?.active && 
                     <div className={styles.flopPlaceholders}>
                         {[0,1,2,3,4].map((card, index) => {
                             if(renderedFlop.length === 0){
@@ -483,7 +484,7 @@ export default function({params}){
                         
                         
                     
-                    {gameState.pot > 0 &&
+                    {gameState?.pot > 0 &&
                         <div className={styles.pot}>
                             {/* I was originally using the centerPot variable here for displaying the pot amount */}
                             <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed(2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
@@ -491,21 +492,21 @@ export default function({params}){
                     }
                     <div className={`${styles.preGameInfo}`}>
                         <div className={styles.creatorButtons}>
-                            {gameData?.creatorId === session?.user?.id && !gameState.active &&
+                            {gameData?.creatorId === session?.user?.id && !gameState?.active &&
                             <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
                             }
-                            {!gameState.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
-                            {gameState.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
+                            {!gameState?.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
+                            {gameState?.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
                         
                         </div>
-                        {!gameState.active &&
+                        {!gameState?.active &&
                         <div className={styles.usersInRoom}>
                             <h1>Users in room</h1>
                             {usersInRoom.map((user, index) => {
                                 return (
                                     <div key={index}>
                                         <p>
-                                        {gameState.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
+                                        {gameState?.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
                                             <span>D </span>
                                         ) : (
                                             <></>
@@ -516,9 +517,9 @@ export default function({params}){
                                         ) : (
                                             <></>
                                         )}
-                                        {gameState.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
+                                        {gameState?.smallBlindId && gameState.smallBlindId.userId === user.userId ? 
                                             <span> Small</span> : <></>}
-                                        {gameState.bigBlindId && gameState.bigBlindId.userId === user.userId ?
+                                        {gameState?.bigBlindId && gameState.bigBlindId.userId === user.userId ?
                                             <span> Big</span> : <></>}
                                         </p>
                                     </div>
