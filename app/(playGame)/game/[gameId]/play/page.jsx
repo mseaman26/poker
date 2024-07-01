@@ -254,8 +254,7 @@ export default function({params}){
             }
             if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
                 console.log('youwin2')
-                alert('You Win!!')
-                endGame()
+
             }
             if(gameState?.flop?.length === 0){
                 setRenderedFlop([])
