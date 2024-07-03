@@ -100,9 +100,9 @@
 .myActualHand{
     color: red;
     font-weight: 700;
-    position: relative;
+    position: absolute;
     height: fit-content;
-    top: -10%;
+    top: -15%;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     text-shadow:
         2px 2px 4px rgba(0, 0, 0, 0.5),

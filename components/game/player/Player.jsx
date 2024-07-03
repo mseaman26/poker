@@ -9,7 +9,7 @@ import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
 import Games from '@/app/(main)/games/page';
 
 
-const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId, socket}) => {
+const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId, socket, allInAmount}) => {
 
     const handCompleteStyles = {
         width: containerSize * .12,
@@ -25,8 +25,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const [renderedChips, setRenderedChips] = useState(null)
     const basefont = containerSize * .03
     const [isWinner, setIsWinner] = useState(false)
+    const [winAmount, setWinAmount] = useState(0)   
     const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2
-    console.log('number of players: ', numPlayers)
     const style = {
         position: 'absolute',
         zIndex: 10,
@@ -91,6 +91,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             }
         }else{
             setIsWinner(false)
+            setWinAmount(0)
         }    
     }, [gameState.handComplete])
 
@@ -103,6 +104,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         let duration = 0; // duration of the animation in milliseconds
         if(player?.chips === renderedChips) return;
         if(player?.chips > renderedChips){
+            setWinAmount(player?.chips - renderedChips)
             duration = 3000
         }else{
             duration = 1000
@@ -142,6 +144,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
                         {/* CHIPS */}
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
+                        {gameState.handComplete && winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont * 1.5}}>+${(winAmount / 100).toFixed(decimalAmount)}</h1>}
                     </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
@@ -162,7 +165,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {(!player.allIn || gameState.handComplete) &&
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1>
+                            // <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : (player.bet / 100).toFixed(decimalAmount) }`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : flipping? ((player.allIn + player.bet) / 100).toFixed(decimalAmount) : ((player.bet) / 100).toFixed(decimalAmount) }`}</h1>
                         }
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
@@ -214,7 +218,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${player.bet > 0 ? (player.bet / 100).toFixed(decimalAmount) : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
+                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : flipping? ((player.allIn + player.bet) / 100).toFixed(decimalAmount) : ((player.bet) / 100).toFixed(decimalAmount) }`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>

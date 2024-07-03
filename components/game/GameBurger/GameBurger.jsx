@@ -5,7 +5,7 @@ import { slide as Menu } from 'react-burger-menu';
 import { useRouter } from "next/navigation";
 
 
-const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cashOut, numPlayers}) => {
+const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cashOut, numPlayers, changeBlinds, setChangeBlindsFormShown}) => {
 
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false)
@@ -121,6 +121,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
                 router.push(`/game/${gameId}`)}}>
             Leave Game Room
             </div>
+            {/* CREATOR ACTIONS */}
             {!isCreator &&
                 <div className="menu-item" onClick={() => {
                     if(numPlayers <= 2){
@@ -137,6 +138,9 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
                     }
                     
                 }}>Cash Out</div>
+            }
+            {isCreator && 
+                <div className="menu-item" onClick={() =>{} }>Change Blinds</div>
             }
             {isCreator && 
             <div className="menu-item" onClick={() => {

@@ -12,6 +12,7 @@ import Player from "@/components/game/player/Player";
 import LoadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
+import { set } from "mongoose";
 
 
 
@@ -48,6 +49,8 @@ export default function({params}){
     const [burgerOpen, setBurgerOpen] = useState(false)
     const [winByFold, setWinByFold] = useState(false)
     const [playerAdded, setPlayerAdded] = useState(false)
+    const [changeBlindsFormShown, setChangeBlindsFormShown] = useState(false)
+    const [allInAmount, setAllInAmount] = useState(0)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -171,6 +174,10 @@ export default function({params}){
     const cashOut = async () => {
         socket.emit('remove player', {roomId: params.gameId, playerIndex: meIndex})
     }
+    const changeBlinds = async (newBigBlind) => {
+        socket.emit('change blinds', {roomId: params.gameId, newBigBlind: newBigBlind})
+    }
+
 
     const endGame = async () => {
         const data = await updateGameAPI(params.gameId, {started: false})
@@ -336,6 +343,7 @@ export default function({params}){
             })
             socket.on('next hand', async (data) => {
                 setWinByFold(false)
+                setAllInAmount(0)
                 await updateGameAPI(params.gameId, data)
             })
             socket.on('round change', async (data) => {
@@ -387,10 +395,19 @@ export default function({params}){
         socket.on('flip cards', async (data) => {
             console.log('flip cards! ')
             setFlipping(prior => true)
+            console.log('flip cards data: ', data)
             for(let i = 0; i < data.players.length; i++){
                 gameState.players[i].maxWin = data.players[i].maxWin
             }
-            
+            const indexToUpdate = data.lastAction.playerIndex
+            console.log('indexToUpdate: ', indexToUpdate)
+            const newGameState = {...gameState}
+            data.lastAction.action === 'fold' ? newGameState.players[indexToUpdate].folded = true : newGameState.players[indexToUpdate].folded = false
+            newGameState.players[indexToUpdate].action = data.lastAction.action
+            newGameState.players[indexToUpdate].actionAmount = data.lastAction.amount
+            newGameState.players[indexToUpdate].allIn = data.lastAction.allIn
+            console.log('newGameState: ', newGameState)
+            setGameState(prior => newGameState)
             flipCards(data)
         })
         return () => {
@@ -430,7 +447,7 @@ export default function({params}){
         <div className={styles.container}>
             {dealing && <DealingScreen />}
             <div className={`${styles.upperRightButtons}`}>
-                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length}/>
+                <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length} changeBlinds={changeBlinds} setChangeBlindsFormShown={setChangeBlindsFormShown}/>
             </div>
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
@@ -440,10 +457,10 @@ export default function({params}){
                                 <div key={index} className={`${styles.playerContainer}`}>
                                 <>
                                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping && !burgerOpen && !gameState.handComplete && !flipping &&
-                                    (<Myturn gameState={gameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} />)}
+                                    (<Myturn gameState={gameState} setGameState={setGameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} setAllInAmount={setAllInAmount}/>)}
 
                                 {/* {index !== 0 && */}
-                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId} socket={socket} setWinByFold={setWinByFold}/>
+                                    <Player index={index} player={player} numPlayers={offsetPlayers.length} meIndex={meIndex} gameState={gameState} betFormShown={betFormShown} containerSize={containerSize} renderedFlop={renderedFlop} flipping={flipping} flopping={flopping} burgerOpen={burgerOpen} winByFold={winByFold} roomId={params.gameId} socket={socket} setWinByFold={setWinByFold} allInAmount={allInAmount}/>
                                 {/* } */}
                                 </>
                                 

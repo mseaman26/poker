@@ -1,8 +1,9 @@
 
+import { set } from 'mongoose'
 import styles from './MyTurn.module.css'
-import { useState, useEffect, useRef, use } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize}) => {
+const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, containerSize, setGameState, setAllInAmount}) => {
 
     const [betAmount, setBetAmount] = useState(0)
     const [raiseFormShown, setRaiseFormShown] = useState(false)
@@ -31,6 +32,17 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
     const handleAllIn = () => {
         if(confirm('Are you sure you want to go all in?')){
+            setAllInAmount(gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet)
+            console.log('setting all in amount: ', gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet)
+            // const amount = gameState.players[gameState.turn].chips
+            // const newGameState = {...gameState} 
+            // newGameState.players[gameState.turn].allIn = amount
+            // newGameState.players[gameState.turn].bet = amount
+            // newGameState.players[gameState.turn].actionAmount = amount
+            // newGameState.players[gameState.turn].action = 'all in'
+            // setGameState(prior => newGameState)
+            // console.log('player bettring all in: ', newGameState.players[gameState.turn].username)
+            // console.log('new game state: ', newGameState)
             bet(gameState.players[gameState.turn].chips)
         }
         return
@@ -110,13 +122,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
 
     const bet = (amount) => { 
         if(amount  === gameState.players[gameState.turn].chips){
+
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})
         }
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
     }
-    const manualWin = (turn) => {
-        socket.emit('win hand', ({roomId: gameId, turn: turn}))
-    }
+
 
     useEffect(() => {
         console.log('decimal amount: ', decimalAmount)
