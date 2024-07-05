@@ -403,6 +403,7 @@ export default function({params}){
             flipCards(data)
         })
         socket.on('snapshot', async (data) => {
+            console.log('snapshot data: ', data)
             const newGameState = {...gameState}
             newGameState.players = data
             setGameState(prior => newGameState)
@@ -410,7 +411,7 @@ export default function({params}){
         })
         return () => {
             socket.off('flip cards')
-            socket.off('snapshot')
+  
         }
     }, [renderedFlop])
     useEffect(() => {

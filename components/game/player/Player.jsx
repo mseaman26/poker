@@ -52,6 +52,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }
 
     useEffect(() => {
+        console.log('iswinner: ', isWinner)
+    }, [isWinner])
+
+    useEffect(() => {
         console.log('burger open: ', burgerOpen)
     }, [burgerOpen])
 
@@ -87,7 +91,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             //     winners.push(winner.player.userId)
             // })
             if(winners.includes(player.userId)){
-                setIsWinner(true)
+                console.log('setting winner to true')
+                setIsWinner(prior => true)
             }
         }else{
             setIsWinner(false)
