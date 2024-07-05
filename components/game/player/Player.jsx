@@ -71,7 +71,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 
     useEffect(() => {
         
-        if(gameState.handComplete){
+        if(gameState?.handWinnerInfo?.length > 0){
             //make an array of the winners (not related to chips)
             const winners = []
     
@@ -81,12 +81,14 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     winners.push(gameState.handWinnerInfo[i].player.userId)
                 }else{
                     const stringifiedRankedlHand = JSON.stringify(gameState.handWinnerInfo[i].player.actualHand.rank)
+                    
                     if(stringifiedRankedlHand === JSON.stringify(gameState.handWinnerInfo[0].player.actualHand.rank)){
                         winners.push(gameState.handWinnerInfo[i].player.userId)
                     }
                 }
                 
             }
+            console.log('winners: ', winners)
             // gameState.handWinnerInfo.forEach(winner => {
             //     winners.push(winner.player.userId)
             // })
@@ -98,7 +100,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             setIsWinner(false)
             setWinAmount(0)
         }    
-    }, [gameState.handComplete])
+    }, [gameState.handWinnerInfo])
 
     useEffect(() => {
 
@@ -149,7 +151,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
                         {/* CHIPS */}
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
-                        {gameState.handComplete && player.winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont * 1.5}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
+                        {gameState.handComplete && player.winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
                     </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
@@ -171,7 +173,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
                             // <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : (player.bet / 100).toFixed(decimalAmount) }`}</h1>
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed(decimalAmount)}` : ''}`}</h1>
                         }
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
