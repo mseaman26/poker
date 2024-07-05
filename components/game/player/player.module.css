@@ -38,6 +38,7 @@
     width: fit-content;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 5;
+    padding-inline: 5%;
 }
 .maxWin{
     color: white;
@@ -116,6 +117,7 @@
     position: relative;
     z-index: 1;
     background-color: rgb(50, 50, 50);
+    
 
 }
 .nameAndChips{
@@ -124,7 +126,8 @@
     background-color: rgb(50, 50, 50);
     width: fit-content;
     border-radius: 10px;
-    padding: 8%;
+    padding-block: 8%;
+    padding-inline: 5%;
     left: 50%;
 
     transform: translateX(-50%);
@@ -150,6 +153,7 @@
     top: 70%;
     text-align: center;
     left: 50%;
+    width: 100%;
     transform: translateX(-50%);
 }
 .dealerMarker{
@@ -229,7 +233,7 @@
     align-items: center;    
     /* transparent gray background */
     padding-inline: 5%;
-
+    z-index: 1;
     width: 100%;
     background-color: rgba(155, 155, 155, 0.5);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -308,6 +312,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding-inline: 5%;
     border-radius: 1vw;
+    text-wrap: nowrap;
 }
 .meWinAmount{
     top: 28%;
@@ -344,6 +349,7 @@
     position: relative;
     color: white;
     z-index: 1;
+    text-align: center;
 }
 .pocketContainer{
     height: 100%;

@@ -145,12 +145,12 @@
 
 @keyframes pulse {
     0% {
-      box-shadow: 0 0 10px 15px yellow;
+      box-shadow: 0 0 0px 00px yellow;
     }
     50% {
-      box-shadow: 0 0 20px 20px yellow; /* Adjust the values for the size of the pulsing effect */
+      box-shadow: 0 0 10px 10px yellow; /* Adjust the values for the size of the pulsing effect */
     }
     100% {
-      box-shadow: 0 0 10px 15px yellow;
+      box-shadow: 0 0 0px 0px yellow;
     }
   }

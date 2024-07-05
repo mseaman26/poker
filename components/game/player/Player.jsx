@@ -166,7 +166,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         </>
                     }
                    
-                    <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action  && !player.bet && !player.allIn ? 'hidden' : 'visible'}}>
+                    {!gameState.handComplete && <div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action  && !player.bet && !player.allIn ? 'hidden' : 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
 
                         {(!player.allIn || gameState.handComplete) &&
@@ -189,7 +189,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         
                         </div>}
                         
-                    </div>
+                    </div>}
                     <div className={styles.pocketContainer}>
                         <div className={styles.pocket} style={cardStyle}>
                             {gameState.handComplete && player.eliminated === false && player.folded === false && index !== 0 && renderedFlop.length === 5 && !winByFold &&
@@ -209,7 +209,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 :
                 <>
                     {/* {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username} &#128542;</h1>} */}
-                    {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont * 1.2}}>{player.username}: {`(Spectating)`}</h1>}
+                    {!burgerOpen && <h1 className={styles.outOfChips} style={{fontSize: basefont}}>{player.username}: <br/><span style={{fontSize: basefont}}>{`(Spectating)`}</span></h1>}
                 </>
                 }
     
