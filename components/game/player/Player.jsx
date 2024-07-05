@@ -144,7 +144,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
                         {/* CHIPS */}
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
-                        {gameState.handComplete && winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont * 1.5}}>+${(winAmount / 100).toFixed(decimalAmount)}</h1>}
+                        {gameState.handComplete && player.winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont * 1.5}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
                     </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
@@ -166,7 +166,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call') &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
                             // <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : (player.bet / 100).toFixed(decimalAmount) }`}</h1>
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : flipping? ((player.allIn + player.bet) / 100).toFixed(decimalAmount) : ((player.bet) / 100).toFixed(decimalAmount) }`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1>
                         }
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
@@ -218,7 +218,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                     <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                     <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : flipping? ((player.allIn + player.bet) / 100).toFixed(decimalAmount) : ((player.bet) / 100).toFixed(decimalAmount) }`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
+                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>

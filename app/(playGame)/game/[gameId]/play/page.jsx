@@ -399,19 +399,18 @@ export default function({params}){
             for(let i = 0; i < data.players.length; i++){
                 gameState.players[i].maxWin = data.players[i].maxWin
             }
-            const indexToUpdate = data.lastAction.playerIndex
-            console.log('indexToUpdate: ', indexToUpdate)
-            const newGameState = {...gameState}
-            data.lastAction.action === 'fold' ? newGameState.players[indexToUpdate].folded = true : newGameState.players[indexToUpdate].folded = false
-            newGameState.players[indexToUpdate].action = data.lastAction.action
-            newGameState.players[indexToUpdate].actionAmount = data.lastAction.amount
-            newGameState.players[indexToUpdate].allIn = data.lastAction.allIn
-            console.log('newGameState: ', newGameState)
-            setGameState(prior => newGameState)
+      
             flipCards(data)
+        })
+        socket.on('snapshot', async (data) => {
+            const newGameState = {...gameState}
+            newGameState.players = data
+            setGameState(prior => newGameState)
+
         })
         return () => {
             socket.off('flip cards')
+            socket.off('snapshot')
         }
     }, [renderedFlop])
     useEffect(() => {
