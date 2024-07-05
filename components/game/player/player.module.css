@@ -35,7 +35,6 @@
     position: relative;
     color: white;
     text-wrap: nowrap;
-    padding: 5%;
     width: fit-content;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 5;
@@ -117,7 +116,6 @@
     position: relative;
     z-index: 1;
     background-color: rgb(50, 50, 50);
-    
 
 }
 .nameAndChips{
@@ -126,6 +124,11 @@
     background-color: rgb(50, 50, 50);
     width: fit-content;
     border-radius: 10px;
+    padding: 8%;
+    left: 50%;
+
+    transform: translateX(-50%);
+    
 }
 .MeInfo{
    
@@ -295,7 +298,8 @@
 }
 .winAmount{
     position: absolute;
-    animation: rainbow 1s infinite;
+    animation: blink 1s steps(1, end)  infinite;
+    color: greenyellow;
     z-index: 1;
     top: -20%;
     left: 50%;
@@ -304,8 +308,9 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding-inline: 5%;
     border-radius: 1vw;
-
-
+}
+.meWinAmount{
+    top: 28%;
 }
 .MychipBackground{
     position: absolute;
@@ -542,4 +547,8 @@
       transform: scale(1);
       opacity: 1;
     }
+  }
+  @keyframes blink {
+    0%, 80%, 100% { color: greenyellow; }
+    81%, 99% { color: transparent; }
   }

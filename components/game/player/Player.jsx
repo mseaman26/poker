@@ -155,7 +155,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
-                    {gameState.dealer === (index + meIndex) % numPlayers && 
+                    {gameState.dealer === (index + meIndex) % numPlayers && !flipping && !gameState.handComplete &&
                         <>
                         
                         {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
@@ -223,9 +223,9 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >
                     {winByFold && isWinner && <button style={{fontSize: basefont}} className={styles.showCards} onClick={flipOnWinByFold}>Show your Cards?</button>}
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
-                    <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
-                    <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                    { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
+                        <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
+                        <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
+                        { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In $${(player.bet / 100).toFixed(decimalAmount)}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
@@ -252,6 +252,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         
                         
                         <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(renderedChips / 100).toFixed(decimalAmount)}</span></h1>
+                        {gameState.handComplete && player.winAmount > 0 && <h1 className={`${styles.winAmount} ${styles.meWinAmount}`} style={{fontSize: basefont * 1.5}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
                         
                     </div>
                     
