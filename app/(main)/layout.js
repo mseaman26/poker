@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         href="/assets/icons/twoCards.png"
         type="image/<generated>"
         sizes="<generated>"
-      />
+        />
       </Head>
       <body className={inter.className}>
         <AuthProvider>

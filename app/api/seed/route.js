@@ -1,5 +1,6 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/models/user";
+import Game from "@/models/game";
 import { NextResponse } from "next/server";
 import bcrypt from 'bcryptjs'
 
@@ -69,14 +70,14 @@ export async function DELETE(){
     return NextResponse.json({message: err}, {status: 500})
   }
 }
-//for updating existing users if you change the model
+//for updating existing users or games if you change the model
 export async function PUT(){
   try {
     await connectMongoDB();
     console.log('updating users...');
-    const updateResult = await User.updateMany(
-      { cash: { $exists: false } }, // filter for existing users without the new property
-      { $set: { cash: 0 } } // set the default value for the new property
+    const updateResult = await Game.updateMany(
+      { state: { $exists: false } }, // filter for existing users without the new property
+      { $set: { state: {} } } // set the default value for the new property
     );
     
     console.log(`users updated: ${updateResult}`);

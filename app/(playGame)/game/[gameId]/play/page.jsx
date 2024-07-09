@@ -51,12 +51,23 @@ export default function({params}){
     const [playerAdded, setPlayerAdded] = useState(false)
     const [changeBlindsFormShown, setChangeBlindsFormShown] = useState(false)
     const [allInAmount, setAllInAmount] = useState(0)
+    const [resumeGameButtonShown, setResumeGameButtonShown] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
     const delayTime = 2000
     const production = process.env.NODE_ENV === 'production'
 
+    useEffect(() => {
+        console.log('game data: ', gameData)
+        if(gameData?.state && !gameState?.active){
+            setResumeGameButtonShown(true)
+        }
+    }, [gameData])
+    const resumeGame = async () => {
+        console.log('gamedata state: ', gameData.state)
+        socket.emit('resume game', {roomId: params.gameId, state: gameData.state})
+    }
     const startKeepAlive = () => {
         setInterval(() => {
             if(!production) console.log('heartbeat')
@@ -250,6 +261,8 @@ export default function({params}){
                 if(gameState.active){
                     setNextHandButtonShown(true)
                 }
+                //update saved game state
+                updateGameAPI(params.gameId, {state: gameState})
             }
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
             console.log('meIndex: ', meIndex)
@@ -508,6 +521,7 @@ export default function({params}){
                     }
                     <div className={`${styles.preGameInfo}`}>
                         <div className={styles.creatorButtons}>
+                            {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={resumeGame} className={`blueButton ${styles.startGame}`}>Resume Game</button>}
                             {gameData?.creatorId === session?.user?.id && !gameState?.active &&
                             <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
                             }

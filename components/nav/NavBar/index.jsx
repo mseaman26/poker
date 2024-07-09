@@ -156,7 +156,7 @@ export default function NavBar () {
                           <Link className="menu-item" href="/account" onClick={closeMenu}>
                           My Account
                           </Link>
-                          <div className={`menu-item ${styles.burgerLogout}`}  onClick={signOut}>Log Out</div>
+                          <div className={`menu-item ${styles.burgerLogout}`}  onClick={signOut} style={{color: 'red'}}>Log Out</div >
                       </Menu>
                       
                       ) : (
