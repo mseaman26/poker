@@ -170,14 +170,14 @@ useEffect(() => {
       </div>
       <div className='formContainer'>
         <form onSubmit={handleSubmit} className='form '>
-          <label className='formLabel' >Username</label>
+          <label className='formLabel' >{`Username (display name)`}</label>
           <input
             onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
             type="text"
             className='input'
           />
           <h1>{name ? (usernameAvailable ? <span style={{color: 'green'}}>username is available!</span>: <span style={{color: 'red'}}>username not available</span>) : ''}</h1>
-          <label className='formLabel'>Email</label>
+          <label className='formLabel'>{`Email (login)`}</label>
           <input
             onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
             type="email"

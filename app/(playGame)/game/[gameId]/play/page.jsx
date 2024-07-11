@@ -57,7 +57,7 @@ export default function({params}){
     const router = useRouter()
     const baseFont = containerSize * .03
     const production = process.env.NODE_ENV === 'production'
-    const delayTime = production ? 2000 : 200
+    const delayTime = production ? 2000 : 1000
 
     useEffect(() => {
         console.log('game data: ', gameData)
