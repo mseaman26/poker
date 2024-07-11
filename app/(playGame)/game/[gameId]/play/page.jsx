@@ -12,7 +12,7 @@ import Player from "@/components/game/player/Player";
 import LoadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
-import { set } from "mongoose";
+import { get, set } from "mongoose";
 import DevMonitor from "@/components/DevMonitor/DevMonitor";
 
 
@@ -66,6 +66,7 @@ export default function({params}){
         }
     }, [gameData])
     const resumeGame = async () => {
+        await getGameData(params.gameId)
         console.log('gamedata state: ', gameData.state)
      
         socket.emit('resume game', {roomId: params.gameId, state: gameData.state})
@@ -86,7 +87,7 @@ export default function({params}){
         if(gameId){
             const data = await getGameAPI(gameId)
             console.log('setting data: ', data)
-            setGameData(data)
+            setGameData(prior => data)
         }
     }
     const getGameState = async () => {
@@ -197,6 +198,7 @@ export default function({params}){
 
     const endGame = async () => {
         const data = await updateGameAPI(params.gameId, {started: false})
+        await getGameData(params.gameId)
         setRenderedFlop([])
         setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
@@ -256,6 +258,15 @@ export default function({params}){
         
     }, [])
     useEffect(() => {
+        if(gameState.handComplete){
+            if(gameState.active){
+                setNextHandButtonShown(true)
+            }
+            //update saved game state
+            console.log('getting data on hand complete')
+            getGameData(params.gameId)
+            updateGameAPI(params.gameId, {state: gameState})
+        }
         if(meData?._id && gameState?.players){
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
@@ -263,15 +274,7 @@ export default function({params}){
             })
             setCenterPot(gameState.pot - amountToSubractFromPot)
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
-            if(gameState.handComplete){
-                if(gameState.active){
-                    setNextHandButtonShown(true)
-                }
-                //update saved game state
-                console.log('getting data on hand complete')
-                getGameData(params.gameId)
-                updateGameAPI(params.gameId, {state: gameState})
-            }
+            
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
             console.log('meIndex: ', meIndex)
             if(meIndex === -1 && !playerAdded){
