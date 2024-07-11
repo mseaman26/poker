@@ -110,7 +110,7 @@
     transform: scale(1.05);    /* Slightly increase size on hover */
   }
 .startGame{
-    
+    width: 100%;
 }
 
 

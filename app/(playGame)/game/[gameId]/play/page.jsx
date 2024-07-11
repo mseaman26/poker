@@ -13,6 +13,7 @@ import LoadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
 import { set } from "mongoose";
+import DevMonitor from "@/components/DevMonitor/DevMonitor";
 
 
 
@@ -66,6 +67,7 @@ export default function({params}){
     }, [gameData])
     const resumeGame = async () => {
         console.log('gamedata state: ', gameData.state)
+     
         socket.emit('resume game', {roomId: params.gameId, state: gameData.state})
     }
     const startKeepAlive = () => {
@@ -83,6 +85,7 @@ export default function({params}){
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
+            console.log('setting data: ', data)
             setGameData(data)
         }
     }
@@ -100,12 +103,14 @@ export default function({params}){
     }
 
     const startGame = async () => {
+        if(confirm('Are you sure you want to start the game and lose any saved game for this game room?') === false) return
         console.log('starting game')
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
         for(let user of usersInRoom){
             await updateUserAPI(user.userId, {chipsAmount: data.buyIn * -1})
         }
+
         // requestFullScreen()
     }
 
@@ -197,6 +202,7 @@ export default function({params}){
         socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
         getGameState(); // Fetch the updated game state after the game has ended
+
     })};
 
     useEffect(() => {
@@ -262,6 +268,8 @@ export default function({params}){
                     setNextHandButtonShown(true)
                 }
                 //update saved game state
+                console.log('getting data on hand complete')
+                getGameData(params.gameId)
                 updateGameAPI(params.gameId, {state: gameState})
             }
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
@@ -280,6 +288,7 @@ export default function({params}){
                 setRenderedFlop([])
             }
         }
+        
     }, [gameState, meData])
     useEffect(() => {
         const adjustedPlayers = gameState.players?.map((player, idx) => {
@@ -458,6 +467,7 @@ export default function({params}){
 
     return (
         <div className={styles.container}>
+            {!production && <DevMonitor gameState={gameState} gameData={gameData}/>}
             {dealing && <DealingScreen />}
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length} changeBlinds={changeBlinds} setChangeBlindsFormShown={setChangeBlindsFormShown}/>
@@ -521,9 +531,9 @@ export default function({params}){
                     }
                     <div className={`${styles.preGameInfo}`}>
                         <div className={styles.creatorButtons}>
-                            {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={resumeGame} className={`blueButton ${styles.startGame}`}>Resume Game</button>}
+                            {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={resumeGame} className={`blueButton ${styles.startGame}`} style={{fontSize: baseFont, backgroundColor: 'green'}}>Resume Game</button>}
                             {gameData?.creatorId === session?.user?.id && !gameState?.active &&
-                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`}>Start Game</button>
+                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New Game</button>
                             }
                             {!gameState?.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
                             {gameState?.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
