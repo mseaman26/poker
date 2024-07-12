@@ -189,7 +189,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!!</button>
                     :
-                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? () => bet(maxBet) : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(decimalAmount)})` : 'All In!'}</button>
+                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? handleMaxBet : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(decimalAmount)})` : 'All In!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>

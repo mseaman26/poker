@@ -151,7 +151,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}> {player.username}</h1>
                         {/* CHIPS */}
                         <h1 className={styles.playerInfo} style={{fontSize: containerSize * .03}}>Chips: <span className={styles.chips}>${(renderedChips / 100).toFixed(decimalAmount)}</span> </h1>
-                        {gameState.handComplete && player.winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
+                        {gameState.handComplete && player.winAmount > 0 && <h1 className={styles.winAmount} style={{fontSize: basefont}}>${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
                     </div>
                     {/* {player.maxWin && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`(Max Win: ${(player.maxWin / 100).toFixed(2)})`}</h1>} */}
 
@@ -252,7 +252,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         
                         
                         <h1 className={styles.MeInfo} style={{fontSize: containerSize * .030}}>My Chips: <span className={styles.chips} style={{fontSize: containerSize * .030}} >${(renderedChips / 100).toFixed(decimalAmount)}</span></h1>
-                        {gameState.handComplete && player.winAmount > 0 && <h1 className={`${styles.winAmount} ${styles.meWinAmount}`} style={{fontSize: basefont * 1.5}}>+${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
+                        {gameState.handComplete && player.winAmount > 0 && <h1 className={`${styles.winAmount} ${styles.meWinAmount}`} style={{fontSize: basefont * 1.5}}>${(player.winAmount / 100).toFixed(decimalAmount)}</h1>}
                         
                     </div>
                     
