@@ -276,7 +276,6 @@ export default function({params}){
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
-            console.log('meIndex: ', meIndex)
             if(meIndex === -1 && !playerAdded){
                 console.log('adding player')
                 socket.emit('add player', {roomId: params.gameId, player: {id: session?.user?.id, username: session?.user?.name}})
@@ -428,7 +427,6 @@ export default function({params}){
             flipCards(data)
         })
         socket.on('snapshot', async (data) => {
-            console.log('snapshot data: ', data)
             const newGameState = {...gameState}
             newGameState.players = data
             setGameState(prior => newGameState)

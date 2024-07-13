@@ -51,9 +51,6 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         socket.emit('flip on win by fold', {roomId: roomId})
     }
 
-    useEffect(() => {
-        console.log('iswinner: ', isWinner)
-    }, [isWinner])
 
     useEffect(() => {
         console.log('burger open: ', burgerOpen)
@@ -88,12 +85,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                 }
                 
             }
-            console.log('winners: ', winners)
-            // gameState.handWinnerInfo.forEach(winner => {
-            //     winners.push(winner.player.userId)
-            // })
+
             if(winners.includes(player.userId)){
-                console.log('setting winner to true')
                 setIsWinner(prior => true)
             }
         }else{
