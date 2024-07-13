@@ -18,7 +18,7 @@ const DevMonitor = ({gameState, gameData}) => {
             </div>
             <p style={{color: 'red'}}>GAMEDATA</p>
             <p>Dealer: {gameData?.state?.dealer}: {gameData?.dealer !== undefined? gameData?.state?.players[gameData?.state?.dealer]?.username : ''}</p>
-            <div className={styles.players}>
+            {/* <div className={styles.players}>
                 {gameData?.state?.players?.map((player, index) => {
                     return (
                         <div key={index} className={styles.player}>
@@ -28,18 +28,18 @@ const DevMonitor = ({gameState, gameData}) => {
                         </div>
                     );
                 })}
-            </div>
-            {/* <p style={{color: 'red'}}>SNAPSHOT</p>
+            </div> */}
+            <p style={{color: 'red'}}>SNAPSHOT</p>
             <div className={styles.players}>
                 {gameState?.snapShot?.map((player, index) => {
                     return (
                         <div key={index} className={styles.player}>
                             <h3 style={{color: 'green'}}>{player.username}</h3>
-                            <p>action: {player.action}</p>
+                            <p>pocket length: {player.pocket.length}</p>
                         </div>
                     );
                 })}
-            </div> */}
+            </div>
         </div>
     );
 

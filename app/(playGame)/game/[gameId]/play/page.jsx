@@ -14,6 +14,7 @@ import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
 import { get, set } from "mongoose";
 import DevMonitor from "@/components/DevMonitor/DevMonitor";
+import { checkDeck } from "@/lib/helpers";
 
 
 
@@ -186,6 +187,7 @@ export default function({params}){
         setFlopping(false)
         setRenderedFlop([])
         setWinByFold(false)
+        console.log('next hand clicked')
         socket.emit('next hand', {roomId: params.gameId})
     }
     const cashOut = async () => {
@@ -203,6 +205,7 @@ export default function({params}){
         setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
+        console.log('getting state end game');
         getGameState(); // Fetch the updated game state after the game has ended
 
     })};
@@ -211,7 +214,11 @@ export default function({params}){
         console.log(usersInRoom)
     }, [usersInRoom])
     useEffect(() => {
-        if(!production) console.log('game state: ', gameState);
+        console.log('game state: ', gameState)
+        // if(!production && gameState?.deck && !checkDeck(gameState)){
+        //     console.log('bad deck', gameState.deck)
+        //     throw new Error('Deck is not unique')
+        // }
     }, [gameState]);
 
     useEffect(() => {
@@ -306,7 +313,8 @@ export default function({params}){
 
 
     useEffect(() => {
-        getGameState()  
+        //was this causing an issue?
+        // getGameState()  
 
         socket.on('connect', () => {
             setTimeout(() => {
@@ -457,6 +465,7 @@ export default function({params}){
         }
         getGameData(params.gameId)
         setTimeout(() => {
+            console.log('getting game state asldfk')
             getGameState();
         }, 1000);
       }, [socket, session, params.gameId])
