@@ -4,7 +4,7 @@ const DevMonitor = ({gameState, gameData}) => {
         <div className={styles.container}>
             <h2>Dev Monitor</h2>
             <p style={{color: 'red'}}>GAMESTATE</p>
-            <p>Dealer: {gameState?.dealer}: {gameState.dealer !== undefined && gameState?.players?.length > 0 ?  gameState?.players[gameState?.dealer]?.username : ''}</p>
+            <p>Dealer: {gameState?.dealer}: {gameState.dealer !== undefined && gameState?.players?.length > 0? gameState?.players[gameState?.dealer]?.username : ''}</p>
             <div className={styles.players}>
                 {gameState?.players?.map((player, index) => {
                     return (
