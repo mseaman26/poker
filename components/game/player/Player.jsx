@@ -57,14 +57,16 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [burgerOpen])
 
     useEffect(() => {
-        if((gameState.handComplete || flipping) && player?.eliminated === false && player?.folded === false && winByFold === false){
+        if((gameState.handComplete || flipping) && player?.eliminated === false && player?.folded === false && winByFold === false && player.pocket.length > 0){
+            console.log('pocket1', player.pocket[0])
+            console.log('pocket2', player.pocket[1])
             setCardImage1(svgUrlHandler(player.pocket[0]))
             setCardImage2(svgUrlHandler(player.pocket[1]))
         }else{
             setCardImage1(redBack)
             setCardImage2(redBack)
         }
-    }, [gameState, flipping, winByFold])
+    }, [gameState, flipping, winByFold, player])
 
     useEffect(() => {
         
