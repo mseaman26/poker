@@ -61,14 +61,13 @@ export default function({params}){
     const delayTime = production ? 2000 : 1000
 
     useEffect(() => {
-        console.log('game data: ', gameData)
         if(gameData?.state && !gameState?.active){
             setResumeGameButtonShown(true)
         }
     }, [gameData])
     const resumeGame = async () => {
         await getGameData(params.gameId)
-        console.log('gamedata state: ', gameData.state)
+        console.log('state for resume: ', gameData.state)
      
         socket.emit('resume game', {roomId: params.gameId, state: gameData.state})
     }
@@ -87,7 +86,6 @@ export default function({params}){
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
-            console.log('setting data: ', data)
             setGameData(prior => data)
         }
     }
@@ -106,7 +104,6 @@ export default function({params}){
 
     const startGame = async () => {
         if(confirm('Are you sure you want to start the game and lose any saved game for this game room?') === false) return
-        console.log('starting game')
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
         for(let user of usersInRoom){
@@ -383,9 +380,7 @@ export default function({params}){
                     socket.emit('new round first turn', {roomId: params.gameId})
                 }, 2000);
             })
-            socket.on('flip on win by fold', async (data) => {
-                setWinByFold(false)
-            })
+
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
                 setLoading(false)

@@ -46,20 +46,15 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         }
         
     }
-    const flipOnWinByFold = () => {
-        console.log('sending from player')
-        socket.emit('flip on win by fold', {roomId: roomId})
+    const flipFoldedCards = () => {
+        socket.emit('flip folded cards', {roomId: roomId, playerIndex: meIndex})
     }
+    useEffect(() => {
 
+    }, [winByFold])
 
     useEffect(() => {
-        console.log('burger open: ', burgerOpen)
-    }, [burgerOpen])
-
-    useEffect(() => {
-        if((gameState.handComplete || flipping) && player?.eliminated === false && player?.folded === false && winByFold === false && player.pocket.length > 0){
-            console.log('pocket1', player.pocket[0])
-            console.log('pocket2', player.pocket[1])
+        if((gameState.handComplete || flipping) && player?.eliminated === false && player.pocket.length > 0){
             setCardImage1(svgUrlHandler(player.pocket[0]))
             setCardImage2(svgUrlHandler(player.pocket[1]))
         }else{
@@ -191,7 +186,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <h1 className={styles.actualHand} style={{fontSize: basefont}}>
                                 <span style={{color: 'yellow'}}>{`${player.username}: `}</span>
                                 {`${player?.actualHand?.title}` || "Test "}</h1>}
-                            {player.eliminated === false && player.folded === false &&
+                            {player.eliminated === false &&
                             <>
                             <Image src={cardImage1} height={200} width={100} alt="card1 image" className={`${styles.pocketCard} ${styles.pocketCard1}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
                             <Image src={cardImage2} height={200} width={100} alt="card2 image" className={`${styles.pocketCard} ${styles.pocketCard2}`} style={gameState.handComplete || flipping? handCompleteStyles : ''}/>
@@ -216,7 +211,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {/* ME SECTION */}
                 {player?.eliminated === false &&
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >
-                    {winByFold && isWinner && <button style={{fontSize: basefont}} className={styles.showCards} onClick={flipOnWinByFold}>Show your Cards?</button>}
+                    {gameState?.handComplete && !gameState?.players[meIndex]?.showCards && <button style={{fontSize: basefont}} className={styles.showCards} onClick={flipFoldedCards}>Show your Cards?</button>}
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                         <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                         <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
