@@ -178,7 +178,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         
         <div className={styles.container}>
             
-            <div className={styles.myTurnPopup} style={{bottom: betFormShown && containerSize < 500 ? '-30%' : 0}}>
+            <div className={styles.myTurnPopup} >
                 {/* <h1>Your stash: ${(gameState?.players[gameState.turn]?.chips / 100).toFixed(2)}</h1> */}
                 {/* <h1>On the Table: ${(gameState?.players[gameState.turn]?.moneyInPot / 100).toFixed(2)}</h1> */}
                 {/* CHECK OR BET */}
