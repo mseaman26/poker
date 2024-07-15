@@ -15,6 +15,7 @@ import DealingScreen from "@/components/dealingScreen/dealingScreen";
 import { get, set } from "mongoose";
 import DevMonitor from "@/components/DevMonitor/DevMonitor";
 import { checkDeck } from "@/lib/helpers";
+import { useFileSystemPublicRoutes } from "@/next.config";
 
 
 
@@ -61,10 +62,19 @@ export default function({params}){
     const delayTime = production ? 2000 : 1000
 
     useEffect(() => {
-        if(gameData?.state && !gameState?.active){
+        console.log('me data: ', meData)
+    }, [meData])
+
+    useEffect(() => {
+
+        if(meData._id && socket.id && !gameState.active){
+            socket.emit('add player', {roomId: params.gameId, player: {id: meData._id, username: meData.name}})
+        }
+        if(gameData?.state){
             setResumeGameButtonShown(true)
         }
-    }, [gameData])
+      
+    }, [gameData, meData])
     const resumeGame = async () => {
         await getGameData(params.gameId)
         console.log('state for resume: ', gameData.state)
@@ -206,7 +216,9 @@ export default function({params}){
         getGameState(); // Fetch the updated game state after the game has ended
 
     })};
-
+    useEffect(() => {
+        console.log('game data: ', gameData)
+    }, [gameData])
     useEffect(() => {
         console.log(usersInRoom)
     }, [usersInRoom])
@@ -272,6 +284,7 @@ export default function({params}){
             updateGameAPI(params.gameId, {state: gameState})
         }
         if(meData?._id && gameState?.players){
+            console.log('here?')
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
                 amountToSubractFromPot += player.bet
@@ -280,6 +293,7 @@ export default function({params}){
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
+            console.log('new me index: ', meIndex)
             if(meIndex === -1 && !playerAdded){
                 console.log('adding player')
                 socket.emit('add player', {roomId: params.gameId, player: {id: session?.user?.id, username: session?.user?.name}})
