@@ -159,8 +159,8 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     {<div className={styles.moneyInPot} style={{...chipStyle, borderRadius: basefont/2, visibility: !player.folded && !player.action  && !player.bet && !player.allIn ? 'hidden' : 'visible'}}>
                         {/* ACTION AND ACTION AMOUNT */}
 
-                        {(!player.allIn || gameState.handComplete) &&
-                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : player.action === 'check'? 'greenyellow' : ''}}>{player.folded? 'folded' : player.action} {(player.action === 'raise' || player.action === 'call')  &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
+                        {(!player.allIn) &&
+                            <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : player.action === 'check'? 'greenyellow' : ''}}>{player.folded? 'folded' : player.allIn ? '' : player.action} {(player.action === 'raise' || player.action === 'call')  &&<span>${(player.actionAmount / 100).toFixed(decimalAmount)}</span>}</div>  }   
                         {player.allIn && 
                             // <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : (player.bet / 100).toFixed(decimalAmount) }`}</h1>
                             <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed(decimalAmount)}` : ''}`}</h1>
