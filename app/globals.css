@@ -134,6 +134,10 @@ h1{
   margin: 0px;
 }
 .greenButton{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 10px 15px;
     margin: 0px;
     background-color: green;
@@ -206,4 +210,5 @@ h1{
 }
 .faded{
   opacity: 0.5;
+  cursor: not-allowed;
 }

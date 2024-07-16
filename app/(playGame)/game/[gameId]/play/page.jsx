@@ -60,6 +60,7 @@ export default function({params}){
     const baseFont = containerSize * .03
     const production = process.env.NODE_ENV === 'production'
     const delayTime = production ? 2000 : 1000
+    const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2
 
     useEffect(() => {
         console.log('me data: ', meData)
@@ -545,14 +546,14 @@ export default function({params}){
                     {gameState?.pot > 0 &&
                         <div className={styles.pot}>
                             {/* I was originally using the centerPot variable here for displaying the pot amount */}
-                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed(2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
+                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed(decimalAmount)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>
                         <div className={styles.creatorButtons}>
-                            {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={resumeGame} className={`blueButton ${styles.startGame}`} style={{fontSize: baseFont, backgroundColor: 'green'}}>Resume Game</button>}
+                            {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={usersInRoom.length > 1 ? resumeGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont, backgroundColor: 'green'}}>Resume Game <br/>{`(${gameData?.state?.players? gameData.state.players.length : ''} players)`}</button>}
                             {gameData?.creatorId === session?.user?.id && !gameState?.active &&
-                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New Game</button>
+                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New<br/>Game</button>
                             }
                             {!gameState?.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
                             {gameState?.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
