@@ -67,15 +67,10 @@ const Games = () => {
     }, [meData])
 
     useEffect(() => {
-        console.log('myGames: ', myGames)
         if(myGames !== undefined){
             setLoading(false)
         }
     }, [myGames])
-
-    useEffect(() => {
-        console.log('meData: ', meData)
-    }, [meData])
 
     useEffect(() => {
         socket.on('connect', () => {

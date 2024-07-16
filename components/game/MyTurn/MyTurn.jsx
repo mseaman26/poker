@@ -33,16 +33,6 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const handleAllIn = () => {
         if(confirm('Are you sure you want to go all in?')){
             setAllInAmount(gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet)
-            console.log('setting all in amount: ', gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet)
-            // const amount = gameState.players[gameState.turn].chips
-            // const newGameState = {...gameState} 
-            // newGameState.players[gameState.turn].allIn = amount
-            // newGameState.players[gameState.turn].bet = amount
-            // newGameState.players[gameState.turn].actionAmount = amount
-            // newGameState.players[gameState.turn].action = 'all in'
-            // setGameState(prior => newGameState)
-            // console.log('player bettring all in: ', newGameState.players[gameState.turn].username)
-            // console.log('new game state: ', newGameState)
             bet(gameState.players[gameState.turn].chips)
         }
         return
@@ -128,13 +118,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
         socket.emit('bet', {roomId: gameId, amount: amount, turn: gameState.turn})
     }
 
-
-    useEffect(() => {
-        console.log('decimal amount: ', decimalAmount)
-    }, [decimalAmount])
     useEffect(() => {
         if(gameState?.players.length === 1){
-            console.log('youwin1')
 
             socket.emit('win game', ({roomId: gameId, turn: gameState.turn}))
         }}, [gameState.players.length]) 

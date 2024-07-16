@@ -63,7 +63,9 @@ export default function({params}){
     const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2
 
     useEffect(() => {
-        console.log('me data: ', meData)
+        if(!production){
+            console.log('me data: ', meData)
+        }
     }, [meData])
 
     useEffect(() => {
@@ -195,7 +197,6 @@ export default function({params}){
         setFlopping(false)
         setRenderedFlop([])
         setWinByFold(false)
-        console.log('next hand clicked')
         socket.emit('next hand', {roomId: params.gameId})
     }
     const cashOut = async () => {
@@ -213,22 +214,16 @@ export default function({params}){
         setNextHandButtonShown(false)   
         socket.emit('end game', params.gameId, () => {
         // This callback will be executed once the 'end game' event is acknowledged
-        console.log('getting state end game');
+
         getGameState(); // Fetch the updated game state after the game has ended
 
     })};
+
+
     useEffect(() => {
-        console.log('game data: ', gameData)
-    }, [gameData])
-    useEffect(() => {
-        console.log(usersInRoom)
-    }, [usersInRoom])
-    useEffect(() => {
-        console.log('game state: ', gameState)
-        // if(!production && gameState?.deck && !checkDeck(gameState)){
-        //     console.log('bad deck', gameState.deck)
-        //     throw new Error('Deck is not unique')
-        // }
+        if(!production){
+            console.log('game state: ', gameState)
+        }
     }, [gameState]);
 
     useEffect(() => {
@@ -280,12 +275,11 @@ export default function({params}){
                 setNextHandButtonShown(true)
             }
             //update saved game state
-            console.log('getting data on hand complete')
             getGameData(params.gameId)
+            console.log('saving game state: ', gameState)
             updateGameAPI(params.gameId, {state: gameState})
         }
         if(meData?._id && gameState?.players){
-            console.log('here?')
             let amountToSubractFromPot = 0;
             gameState.players.forEach(player => {
                 amountToSubractFromPot += player.bet
@@ -294,16 +288,11 @@ export default function({params}){
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
-            console.log('new me index: ', meIndex)
             if(meIndex === -1 && !playerAdded){
-                console.log('adding player')
+            
                 socket.emit('add player', {roomId: params.gameId, player: {id: session?.user?.id, username: session?.user?.name}})
                 setPlayerAdded(prior => true)
                 
-            }
-            if(gameState?.players[gameState.turn]?.userId === meData._id && gameState?.players[gameState.turn]?.chips === gameState.totalChips){
-                console.log('youwin2')
-
             }
             if(gameState?.flop?.length === 0){
                 setRenderedFlop([])
@@ -348,7 +337,6 @@ export default function({params}){
 
             })
             socket.on('flopping', async (data) => {
-                console.log('data.flop: ', data.flop)
                 if(data.flop.length > 0){
                     dealFlop({flop: data.flop.slice(0, 3), flipping: false})
                 }
@@ -373,7 +361,6 @@ export default function({params}){
                 setRenderedFlop([])
             })
             socket.on('deal', async (data) => { 
-                console.log('dealing, gamedata: ', data)
                 setGameState(prevState => (data))
                 setRenderedFlop([])
                 setWinByFold(false)
@@ -435,9 +422,7 @@ export default function({params}){
     }, [params.gameId])
     useEffect(() => {
         socket.on('flip cards', async (data) => {
-            console.log('flip cards! ')
             setFlipping(prior => true)
-            console.log('flip cards data: ', data)
             for(let i = 0; i < data.players.length; i++){
                 gameState.players[i].maxWin = data.players[i].maxWin
             }
@@ -475,7 +460,6 @@ export default function({params}){
         }
         getGameData(params.gameId)
         setTimeout(() => {
-            console.log('getting game state asldfk')
             getGameState();
         }, 1000);
       }, [socket, session, params.gameId])

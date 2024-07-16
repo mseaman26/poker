@@ -65,7 +65,6 @@ useEffect(() => {
     }
   }, [session])
   useEffect(() => {
-    console.log('meData: ', meData)
     if(meData.friends){
       let friendsIds = meData.friends.map(friend => friend._id)
       setMyFriendsIds(friendsIds)

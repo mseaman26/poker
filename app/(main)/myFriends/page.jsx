@@ -42,16 +42,12 @@ const MyFriends = () => {
   }, [session])
 
   useEffect(() => {
-    console.log('meData: ', meData)
     if(meData){
       setMyFriends(meData.friends)
       setFriendRequests(meData.friendRequests)
       setLoading(false)
     }
   }, [meData])
-  useEffect(() => {
-    console.log('friend requests shown: ', showFriendRequests)
-  }, [showFriendRequests])
 
 
   return (

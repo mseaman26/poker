@@ -76,7 +76,7 @@ const AccountPAge= () => {
                     password,
                     redirect: false,
                     onSuccess: async () => {
-                      console.log('login sucess while already logged in')
+                      console.log('login success while already logged in')
                     }
 
                 });
@@ -92,7 +92,6 @@ const AccountPAge= () => {
         try{
             if(emailAvailable){
                 const data = {email: newEmail}
-                console.log('data: ', data)
                 const res = await signIn("credentials", {
                     email: session.user.email,
                     password,
@@ -112,7 +111,7 @@ const AccountPAge= () => {
                     password,
                     redirect: false,
                     onSuccess: async () => {
-                      console.log('login sucess while already logged in')
+
                     }
 
                 });

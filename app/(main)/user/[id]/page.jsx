@@ -18,7 +18,6 @@ export const SingleUserPage = ({params}) => {
     //getting the other user's data
     const getUserData = async (userId) => {
         if(userId){
-            console.log('getting user data')
             const data = await fetchSingleUserAPI(userId)
             setUserData(data)
         }
@@ -100,7 +99,6 @@ export const SingleUserPage = ({params}) => {
           socket.on('disconnect', () => {
             console.log('Disconnected from Socket.io');
         });
-        console.log('id', id)
         getUserData(id)
 
         return () => {
@@ -133,9 +131,7 @@ export const SingleUserPage = ({params}) => {
     useEffect(() => {
         getCurrentUserData(session?.user?.id)
     }, [session])
-    useEffect(() => {
-        console.log('userData', userData)
-    }, [userData])
+
 
 
     //RETURN
