@@ -400,7 +400,7 @@ export default function({params}){
         })
 
         socket.on('disconnect', () => {
-            if(!production) console.log('Socket disconnected');
+             console.log('Socket disconnected at client');
             // stopKeepAlive(); 
             socket.emit('leave room', {gameId: params.gameId, userId: session?.user?.id, username: session?.user?.name})
         });
