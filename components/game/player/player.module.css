@@ -140,6 +140,14 @@
     text-wrap: nowrap;
     padding: .5vw;
     border-radius: 1vw;
+    height: 21%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .allIn{
     background-color: red;

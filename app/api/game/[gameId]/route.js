@@ -15,7 +15,7 @@ export async function GET(req, {params}){
             // })
         return NextResponse.json(game)
     }catch(err){
-        console.log('error in get game fetch ', err)
+      if(!production)console.log('error in get game fetch ', err)
     }
 }
 export async function PUT(req, { params }) {
@@ -39,7 +39,7 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ error: 'Game not found' });
       }
     } catch (err) {
-      console.log('error in update game fetch ', err);
+      if(!production)('error in update game fetch ', err);
       return NextResponse.json({ error: 'Internal Server Error' });
     }
   }

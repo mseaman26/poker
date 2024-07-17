@@ -34,8 +34,6 @@ export async function POST(req){
 //CANCEL FRIEND REQUEST
 export async function DELETE(req){
     const { currentUser, userToRemove } = await req.json();
-    console.log('cancel friend request currentUser: ', currentUser)
-    console.log('cancel friend request userToRemove: ', userToRemove)
     try{
         await connectMongoDB()
         const currentUserObj = await User.findById(currentUser)

@@ -74,7 +74,7 @@ export default function LoginForm() {
       
       router.push("dashboard");
     } catch (error) {
-      console.log(error);
+      if(!production)(error);
     }
   }
   const requestActiveUsers = async(e) => {

@@ -97,7 +97,7 @@ export const SingleUserPage = ({params}) => {
         });
         
           socket.on('disconnect', () => {
-            console.log('Disconnected from Socket.io');
+            console.log('Disconnected from Socket.io in view user page');
         });
         getUserData(id)
 

@@ -76,13 +76,13 @@ const AccountPAge= () => {
                     password,
                     redirect: false,
                     onSuccess: async () => {
-                      console.log('login success while already logged in')
+                        if(!production)console.log('login success while already logged in')
                     }
 
                 });
             }
         }catch(err){
-            console.log('error in update username: ', err)
+            if(!production)console.log('error in update username: ', err)
         }
         
     }
@@ -117,7 +117,7 @@ const AccountPAge= () => {
                 });
             }
         }catch(err){
-            console.log('error in update email: ', err)
+            if(!production)console.log('error in update email: ', err)
         }
     }
 
@@ -126,7 +126,7 @@ const AccountPAge= () => {
             const deletedUser = await deleteUserAPI(session.user.id)
             await signOut()
         }catch(err){
-            console.log('error in delete account: ', err)
+            if(!production)console.log('error in delete account: ', err)
         }
     }
     const getMeData = async () => {
@@ -142,7 +142,7 @@ const AccountPAge= () => {
             getMeData()
             setNewCashBalance('')
         }catch(err){
-            console.log('error in update cash: ', err)
+            if(!production)console.log('error in update cash: ', err)
         }
     
     }

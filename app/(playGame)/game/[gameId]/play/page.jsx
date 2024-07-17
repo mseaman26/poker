@@ -80,7 +80,7 @@ export default function({params}){
     }, [gameData, meData])
     const resumeGame = async () => {
         await getGameData(params.gameId)
-        console.log('state for resume: ', gameData.state)
+        if(!production)console.log('state for resume: ', gameData.state)
      
         socket.emit('resume game', {roomId: params.gameId, state: gameData.state})
     }
@@ -276,7 +276,7 @@ export default function({params}){
             }
             //update saved game state
             getGameData(params.gameId)
-            console.log('saving game state: ', gameState)
+            if(!production)console.log('saving game state: ', gameState)
             updateGameAPI(params.gameId, {state: gameState})
         }
         if(meData?._id && gameState?.players){

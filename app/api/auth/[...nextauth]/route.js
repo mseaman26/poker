@@ -31,7 +31,7 @@ export const authOptions = {
           cash = user.cash
           return { ...user.toObject(), id: user._id.toString(), cash: user.cash};
         } catch (error) {
-          console.log("Error: ", error);
+          if(!production)console.log("Error: ", error);
         }
       },
     }),
@@ -46,7 +46,6 @@ export const authOptions = {
       return token
     },
     session({ session, token }) {
-      console.log('the session: ', session)
         // I skipped the line below coz it gave me a TypeError
         // session.accessToken = token.accessToken;
         session.user.id = token.id;

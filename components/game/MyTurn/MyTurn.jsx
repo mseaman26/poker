@@ -240,7 +240,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                         ${(callAmount / 100).toFixed(decimalAmount)} to call
                     </h1>}
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
-                    {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}><p style={{lineHeight: 1}}>Call </p><p style={{lineHeight: 1}}> ${(callAmount / 100).toFixed(decimalAmount)}</p></button>}
+                    {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}><p style={{lineHeight: 1}}>Call </p><p style={{lineHeight: 1}}> ${(callAmount / 100).toFixed((callAmount / 100) % 1 === 0 ? 0 : 2)}</p></button>}
 
                     {maxRaise > 0 && <button className='purpleButton' onClick={() => setRaiseFormShown(!raiseFormShown)}  style={{fontSize: containerSize * .05}}>Raise</button>}
                     </>

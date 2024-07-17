@@ -88,10 +88,10 @@ export default function RegisterForm() {
         if(code === 11000){
           setError('you are attempting to create a user with either an email or username that already exists in the database')
         }
-        console.log("res: ", code);
+        if(!production)console.log("res: ", code);
       }
     } catch (error) {
-      console.log("Error during registration: ", error);
+      if(!production)console.log("Error during registration: ", error);
     }
   };
 

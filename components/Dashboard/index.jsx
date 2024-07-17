@@ -37,12 +37,12 @@ export default function UserInfo() {
         body: JSON.stringify({})
       })
       if(res.ok){
-        console.log('seed fetch successful')
+        if(!production)console.log('seed fetch successful')
       }else{
-        console.log('seed fetch not successful')
+        if(!production)console.log('seed fetch not successful')
       }
     }catch(err){
-      console.log('caught error: ', err)
+      if(!production)console.log('caught error: ', err)
     }
   }
   const updateUsers = async () => {
@@ -55,12 +55,12 @@ export default function UserInfo() {
         body: JSON.stringify({})
       })
       if(res.ok){
-        console.log('update users fetch successful')
+        if(!production)console.log('update users fetch successful')
       }else{
-        console.log('update users fetch not successful... res: ', res)
+        if(!production)console.log('update users fetch not successful... res: ', res)
       }
     }catch(err){
-      console.log('caught error: ', err)
+      if(!production)console.log('caught error: ', err)
     }
   }
   const updateGames = async () => {
@@ -73,12 +73,12 @@ export default function UserInfo() {
         body: JSON.stringify({})
       })
       if(res.ok){
-        console.log('update games fetch successful')
+        if(!production)console.log('update games fetch successful')
       }else{
-        console.log('update games fetch not successful... res: ', res)
+        if(!production)console.log('update games fetch not successful... res: ', res)
       }
     }catch(err){
-      console.log('caught error: ', err)
+      if(!production)console.log('caught error: ', err)
     }
   }
 
@@ -92,12 +92,12 @@ export default function UserInfo() {
         }
       })
       if(res.ok){
-        console.log('delete fetch status ok')
+        if(!production)console.log('delete fetch status ok')
       }else{
-        console.log('delete fetch status not ok')
+        if(!production)console.log('delete fetch status not ok')
       }
     }catch(err){
-      console.log('error deleting users: ', err)
+      if(!production)console.log('error deleting users: ', err)
     }
   }
   const searchUsers = async (e) => {

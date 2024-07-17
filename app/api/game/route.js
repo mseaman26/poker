@@ -13,7 +13,6 @@ export async function POST(req){
             buyIn,
             bigBlind: startingBlind,
         })
-        console.log('new game created: ', newGame)
         await User.updateOne(
             { _id: creatorId },
             {$addToSet: {
@@ -23,7 +22,7 @@ export async function POST(req){
      
         return NextResponse.json({newGame, _id: newGame._id, creatorId})
     }catch(err){
-        console.log(err)
+        if(!production)console.log(err)
         return NextResponse.json(
             {message: err},
             {status: 500}
@@ -40,15 +39,12 @@ export async function DELETE(req){
                 { _id: deletedGame.creatorId },
                 { $pull: { gamesCreated: deletedGame._id } }
             );
-            console.log('deleted game: ', deletedGame)
             const invitedUserIds = deletedGame?.invitedUsers || [];
-            console.log('invitedUserIds', invitedUserIds)
             await User.updateMany(
                 { _id: { $in: invitedUserIds } },
                 { $pull: { gameInvites: deletedGame._id } }
               );
         }
-        console.log('delete game response')
         return NextResponse.json({deletedGame})
     }catch(err){
         console.log(err)

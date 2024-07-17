@@ -48,13 +48,13 @@ export async function POST(req){
     try{
         await connectMongoDB()
         await User.create(seedUsers)
-        console.log('users created successfully')
+        if(!production)console.log('users created successfully')
         return NextResponse.json({message: 'uses created successfully'}, {status: 201})
     }catch(err){
-        console.log(err.code)
+      if(!production)console.log(err.code)
         return NextResponse.json({
             message: err
-        },
+      },
         {status: 500})
     }
 }
@@ -63,10 +63,10 @@ export async function DELETE(){
 
   try{
     const deletedUsers = User.deleteMany({email: {$nin: allowedEmails}})
-    console.log(`deleted ${(await deletedUsers).deletedCount} users successfully`)
+    if(!production)console.log(`deleted ${(await deletedUsers).deletedCount} users successfully`)
     return NextResponse.json({message: 'users deleted successfully'},{status: 200})
   }catch(err){
-    console.log(err)
+    if(!production)console.log(err)
     return NextResponse.json({message: err}, {status: 500})
   }
 }
@@ -74,16 +74,16 @@ export async function DELETE(){
 export async function PUT(){
   try {
     await connectMongoDB();
-    console.log('updating users...');
+    if(!production)console.log('updating users...');
     const updateResult = await Game.updateMany(
       { state: { $exists: false } }, // filter for existing users without the new property
       { $set: { state: {} } } // set the default value for the new property
     );
     
-    console.log(`users updated: ${updateResult}`);
+    if(!production)console.log(`users updated: ${updateResult}`);
     return NextResponse.json({ message: 'users updated successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error updating users:', error);
+    if(!production)console.error('Error updating users:', error);
   } 
 }
 

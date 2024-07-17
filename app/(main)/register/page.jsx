@@ -26,7 +26,6 @@ export default function Register() {
   const router = useRouter();
   
   const handleSubmit = async (e) => {
-    console.log('submitting')
     e.preventDefault();
     if(!isValidEmail(email)){
       setError('You must enter a valid email')
@@ -84,10 +83,9 @@ export default function Register() {
         if(code === 11000){
           setError('you are attempting to create a user with either an email or username that already exists in the database')
         }
-        console.log("res: ", code);
       }
     } catch (error) {
-      console.log("Error during registration: ", error);
+      if(!production)console.log("Error during registration: ", error);
     }
   };
 

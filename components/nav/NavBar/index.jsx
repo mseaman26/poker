@@ -108,16 +108,13 @@ export default function NavBar () {
         return () => window.removeEventListener('resize', handleResize);
         
     }, []);
-    useEffect(() => {
-      console.log('medata', meData)
-    }, [meData])
+
     useEffect(() => {
       if(session){
         fetchSingleUserAPI(session.user.id).then((res) => {
             setMeData(res)
         })
       }
-      console.log('session', session)
     }, [session])
 
 

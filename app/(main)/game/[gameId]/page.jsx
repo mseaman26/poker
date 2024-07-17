@@ -125,14 +125,14 @@ const ViewGameInfo = ({params}) => {
                 <div className={`headerContainer`}>
                     <h1>{gameInfo?.name}</h1>
                 </div>
-                <h2 className={`${styles.creatorHeader}`}>Created By: {gameInfo?.creatorId === meData._id ? 'Me' : creatorInfo.name}</h2>
+                <h2 className={`${styles.creatorHeader}`}>Created By: {gameInfo?.creatorId === meData?._id ? 'Me' : creatorInfo?.name}</h2>
                 <div className={`${styles.enterGame}`}>
 
                 <button onClick={canEnter ? goToGame : null} className={`submitButton noMargin ${canEnter ? '' : 'faded'}`}>Enter Game</button>
                 {!canEnter && <h2 className={`secondary`}>At lease one friend must be invited to enter</h2>}
                 </div>
             </div>
-            {gameInfo?.creatorId === meData._id &&
+            {gameInfo?.creatorId === meData?._id &&
                 <div className={styles.inviteFriends}>
                     <div className={`headerContainer`}>
                         <h1>Invite Friends</h1>
