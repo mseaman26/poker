@@ -168,7 +168,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1>}
 
                         {/* CHIP ICON AND MONEY IN POT*/}
-                        {player.bet > 0 && 
+                        {player.bet > 0 && !gameState.handComplete && 
                         <div className={styles.otherChipAndBet}>
                             {!player.maxWin && <div className={styles.chipImageContainer}>
                             <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
