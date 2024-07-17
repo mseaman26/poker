@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react'
 import styles from './GameBurger.module.css'
 import { slide as Menu } from 'react-burger-menu';
 import { useRouter } from "next/navigation";
-import { left } from 'inquirer/lib/utils/readline';
 
 
 const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cashOut, numPlayers, changeBlinds, setChangeBlindsFormShown}) => {
