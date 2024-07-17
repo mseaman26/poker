@@ -119,9 +119,9 @@ export default function({params}){
         if(confirm('Are you sure you want to start the game and lose any saved game for this game room?') === false) return
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
-        for(let user of usersInRoom){
-            await updateUserAPI(user.userId, {chipsAmount: data.buyIn * -1})
-        }
+        // for(let user of usersInRoom){
+        //     await updateUserAPI(user.userId, {chipsAmount: data.buyIn * -1})
+        // }
 
         // requestFullScreen()
     }
