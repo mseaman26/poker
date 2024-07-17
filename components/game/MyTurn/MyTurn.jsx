@@ -51,7 +51,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const handleRaiseSubmit = (e) => {
         e.preventDefault()
         if((raiseAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
-            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(decimalAmount)}`)
+            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed((gameState.bigBlind / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
         if(decimalAmount === 0 && raiseAmount !== Math.floor(raiseAmount)){
@@ -65,7 +65,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             return
         }
         if(raiseAmount * 100 > maxRaise){
-            alert(`Max raise is $${(maxRaise / 100).toFixed(decimalAmount)}`)
+            alert(`Max raise is $${(maxRaise / 100).toFixed((maxRaise / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
@@ -81,7 +81,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const handleBetSubmit = (e) => {
         e.preventDefault()
         if((betAmount * 100) < gameState.bigBlind && gameState.players[gameState.turn].chips >= gameState.bigBlind){
-            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed(decimalAmount)}`)
+            alert(`Minimum bet is $${(gameState.bigBlind / 100).toFixed((gameState.bigBlind / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
         if(decimalAmount === 0 && betAmount !== Math.floor(betAmount)){
@@ -96,7 +96,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             return
         }
         if(betAmount * 100 > maxBet){
-            alert(`Max bet is $${(maxBet / 100).toFixed(decimalAmount)}`)
+            alert(`Max bet is $${(maxBet / 100).toFixed((maxBet / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
@@ -174,7 +174,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     
                     <button className='redButton' style={{fontSize: containerSize * .05}} onClick={handleAllIn}>All In!!</button>
                     :
-                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? handleMaxBet : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed(decimalAmount)})` : 'All In!'}</button>
+                    <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05}} onClick={canCoverBet ? handleMaxBet : handleAllIn}>{canCover ? `Max bet! ($${(maxBet / 100).toFixed((maxBet / 100) % 1 === 0 ? 0 : 2)})` : 'All In!'}</button>
                     }
                     <button onClick={() => setBetFormShown(!betFormShown)} className='purpleButton' style={{fontSize: containerSize * .05}}>Bet</button>
                     </div>
@@ -187,7 +187,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
   
                     <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
                         <h1 >Max Bet:</h1>
-                        <h1> ${(maxBet / 100).toFixed(decimalAmount)}</h1>
+                        <h1> ${(maxBet / 100).toFixed((maxBet / 100) % 1 === 0 ? 0 : 2)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
@@ -209,11 +209,11 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     <>
                     <form onChange={handleRaiseChange} onSubmit={handleRaiseSubmit} className={styles.betForm}>
                     <h1 className={styles.toYou} style={{fontSize: containerSize * .05}}>
-                        ${(callAmount / 100).toFixed(decimalAmount)} to call
+                        ${(callAmount / 100).toFixed((callAmount / 100) % 1 === 0 ? 0 : 2)} to call
                     </h1>
                     <div className={styles.maxRaise} style={{textWrap: 'nowrap', fontSize: baseFont }}>
                         <h1 >Max raise:</h1>
-                        <h1> ${(maxRaise / 100).toFixed(decimalAmount)}</h1>
+                        <h1> ${(maxRaise / 100).toFixed((maxRaise / 100) % 1 === 0 ? 0 : 2)}</h1>
                     </div>
                         <div className={styles.betInputContainer} style={{fontSize: baseFont * 2}}>
                             $
@@ -237,7 +237,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     <>
                     {callAmount >= gameState.players[gameState.turn].chips &&
                     <h1 className={styles.toYou} style={{fontSize: containerSize * .05}}>
-                        ${(callAmount / 100).toFixed(decimalAmount)} to call
+                        ${(callAmount / 100).toFixed((callAmount / 100) % 1 === 0 ? 0 : 2)} to call
                     </h1>}
                     {/* <h1>Max bet is: ${((gameState.maxBet - gameState.players[gameState.turn].moneyInPot) / 100).toFixed(2)}</h1> */}
                     {callAmount < gameState.players[gameState.turn].chips && <button className={`greenButton ${styles.bannerButton}`}  onClick={() => call(gameState.currentBet - gameState?.players[gameState.turn]?.bet)} style={{fontSize: containerSize * .05}}><p style={{lineHeight: 1}}>Call </p><p style={{lineHeight: 1}}> ${(callAmount / 100).toFixed((callAmount / 100) % 1 === 0 ? 0 : 2)}</p></button>}
@@ -253,7 +253,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
                     maxRaise > 0 && <button className='redButton' style={{fontSize: canCover? containerSize * .03 : containerSize * .05, textWrap: 'nowrap'}} onClick={canCover ? handleMaxBet : handleAllIn}>{canCover ? (
                         <>
                         Max Raise!! <br/>
-                        (${((maxBet - callAmount) / 100).toFixed(decimalAmount)})
+                        (${((maxBet - callAmount) / 100).toFixed((maxBet - callAmount) % 1 === 0 ? 0 : 2)})
                         </>)
                         : 'All In!'}</button>
                     }

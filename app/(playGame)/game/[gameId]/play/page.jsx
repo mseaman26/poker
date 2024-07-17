@@ -276,8 +276,9 @@ export default function({params}){
             }
             //update saved game state
             getGameData(params.gameId)
+            socket.emit('save hand', {roomId: params.gameId})
             if(!production)console.log('saving game state: ', gameState)
-            updateGameAPI(params.gameId, {state: gameState})
+            // updateGameAPI(params.gameId, {state: gameState})
         }
         if(meData?._id && gameState?.players){
             let amountToSubractFromPot = 0;
@@ -390,8 +391,12 @@ export default function({params}){
             socket.on('refresh', (data) => {
                 window?.location?.reload()
             })
-            
+            socket.on('save game', async (data) => {
+                if(!production)console.log('saving game state: ', data)
+                await updateGameAPI(params.gameId, {state: data})
+            })
             socket.emit('game state', params.gameId)
+            
         });
         socket.on('chat message', (data) => {
             setChatMessages((prev) => {
@@ -530,7 +535,7 @@ export default function({params}){
                     {gameState?.pot > 0 &&
                         <div className={styles.pot}>
                             {/* I was originally using the centerPot variable here for displaying the pot amount */}
-                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed(decimalAmount)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
+                            <h1 style={{fontSize: containerSize * .05}}>{!flopping ? `Pot: $${(gameState.pot / 100).toFixed((gameState.pot / 100) % 1 === 0 ? 0 : 2)}` : !flipping ? `Dealing Community Cards...` : `Flip 'em Over!!`}</h1>
                         </div>
                     }
                     <div className={`${styles.preGameInfo}`}>
