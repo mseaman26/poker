@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react'
 import styles from './GameBurger.module.css'
 import { slide as Menu } from 'react-burger-menu';
 import { useRouter } from "next/navigation";
+import { left } from 'inquirer/lib/utils/readline';
 
 
 const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cashOut, numPlayers, changeBlinds, setChangeBlindsFormShown}) => {
@@ -38,14 +39,17 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
         bmCrossButton: {
             height: '64px',
             width: '64px',
-            zIndex: 20
+
         },
         // Color/shape of close button cross
         bmCross: {
-            fontSize: '128em',
+            // fontSize: '128em',
             // fontSize: "64px",
+
             background: '#bdc3c7',
-            zIndex: 10
+            left: '0',
+
+
         },
       
         //Sidebar wrapper styles
@@ -56,7 +60,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             height: '100%',
             width: '80%',
             top: 0,
-            zIndex: 10
+
         },
         //General sidebar styles
         bmMenu: {
@@ -66,18 +70,18 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             fontSize: '1.15em',
             width: '100%',
             top: 0,
-            zIndex: 10
+
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
-            zIndex: 11
+   
         },
         //Wrapper for item list
         bmItemList: {
             position: 'relative',
             color: '#F1EFEB',
             padding: '0.8em',
-            zIndex: 100
+
         },
         //Individual item
         bmItem: {
@@ -86,7 +90,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             fontSize: 32,
             marginBottom: 20,
             color: '#f1f1f1',
-            zIndex: 11,
+
             cursor: 'pointer',
             border: '1px solid #f1f1f1',
             padding: '10px',
