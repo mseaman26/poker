@@ -163,7 +163,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <div className={`${styles.action}`} style={{fontSize: containerSize * .03, color: player.folded ? 'blue' : player.action === 'check'? 'greenyellow' : ''}}>{player.folded? 'folded' : player.allIn ? '' : player.action} {(player.action === 'raise' || player.action === 'call')  &&<span>${(player.actionAmount / 100).toFixed((player.actionAmount / 100) %1 === 0 ? 0 : 2)}</span>}</div>  }   
                         {player.allIn && 
                             // <h1 style={{fontSize: basefont, color: 'red'}}>{`All In $${gameState.flipping? (player.allIn / 100).toFixed(decimalAmount) : (player.bet / 100).toFixed(decimalAmount) }`}</h1>
-                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : 2)}` : ''}`}</h1>
+                            <h1 style={{fontSize: basefont, color: 'red'}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed(decimalAmount)}` : ''}`}</h1>
                         }
                         {player.maxWin && !gameState.handComplete && <h1 className={styles.maxWin} style={{fontSize: basefont * .8}}>{`Max Win:`}<br/>{`$${(player.maxWin / 100).toFixed((player.maxWin / 100) % 1 === 0 ? 0 : 2)}`}</h1>}
 
@@ -215,7 +215,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                     <div style={{width: '100%', opacity: player.folded ? .6 : 1}}>
                         <Image src={svgUrlHandler(player.pocket[0])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard1} `} />
                         <Image src={svgUrlHandler(player.pocket[1])} height={200} width={100} alt="card1 image" className={`${styles.myPocketCard} ${styles.myPocketCard2}`}/>
-                        { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : 2)}` : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed((player.meMaxWin / 100) % 1 === 0 ? 0 : 2)}`}</h1></>}
+                        { player.allIn && !gameState.handComplete &&<> <h1 className={styles.meAllIn} style={{fontSize: basefont * 2, color: 'red', borderRadius: containerSize * .02}}>{`All In ${player.bet > 0 ? `$${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : 2)}` : ''}`}</h1><h1 className={styles.meMaxWin} style={{fontSize: containerSize * .03}}>{`Max Win: ${(player.maxWin / 100).toFixed(decimalAmount)}`}</h1></>}
                     </div>
                     {gameState.handComplete && player.eliminated === false && player.folded === false && renderedFlop.length === 5 &&
                         <h1 className={styles.myActualHand} style={{fontSize: basefont* 1.5}}>{player.actualHand?.title}</h1>
