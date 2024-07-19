@@ -24,6 +24,7 @@ const AccountPAge= () => {
     const [emailAvailable, setEmailAvailable] = useState(false)
     const [loading, setLoading] = useState(true);
     const [meData, setMeData] = useState({})
+    const production = process.env.NODE_ENV === 'production'
 
     const handleNameChange = async () => {
         setError('')

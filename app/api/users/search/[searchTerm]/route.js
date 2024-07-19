@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(req, {params}){
     const searchTerm = params.searchTerm
     try{
-        if(!production)console.log("Dynamic route hit!");
+        console.log("Dynamic route hit!");
         
         await connectMongoDB()
         const users = await User.find({
@@ -21,7 +21,7 @@ export async function GET(req, {params}){
         .select('-password')
         return NextResponse.json(users, {status: 200})
     }catch(err){
-        if(!production)console.log('err: ', err)
+        console.log('err: ', err)
     }
     return NextResponse.json({ message: 'hello' });
 }

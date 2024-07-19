@@ -5,16 +5,16 @@ import { NextResponse } from "next/server";
 
 //GET SINGLE USER
 export async function GET(req, {params}){
-  const production = process.env.NODE_ENV === 'production'
+
   try{
       await connectMongoDB()
-      if(!production)console.log('search single user route hit')
+
       const id = params.id
       const user = await User.findById(id)
         .select('-password')
         .populate('friends').populate({
           path: 'gameInvites',
-          populate: {
+          populate: { 
             path: 'creatorId',
             model: 'User'  
           }
@@ -22,7 +22,7 @@ export async function GET(req, {params}){
         .populate('friendRequests')
       return NextResponse.json(user)
   }catch(err){
-    if(!production)console.log('error in single user fetch: ', err)
+    console.log('error in single user fetch: ', err)
   }
     
 }
@@ -47,15 +47,15 @@ export async function PUT(req, { params }) {
   const updateFields = { ...body }; // Copy all fields from the body
   try {
     await connectMongoDB();
-    if(!production)console.log('update user route hit');
+    console.log('update user route hit');
     const id = params.id;
-    if(!production)console.log('id in route: ', id);
+    console.log('id in route: ', id);
 
     const update = {};
 
     // Check if amount for chips update is provided
     if (updateFields.chipsAmount) {
-      if(!production)console.log('chips update, amount: ', updateFields.chipsAmount);
+      console.log('chips update, amount: ', updateFields.chipsAmount);
       update.$inc = { cash: updateFields.chipsAmount };
       delete updateFields.chipsAmount; // Remove the amount field from the other updates
     }
@@ -73,18 +73,18 @@ export async function PUT(req, { params }) {
 
     return NextResponse.json(user);
   } catch (err) {
-    if(!production)console.log('error in update user fetch: ', err);
+    console.log('error in update user fetch: ', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 //DELETE USER
 export async function DELETE(req, {params}){
-  if(!production)console.log('delete user route hit')
+  console.log('delete user route hit')
   try {
     await connectMongoDB();
-    if(!production)console.log('delete user route hit');
+    console.log('delete user route hit');
     const id = params.id;
-    if(!production)console.log('id in route: ', id);
+    console.log('id in route: ', id);
     const user = await User.findById(id);
     //delete associated games
     for(let gameId of user.gamesCreated){
@@ -100,6 +100,6 @@ export async function DELETE(req, {params}){
   
     return NextResponse.json('user deleted')
   } catch (err) {
-    if(!production)console.log('error in delete user route: ', err);
+    console.log('error in delete user route: ', err);
   }
 }

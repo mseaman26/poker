@@ -85,7 +85,7 @@ export default function Register() {
         }
       }
     } catch (error) {
-      if(!production)console.log("Error during registration: ", error);
+      console.log("Error during registration: ", error);
     }
   };
 
@@ -93,6 +93,7 @@ export default function Register() {
     setError('')
     if(name){
       const data = await searchUsersAPI(name)
+      console.log(data)
       for(let user of data){
         if(user.name === name){
           setUsernameAvailable(false)
