@@ -27,6 +27,19 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
+.gameTitle{
+    color: var(--goldHeader);
+    font-size: 3vw;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    position: fixed;
+    top: var(--pagePadding);
+    left: var(--pagePadding);
+    line-height: 1;
+    z-index: 1;
+
+}
 .turnSideways{
    background-color: var(--backGround);
    position: fixed;

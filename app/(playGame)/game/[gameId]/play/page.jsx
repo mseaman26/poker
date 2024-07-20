@@ -12,10 +12,8 @@ import Player from "@/components/game/player/Player";
 import LoadingScreen from "@/components/loadingScreen/loadingScreen";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
-import { get, set } from "mongoose";
 import DevMonitor from "@/components/DevMonitor/DevMonitor";
 import { checkDeck } from "@/lib/helpers";
-import { useFileSystemPublicRoutes } from "@/next.config";
 
 
 
@@ -55,6 +53,8 @@ export default function({params}){
     const [changeBlindsFormShown, setChangeBlindsFormShown] = useState(false)
     const [allInAmount, setAllInAmount] = useState(0)
     const [resumeGameButtonShown, setResumeGameButtonShown] = useState(false)
+    const [isAllowedPlayer, setIsAllowedPlayer] = useState(false)
+    const [redirected, setRedirected] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -219,6 +219,23 @@ export default function({params}){
 
     })};
 
+    useEffect(() => {
+        if(!production)console.log('game data: ', gameData)
+        if(gameData.invitedUsers?.length > 0){
+            if(gameData?.invitedUsers.includes(session?.user?.id) || gameData?.creatorId === session?.user?.id){
+                setIsAllowedPlayer(true)
+            }else if(!redirected){
+                alert('You were not invited to this game.  You will be redirected to the lobby')
+                setRedirected(true);
+                router.push('/')
+            }
+            setLoading(false)
+        }
+    }, [gameData])
+
+    useEffect(() => {
+        console.log('is allowed player: ', isAllowedPlayer)
+    }, [isAllowedPlayer])
 
     useEffect(() => {
         if(!production){
@@ -386,7 +403,6 @@ export default function({params}){
 
             socket.on('game state', (data) => {
                 setGameState(prevState => (data));
-                setLoading(false)
             })
             socket.on('refresh', (data) => {
                 window?.location?.reload()
@@ -403,7 +419,11 @@ export default function({params}){
                 return [...prev, {username: data.username, message: data.message}]
             })
         })
-
+        socket.on('room full', () => {
+            console.log('room full socket event')
+            alert('This room is already full.  you will be redirected to the lobby')
+            router.push(`/game/${params.gameId}`)
+        })
         socket.on('disconnect', () => {
              console.log('Socket disconnected at client');
             // stopKeepAlive(); 
@@ -473,13 +493,20 @@ export default function({params}){
          localStorage.setItem(`chatMessages: ${params.gameId}`, JSON.stringify(chatMessages));
     }, [chatMessages]);
 
+    if(loading){
+        return <LoadingScreen />
+    }
 
     return (
-        <div className={styles.container}>
+        <>
+        {!loading && isAllowedPlayer && <div className={styles.container}>
             {/* {!production && <DevMonitor gameState={gameState} gameData={gameData}/>}
             {dealing && <DealingScreen />} */}
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length} changeBlinds={changeBlinds} setChangeBlindsFormShown={setChangeBlindsFormShown}/>
+            </div>
+            <div className={styles.gameTitle}>
+                <h1>{gameData?.name}</h1>
             </div>
             <main className={styles.tableContainer}>
                 <div className={`${styles.table}`} style={{height: containerSize, width: containerSize}}>
@@ -605,6 +632,7 @@ export default function({params}){
             {/* <h1 style={{color: 'white'}}>Orientation: {orientation}</h1>
             <h1 style={{color: 'white'}}>width: {window.innerWidth}</h1> */}
             
-        </div>
+        </div>}
+        </>
     )
 }
