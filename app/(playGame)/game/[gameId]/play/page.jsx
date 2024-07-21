@@ -55,6 +55,7 @@ export default function({params}){
     const [resumeGameButtonShown, setResumeGameButtonShown] = useState(false)
     const [isAllowedPlayer, setIsAllowedPlayer] = useState(false)
     const [redirected, setRedirected] = useState(false)
+    const [isInvited, setIsInvited] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -221,9 +222,10 @@ export default function({params}){
 
     useEffect(() => {
         if(!production)console.log('game data: ', gameData)
-        if(gameData.invitedUsers?.length > 0){
-            if(gameData?.invitedUsers.includes(session?.user?.id) || gameData?.creatorId === session?.user?.id){
-                setIsAllowedPlayer(true)
+        if(gameData.invitedUsers?.length > 0 && session?.user?.id){
+            if(gameData?.invitedUsers?.includes(session?.user?.id) || gameData?.creatorId === session?.user?.id){
+                setIsInvited(true)
+                socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
             }else if(!redirected){
                 alert('You were not invited to this game.  You will be redirected to the lobby')
                 setRedirected(true);
@@ -480,7 +482,7 @@ export default function({params}){
               username: session.user.name,
               id: session.user.id
             })
-            socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
+            
             
         }
         getGameData(params.gameId)
@@ -499,7 +501,7 @@ export default function({params}){
 
     return (
         <>
-        {!loading && isAllowedPlayer && <div className={styles.container}>
+        {!loading && isInvited && <div className={styles.container}>
             {/* {!production && <DevMonitor gameState={gameState} gameData={gameData}/>}
             {dealing && <DealingScreen />} */}
             <div className={`${styles.upperRightButtons}`}>
