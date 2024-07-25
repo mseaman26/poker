@@ -71,7 +71,7 @@ export default function({params}){
 
     useEffect(() => {
 
-        if(meData._id && socket.id && !gameState.active){
+        if(meData._id && socket.id && !gameState.active && isInvited){
             socket.emit('add player', {roomId: params.gameId, player: {id: meData._id, username: meData.name}})
         }
         if(gameData?.state){
@@ -311,7 +311,7 @@ export default function({params}){
             setMyPocket(gameState.players.filter(player => player.userId === meData._id)[0]?.pocket)
             
             setMeIndex(prior => gameState.players.findIndex(player => player.userId === meData._id))
-            if(meIndex === -1 && !playerAdded){
+            if(meIndex === -1 && !playerAdded && isInvited){
             
                 socket.emit('add player', {roomId: params.gameId, player: {id: session?.user?.id, username: session?.user?.name}})
                 setPlayerAdded(prior => true)
