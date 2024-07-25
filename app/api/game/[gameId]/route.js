@@ -7,7 +7,7 @@ export async function GET(req, {params}){
     try{
         await connectMongoDB()
         const gameId = params.gameId
-        const game = await Game.findById(gameId)
+        const game = await Game.findById(gameId).populate('invitedUsers')
             // .populate({
             //     path: 'players.userId',
             //     model: 'User',
