@@ -223,13 +223,16 @@ export default function({params}){
     useEffect(() => {
         if(!production)console.log('game data: ', gameData)
         if(gameData.invitedUsers?.length > 0 && session?.user?.id){
-            if(gameData?.invitedUsers?.includes(session?.user?.id) || gameData?.creatorId === session?.user?.id){
-                setIsInvited(true)
-                socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
-            }else if(!redirected){
-                alert('You were not invited to this game.  You will be redirected to the lobby')
-                setRedirected(true);
-                router.push('/')
+            if(gameData.invitedUsers?.length > 0 && session?.user?.id){
+                if(gameData.invitedUsers.some(user => user._id === session.user.id) || gameData?.creatorId === session?.user?.id){
+                    setIsInvited(true)
+                    socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
+                }else if(!redirected){
+                    alert('You were not invited to this game.  You will be redirected to the lobby')
+                    setRedirected(true);
+                    router.push('/')
+                }
+                setLoading(false)
             }
             setLoading(false)
         }
