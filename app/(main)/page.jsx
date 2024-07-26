@@ -115,8 +115,9 @@ export default function LoginForm() {
             type="password"
             placeholder="Password"
             className='input'
+            name='password'
           />
-          <button className='submitButton'>
+          <button className='submitButton' type='submit'>
             Login
           </button>
           {error && (

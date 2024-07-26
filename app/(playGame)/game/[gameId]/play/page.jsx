@@ -56,6 +56,7 @@ export default function({params}){
     const [isAllowedPlayer, setIsAllowedPlayer] = useState(false)
     const [redirected, setRedirected] = useState(false)
     const [isInvited, setIsInvited] = useState(false)
+    const [isTest, setIsTest] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -68,6 +69,11 @@ export default function({params}){
             console.log('me data: ', meData)
         }
     }, [meData])
+    useEffect(() => {
+        if(!production){
+            console.log('is test', isTest)
+        }
+    }, [isTest])
 
     useEffect(() => {
 
@@ -97,6 +103,9 @@ export default function({params}){
     const stopKeepAlive = () => {
         clearInterval(startKeepAlive); // Stop the interval
     };
+    const handleCheckboxChange = (event) => {
+        setIsTest(event.target.checked);
+    }
     const getGameData = async (gameId) => {
         if(gameId){
             const data = await getGameAPI(gameId)
@@ -119,7 +128,7 @@ export default function({params}){
     const startGame = async () => {
         if(confirm('Are you sure you want to start the game and lose any saved game for this game room?') === false) return
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
-        socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn})
+        socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn, isTest: isTest})
         // for(let user of usersInRoom){
         //     await updateUserAPI(user.userId, {chipsAmount: data.buyIn * -1})
         // }
@@ -574,8 +583,15 @@ export default function({params}){
                         <div className={styles.creatorButtons}>
                             {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={usersInRoom.length > 1 ? resumeGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont, backgroundColor: 'green'}}>Resume Game <br/>{`(${gameData?.state?.players? gameData.state.players.length : ''} players)`}</button>}
                             {gameData?.creatorId === session?.user?.id && !gameState?.active &&
+                            <>
                             <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New<br/>Game</button>
+                            {!production && <div>
+                                    <input type="checkbox" checked={isTest} onChange={handleCheckboxChange} style={{width: 'fit-content'}}/>
+                                    Test Mode
+                            </div>}
+                            </>
                             }
+                            
                             {!gameState?.active && <p className="secondary">{gameData?.creatorId === session?.user?.id ? usersInRoom.length <2  ? 'at least two players must be in the room to start game' : '' : 'Waiting for users to join and for room creator to start game'}</p>}
                             {gameState?.handComplete && gameData?.creatorId === session?.user?.id && <button onClick={nextHand} className={`blueButton ${styles.nextHandButton}`} style={{fontSize: baseFont}}>{`Next Hand ->`}</button>}
                         
