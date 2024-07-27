@@ -188,7 +188,7 @@ test.describe('8 Players', () => {
         ]);
 
         // test1 clicks on a button with text that starts with 'Create New Game'
-        const createNewGame = async (page) => {
+        const goToCreateNewGame = async (page) => {
             //select button with data-testid="createGameButton" attribute
             const createGameButton = await page.waitForSelector('[data-testid="createGameButton"]');
       
@@ -197,10 +197,37 @@ test.describe('8 Players', () => {
             await page.waitForURL(/.*\/createGame$/);
         }
         //click on create new game (just test1)
-        await createNewGame(page1);
-        //check that test1 is on the game page
+        await goToCreateNewGame(page1);
+        //verify test1 is on the create game page
+        expect(page1.url()).toMatch(/.*\/createGame$/);
+        //select the input with the name gameName
+        const gameNameInput = await page1.waitForSelector('input[name="gameName"]');
+        //select the input with the name buyIn
+        const buyInInput = await page1.waitForSelector('input[name="buyIn"]');
+        //select the input with the name bigBlinds
+        const bigBlindsInput = await page1.waitForSelector('input[name="bigBlinds"]');
+        const createGameButton = await page1.waitForSelector('button[type="submit"]');
+        //fill in the game name input
+        await gameNameInput.fill('test1PlaywrightGame');
+        //fill in the buy in input
+        await buyInInput.fill('100');
+        //fill in the big blinds input
+        await bigBlindsInput.fill('2');
+        //click on the submit button
 
-
+        //click on the submit button
+        await createGameButton.click();
+ 
+        //wait for url to contain /game/:gameId
+        await page1.waitForURL(/.*\/game\//);
+        //wait for an h1 element with the text 'test1PlaywrightGame'
+        const gameHeader = await page1.waitForSelector('h1:has-text("test1PlaywrightGame")');
+        //verify the game header is visible
+        expect(gameHeader).not.toBeNull();
+        //wait for network idle
+        await page1.waitForLoadState('networkidle');
+        //puae for 2 seconds
+        await page1.waitForTimeout(10000);
         //navigate to //account by changing url
         const navigateToAccount = async (page) => {
             await page.goto('http://localhost:3000/account');
@@ -220,9 +247,8 @@ test.describe('8 Players', () => {
         //click button with text 'Delete Account'
         const deleteAccount = async (page) => {
             await page.click('button:has-text("Delete Account")');
-            //wait for idle network
-            await page.waitForLoadState('networkidle');
             //check for a visible element that is a button with the text 'Login'
+
             await page.waitForSelector('button:has-text("Login")');
         }
         //delete account for all users
