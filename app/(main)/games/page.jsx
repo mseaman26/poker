@@ -52,7 +52,7 @@ const Games = () => {
             getMyGames()
           
         }else{
-            router.replace('/')
+            // router.replace('/')
         }
         socket.on('friend refresh', () => {
             if(session){

@@ -226,8 +226,74 @@ test.describe('8 Players', () => {
         expect(gameHeader).not.toBeNull();
         //wait for network idle
         await page1.waitForLoadState('networkidle');
-        //puae for 2 seconds
-        await page1.waitForTimeout(10000);
+        //on page1 type 'test' into the only input element on the page
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test2-invite"]');
+        await page1.click('button[data-testid="test2-invite"]');
+        //wait 500ms
+        await page1.waitForTimeout(500);
+        
+        await page1.waitForSelector('input');
+
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test3-invite"]');
+        await page1.click('button[data-testid="test3-invite"]');
+        await page1.waitForTimeout(500);
+        await page1.waitForSelector('input');
+
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test4-invite"]');
+        await page1.click('button[data-testid="test4-invite"]');
+        await page1.waitForTimeout(500);
+        await page1.waitForSelector('input');
+        
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test5-invite"]');
+        await page1.click('button[data-testid="test5-invite"]');
+        await page1.waitForTimeout(500);
+        await page1.waitForSelector('input');
+
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test6-invite"]');
+        await page1.click('button[data-testid="test6-invite"]');
+        await page1.waitForTimeout(500);
+        await page1.waitForSelector('input');
+
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test7-invite"]');
+        await page1.click('button[data-testid="test7-invite"]');
+        await page1.waitForTimeout(500);
+        await page1.waitForSelector('input');
+
+        await page1.fill('input', 'test');
+        await page1.waitForLoadState('networkidle');
+        await page1.waitForSelector('button[data-testid="test8-invite"]');
+        await page1.click('button[data-testid="test8-invite"]');
+        //refresh pages2-8
+        await page2.reload();
+        await page3.reload();
+        await page4.reload();
+        await page5.reload();
+        await page6.reload();
+        await page7.reload();
+        await page8.reload();
+
+       //pause page1
+       await page8.pause();
+    
+        
+       
+
+
+
+
+        
         //navigate to //account by changing url
         const navigateToAccount = async (page) => {
             await page.goto('http://localhost:3000/account');

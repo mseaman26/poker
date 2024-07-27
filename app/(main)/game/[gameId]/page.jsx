@@ -213,7 +213,7 @@ const ViewGameInfo = ({params}) => {
                 ?.filter((user) => user.name !== session.user.name && gameInfo?.invitedUsers?.every(invitedUser => invitedUser._id !== user._id))
                 .map((user, index) => (
                   <div key={user.id} className={styles.userList}>
-                    <div key={user.id} className={styles.userItem}>
+                    <div key={user.id} className={styles.userItem} dada-testid={user.name}>
                       <div className={styles.buttonAndStatus}>
                         <Link
                           href={`/user/${user._id}`}
@@ -250,6 +250,7 @@ const ViewGameInfo = ({params}) => {
                           key={index}
                           onClick={() => inviteToGame(user._id)}
                           className={`greenButton ${styles.inviteButton}`}
+                          data-testid={`${user.name}-invite`}
                         >
                           Invite
                         </button>
