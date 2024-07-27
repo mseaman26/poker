@@ -123,6 +123,7 @@ const AccountPAge= () => {
     }
 
     const deleteAccount = async () => {
+        if(!confirm('Are you sure you want to delete your account?'))return
         try{
             const deletedUser = await deleteUserAPI(session.user.id)
             await signOut()

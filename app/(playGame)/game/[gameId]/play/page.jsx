@@ -527,7 +527,7 @@ export default function({params}){
                     <div className={styles.players}>
                         {offsetPlayers && offsetPlayers.map((player, index) => {
                             return (
-                                <div key={index} className={`${styles.playerContainer}`}>
+                                <div key={`offsetPlayer_${index}`} className={`${styles.playerContainer}`}>
                                 <>
                                 {meData && gameState?.active && gameState?.players && gameState?.players[gameState.turn]?.userId === meData._id && !flopping && !burgerOpen && !gameState.handComplete && !flipping &&
                                     (<Myturn gameState={gameState} setGameState={setGameState}  socket={socket} gameId={params.gameId} betFormShown={betFormShown} setBetFormShown={setBetFormShown} containerSize={containerSize} renderedFlop={renderedFlop} setAllInAmount={setAllInAmount}/>)}
@@ -546,9 +546,9 @@ export default function({params}){
                     <div className={styles.flopPlaceholders}>
                         {[0,1,2,3,4].map((card, index) => {
                             if(renderedFlop.length === 0){
-                                return <div key={index} className={styles.flopPlaceholder}></div>
+                                return <div key={`flopCard${index}`} className={styles.flopPlaceholder}></div>
                             }else if(index > renderedFlop.length - 1){
-                                return <div key={index} className={styles.flopPlaceholder}></div>
+                                return <div key={`flopCard${index}`} className={styles.flopPlaceholder}></div>
                             }else{
 
                                return  <div key={index} className={`${styles.flopPlaceholder} ${styles.InvisibleFlopPlaceholder}`}></div>
@@ -562,7 +562,7 @@ export default function({params}){
 
                         {renderedFlop.map((card, index) => {
                             return (
-                                <div key={index} className={styles.flopCardContainer}>
+                                <div key={`renderedFlopCard${index}`} className={styles.flopCardContainer}>
                                     <Image key={index} src={svgUrlHandler(card)} height={200} width={100} alt={`flop card ${index}`} className={styles.flopCard}/>
                                 </div>
                             )
@@ -586,7 +586,7 @@ export default function({params}){
                             <>
                             <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New<br/>Game</button>
                             {!production && <div>
-                                    <input type="checkbox" checked={isTest} onChange={handleCheckboxChange} style={{width: 'fit-content'}}/>
+                                    <input type="checkbox" checked={isTest} onChange={handleCheckboxChange} style={{width: 'fit-content'}} data-testid="testCheckbox"/>
                                     Test Mode
                             </div>}
                             </>
@@ -597,18 +597,18 @@ export default function({params}){
                         
                         </div>
                         {!gameState?.active &&
-                        <div className={styles.usersInRoom}>
+                        <div className={styles.usersInRoom} data-testId='usersInRoom'>
                             <h1>Users in room</h1>
                             {usersInRoom.map((user, index) => {
                                 return (
-                                    <div key={index}>
+                                    <div key={`userInRoom_${index}`}>
                                         <p>
                                         {gameState?.dealer !== undefined && gameState?.dealerId?.userId === user.userId ? (
                                             <span>D </span>
                                         ) : (
                                             <></>
                                         )}
-                                        {user?.username}{' '}{user?.chips}
+                                        <span>{user?.username}</span>
                                         {gameState?.players && gameState?.players[gameState.turn]?.userId === user.userId ? (
                                             <span>&#128994;</span>
                                         ) : (

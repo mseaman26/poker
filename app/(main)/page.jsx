@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { isValidEmail } from "@/lib/validators";
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
-import {updateUsersAPI} from '../../lib/apiHelpers'
+import {updateUsersAPI, deleteTestUsersAPI} from '../../lib/apiHelpers'
 
 
 export default function LoginForm() {
@@ -91,7 +91,11 @@ export default function LoginForm() {
     }
   }
 
- 
+  const deleteTestUsers = async() => {
+    if(confirm('Are you sure you want to delete all test users?')){
+      await deleteTestUsersAPI()
+    }
+  }
   return (
     
     <div className={`pageContainer ${styles.container}`}>
@@ -139,6 +143,7 @@ export default function LoginForm() {
         <button onClick={(e) => loginAsUser(e, 'player4@player4.com', '!Q2w3e4r')}>login as player4</button><br></br>
         <button onClick={(e) => requestActiveUsers(e)}>Request active users</button><br/>
         <button onClick={handleUpdateUsers}>Update Users</button>
+        <button onClick={deleteTestUsers}>Delete Test Users</button>
         
       </div>}
       

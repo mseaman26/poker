@@ -149,7 +149,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             <div className="menu-item" onClick={() => {
                 closeMenu()
                 endGame()
-            }} style={{color: 'red'}}>End Game</div>}
+            }} style={{color: 'red'}} data-testid="endGameButton">End Game</div>}
             {/* <Link className="menu-item" href="/createGame" onClick={closeMenu}>
             Create Game
             </Link>

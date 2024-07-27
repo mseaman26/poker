@@ -102,7 +102,7 @@ const Games = () => {
                 <h1>Games</h1>
             </div>
             <Link href='/createGame' className={styles.createGameButton}>
-                <button className={`blueButton`}>Create New Game &#43;</button>
+                <button className={`blueButton`} data-testid="createGameButton">Create New Game &#43;</button>
             </Link>
             <main className={styles.mainContainer}>
                 <div className={`${styles.gameInvitesContainer} ${styles.myGames}`}>
@@ -118,7 +118,7 @@ const Games = () => {
                             myGames?.map((game, index) => {
                             return(
                                 <li className={styles.createdGameLI} key={game._id}>
-                                    <Link href={`/game/${game._id}`} className={styles.createdGame}>
+                                    <Link href={`/game/${game._id}`} className={styles.createdGame} data={game.name}>
                                         <h1>{game.name}</h1>
                                         <div className={styles.myGameInfo1}>
                                             <p>Buy In: ${(game.buyIn / 100).toFixed(2)}</p>

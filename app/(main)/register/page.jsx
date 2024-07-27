@@ -174,6 +174,7 @@ useEffect(() => {
             onChange={(e) => setName(e.target.value.toLocaleLowerCase())}
             type="text"
             className='input'
+            name='name'
           />
           <h1>{name ? (usernameAvailable ? <span style={{color: 'green'}}>username is available!</span>: <span style={{color: 'red'}}>username not available</span>) : ''}</h1>
           <label className='formLabel'>{`Email (login)`}</label>
@@ -181,13 +182,15 @@ useEffect(() => {
             onChange={(e) => setEmail(e.target.value.toLocaleLowerCase())}
             type="email"
             className='input'
+            name='email'
           />
-          <h1>{email ? (emailAvailable ? <span style={{color: 'green'}}>email is available!</span> : <span style={{color: 'red'}}>email not available</span>) : ''}</h1>
+          <h1>{email ? (emailAvailable ? <span style={{color: 'green'}} data-testid="emailAvailable">email is available!</span> : <span style={{color: 'red'}}>email not available</span>) : ''}</h1>
           <label className='formLabel'>Password</label>
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             className='input'
+            name='password1'
           />
           <label className='formLabel'>Re-Enter Password</label>
           {passwordError && (
@@ -199,8 +202,9 @@ useEffect(() => {
             onChange={(e) => setPassword2(e.target.value)}
             type="password"
             className='input'
+            name='password2'
           />
-          <button onClick={handleSubmit} className='submitButton'>
+          <button onClick={handleSubmit} className='submitButton' type='submit'>
             Register
           </button>
 
