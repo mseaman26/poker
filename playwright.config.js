@@ -1,21 +1,35 @@
 
-const { devices } = require('@playwright/test');
+const { devices, defineConfig} = require('@playwright/test');
 
-module.exports = {
+
+export default defineConfig({
   use: {
-    headless: false, // Run tests with the browser GUI
+    
+    headless: true, // Run tests with the browser GUI
     baseURL: 'http://localhost:3000', // Replace with your app's URL
     trace: 'on', // Record trace for each test
+    //include all state.json files in the tests/e2e/auth/state directory
+
   },
   projects: [
+    //mather for authSetup.test.js
+    { name: 'setup', testMatch: /.*\.authSetup\.test\.js/ },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+        storageState: ['tests/e2e/auth/state/user1.json']
+
+      },
+      dependancies: ['setup'],
       testMatch: [
         // '**.test.js',
         // 'firstTest.test.js',
-        '8players.test.js',
+        // '8players.test.js',
+        // 'fullGameSetup.test.js',
+        'authState.test.js',
+        // 'authSetup.test.js' //logs in and saves state for all users (testuser1-testuser16)
       ],
+      
     },
     // {
     //   name: 'firefox',
@@ -26,4 +40,4 @@ module.exports = {
     //   use: { ...devices['Desktop Safari'] },
     // },
   ],
-};
+})

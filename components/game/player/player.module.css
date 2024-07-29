@@ -234,6 +234,7 @@
 
 }
 .moneyInPot{
+    min-width: 70%;
     position: absolute;
     left: 50%;
     display: flex;
@@ -276,7 +277,7 @@
     position: relative;
     width: auto;
     height: 100%;
-    margin-right: 5%;
+    margin-right: 10%;
     display: flex;
     justify-content: center;
     align-items: center;

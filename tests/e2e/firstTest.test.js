@@ -5,8 +5,8 @@ test.describe('Login as Multiple Users', () => {
         
 
         // Create two browser contexts to simulate two separate users
-        const context1 = await browser.newContext();
-        const context2 = await browser.newContext();
+        const context1 = await browser.newContext({storageState: 'tests/e2e/auth/state/user1.json'});
+        const context2 = await browser.newContext({storageState: 'tests/e2e/auth/state/user2.json'});
 
         // Create two pages, one for each context
         const page1 = await context1.newPage();

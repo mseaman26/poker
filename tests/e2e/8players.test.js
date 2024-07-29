@@ -1,7 +1,10 @@
 const { test, expect } = require('@playwright/test');
 
+
 test.describe('8 Players', () => {
-    test('should log in as 8 players simultaneously', async ({ browser }) => {
+    test.setTimeout(360000); //6 min
+    test.use({ actionTimeout: 12000 }); //12 sec action timeout
+    test('should log in as 8 players simultaneously and then 8 more', async ({ browser }) => {
         const context1 = await browser.newContext({
             viewport: { width: 1280, height: 720 }
         });
@@ -70,8 +73,8 @@ test.describe('8 Players', () => {
         //navigate to the register page by clicking on the link with text "Register"
         const navigateToRegisterPage = async (page) => {
             await page.goto('http://localhost:3000');
-            const registerLink = page.locator('a:has-text("Register")');
-            await registerLink.click();
+            await page.waitForSelector('a:has-text("Register")');
+            await page.click('a:has-text("Register")');
             await page.waitForURL(/.*\/register$/);
         }
 
@@ -85,6 +88,7 @@ test.describe('8 Players', () => {
             navigateToRegisterPage(page7),
             navigateToRegisterPage(page8),
         ]);
+        
         //define new user credentials
         const credentials1 = { 
             email: 'test1@test1.com', 
@@ -149,6 +153,7 @@ test.describe('8 Players', () => {
             register(page7, credentials7),
             register(page8, credentials8),
         ]);
+        console.log('players 1-8 registered');
         //verify all users are on the dashboard
         const url1 = page1.url();
         const url2 = page2.url();
@@ -190,102 +195,325 @@ test.describe('8 Players', () => {
         // test1 clicks on a button with text that starts with 'Create New Game'
         const goToCreateNewGame = async (page) => {
             //select button with data-testid="createGameButton" attribute
-            const createGameButton = await page.waitForSelector('[data-testid="createGameButton"]');
-      
-
-            await createGameButton.click();
+            await page.waitForSelector('[data-testid="createGameButton"]');
+            await page.click('[data-testid="createGameButton"]');
             await page.waitForURL(/.*\/createGame$/);
         }
         //click on create new game (just test1)
         await goToCreateNewGame(page1);
-        //verify test1 is on the create game page
-        expect(page1.url()).toMatch(/.*\/createGame$/);
+        
+
+        const createGame = async (page, gameName, buyIn, bigBlinds) => {
+            const gameNameInput = await page.waitForSelector('input[name="gameName"]');
+            //select the input with the name buyIn
+            const buyInInput = await page.waitForSelector('input[name="buyIn"]');
+            //select the input with the name bigBlinds
+            const bigBlindsInput = await page.waitForSelector('input[name="bigBlinds"]');
+            const createGameButton = await page.waitForSelector('button[type="submit"]');
+            //fill in the game name input
+            await gameNameInput.fill(gameName);
+            //fill in the buy in input
+            await buyInInput.fill(buyIn);
+            //fill in the big blinds input
+            await bigBlindsInput.fill(bigBlinds);
+            //click on the submit button
+
+            //click on the submit button
+            await createGameButton.click();
+    
+            //wait for url to contain /game/:gameId
+            await page.waitForURL(/.*\/game\//);
+            //wait for an h1 element with the text 'test1PlaywrightGame'
+            const selectorText = `h1:has-text("${gameName}")`;
+            const gameHeader = await page.waitForSelector(selectorText);
+            //verify the game header is visible
+            expect(gameHeader).not.toBeNull();
+            //wait for network idle
+            await page.waitForLoadState('networkidle');
+        }
         //select the input with the name gameName
-        const gameNameInput = await page1.waitForSelector('input[name="gameName"]');
-        //select the input with the name buyIn
-        const buyInInput = await page1.waitForSelector('input[name="buyIn"]');
-        //select the input with the name bigBlinds
-        const bigBlindsInput = await page1.waitForSelector('input[name="bigBlinds"]');
-        const createGameButton = await page1.waitForSelector('button[type="submit"]');
-        //fill in the game name input
-        await gameNameInput.fill('test1PlaywrightGame');
-        //fill in the buy in input
-        await buyInInput.fill('100');
-        //fill in the big blinds input
-        await bigBlindsInput.fill('2');
-        //click on the submit button
-
-        //click on the submit button
-        await createGameButton.click();
- 
-        //wait for url to contain /game/:gameId
-        await page1.waitForURL(/.*\/game\//);
-        //wait for an h1 element with the text 'test1PlaywrightGame'
-        const gameHeader = await page1.waitForSelector('h1:has-text("test1PlaywrightGame")');
-        //verify the game header is visible
-        expect(gameHeader).not.toBeNull();
-        //wait for network idle
-        await page1.waitForLoadState('networkidle');
+        await createGame(page1, 'test1PlaywrightGame', '100', '2');
+        console.log('game1 created')
         //on page1 type 'test' into the only input element on the page
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test2-invite"]');
-        await page1.click('button[data-testid="test2-invite"]');
-        //wait 500ms
-        await page1.waitForTimeout(500);
+        const searchAndInvite = async (page, searchText, inviteeName) => {
+            await page.waitForSelector('input');
+            await page.waitForLoadState('networkidle');
+            //wait for input to be empty of text
+            await page.fill('input', '');
+            await page.fill('input', searchText);
+            await page.waitForLoadState('networkidle');
+            await page.waitForSelector(`button[data-testid="${inviteeName}-invite"]`);
+            await page.click(`button[data-testid="${inviteeName}-invite"]`);
+            //wait 500ms
+            await page1.waitForTimeout(500);
+            //wait for network idle
+            await page.waitForLoadState('networkidle');
+        }
         
-        await page1.waitForSelector('input');
-
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test3-invite"]');
-        await page1.click('button[data-testid="test3-invite"]');
-        await page1.waitForTimeout(500);
-        await page1.waitForSelector('input');
-
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test4-invite"]');
-        await page1.click('button[data-testid="test4-invite"]');
-        await page1.waitForTimeout(500);
-        await page1.waitForSelector('input');
-        
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test5-invite"]');
-        await page1.click('button[data-testid="test5-invite"]');
-        await page1.waitForTimeout(500);
-        await page1.waitForSelector('input');
-
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test6-invite"]');
-        await page1.click('button[data-testid="test6-invite"]');
-        await page1.waitForTimeout(500);
-        await page1.waitForSelector('input');
-
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test7-invite"]');
-        await page1.click('button[data-testid="test7-invite"]');
-        await page1.waitForTimeout(500);
-        await page1.waitForSelector('input');
-
-        await page1.fill('input', 'test');
-        await page1.waitForLoadState('networkidle');
-        await page1.waitForSelector('button[data-testid="test8-invite"]');
-        await page1.click('button[data-testid="test8-invite"]');
+        await searchAndInvite(page1, 'test', 'test2');
+        await searchAndInvite(page1, 'test', 'test3');
+        await searchAndInvite(page1, 'test', 'test4');
+        await searchAndInvite(page1, 'test', 'test5');
+        await searchAndInvite(page1, 'test', 'test6');
+        await searchAndInvite(page1, 'test', 'test7');
+        await searchAndInvite(page1, 'test', 'test8');
         //refresh pages2-8
         await page2.reload();
+        await page2.waitForTimeout(100);
         await page3.reload();
+        await page3.waitForTimeout(100);
         await page4.reload();
+        await page4.waitForTimeout(100);
         await page5.reload();
+        await page5.waitForTimeout(100);
         await page6.reload();
+        await page6.waitForTimeout(100);
         await page7.reload();
+        await page7.waitForTimeout(100);
         await page8.reload();
 
-       //pause page1
-       await page8.pause();
+        page1.locator('button:has-text("Enter Game")').click();
+        //check that url ends with /play
+        await page1.waitForURL(/.*\/play$/);
+        //function for clicking on invited game and then clicking Enter Game Button
+        const clickOnAndEnterGame = async (page, gameName) => {
+            //click on the a with a h1 child that says 'test1PlaywrightGame'
+            await page.waitForSelector(`a:has(h1:text("${gameName}"))`);
+            await page.click(`a:has(h1:text("${gameName}"))`);
+            //wait for the url to contain /game
+            await page.waitForURL(/.*\/game/);
+            //click on the button with the text 'Enter Game'
+            await page.waitForSelector('button:has-text("Enter Game")');
+            await page.click('button:has-text("Enter Game")');
+            //wait for the url to contain /play
+            await page.waitForURL(/.*\/play$/);
+        }
+        //click on the game for users 2-8 in order
+        await clickOnAndEnterGame(page2, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page3, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page4, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page5, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page6, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page7, 'test1PlaywrightGame');
+        await clickOnAndEnterGame(page8, 'test1PlaywrightGame');
+
+        console.log('players 1-8 entered game');
+
+        const startNewTestGame = async (page) => {
+            const startNewGameButton = page.locator('button:has-text("Start New")');
+            expect(await startNewGameButton.isVisible()).toBeTruthy();
+
+            const testCheckbox = page.locator('[data-testid="testCheckbox"]');
+            await testCheckbox.waitFor({ state: 'visible' });
+            await testCheckbox.click();
+            expect(await testCheckbox.isVisible()).toBeTruthy();
+            await startNewGameButton.click();
+            // //click ok on the alert, not cancel
+            await page.waitForLoadState('networkidle');
+        }
+
+        await startNewTestGame(page1);
+
+        const checkForMyTurnPopUp = async (page) => {
+            const myTurnPopUps = page.locator('[data-testid="myTurnPopup"]');
+            const myTurnPopUp = myTurnPopUps.nth(0);
+            // await page1.pause();
+            await myTurnPopUp.waitFor({ state: 'visible' });
+            expect(await myTurnPopUp.isVisible()).toBeTruthy();
+        }
+        await checkForMyTurnPopUp(page4);
+        console.log('pop up displayed for player 4');
+        //pause
+        // await page1.pause();
+        //create 8 more contexts and pages
+        const context9 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context10 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context11 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context12 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context13 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context14 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context15 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+        const context16 = await browser.newContext({
+            viewport: { width: 1280, height: 720 }
+        });
+
+        // const page9 = await context9.newPage();
+        // const page10 = await context10.newPage();
+        // const page11 = await context11.newPage();
+        // const page12 = await context12.newPage();
+        // const page13 = await context13.newPage();
+        // const page14 = await context14.newPage();
+        // const page15 = await context15.newPage();
+        // const page16 = await context16.newPage();
+
+        // page9.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // });
+        // page10.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // });
+        // page11.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+        // page12.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+        // page13.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+        // page14.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+        // page15.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+        // page16.on('dialog', async dialog => {
+        //     await dialog.accept();
+        // })
+
+        // //register new users
+        // const credentials9 = { email: 'test9@test9.com',name: 'test9',password: '!Q2w3e4r' };
+        // const credentials10 = { email: 'test10@test10.com',name: 'test10',password: '!Q2w3e4'};
+        // const credentials11 = { email: 'test11@test11.com', name: 'test11', password: '!Q2w3e4r' };
+        // const credentials12 = { email: 'test12@test12.com', name: 'test12', password: '!Q2w3e4r' };
+        // const credentials13 = { email: 'test13@test13.com', name: 'test13', password: '!Q2w3e4r' };
+        // const credentials14 = { email: 'test14@test14.com', name: 'test14', password: '!Q2w3e4r' };
+        // const credentials15 = { email: 'test15@test15.com', name: 'test15', password: '!Q2w3e4r' };
+        // const credentials16 = { email: 'test16@test16.com', name: 'test16', password: '!Q2w3e4r' };
+
+        // await Promise.all([
+        //     navigateToRegisterPage(page9),
+        //     navigateToRegisterPage(page10),
+        //     navigateToRegisterPage(page11),
+        //     navigateToRegisterPage(page12),
+        //     navigateToRegisterPage(page13),
+        //     navigateToRegisterPage(page14),
+        //     navigateToRegisterPage(page15),
+        //     navigateToRegisterPage(page16),
+        // ]);
+
+        // await Promise.all([
+        //     register(page9, credentials9),
+        //     register(page10, credentials10),
+        //     register(page11, credentials11),
+        //     register(page12, credentials12),
+        //     register(page13, credentials13),
+        //     register(page14, credentials14),
+        //     register(page15, credentials15),
+        //     register(page16, credentials16),
+        // ]);
+        // console.log('players 9-16 registered');
+        // const url9 = page9.url();
+        // const url10 = page10.url();
+        // const url11 = page11.url();
+        // const url12 = page12.url();
+        // const url13 = page13.url();
+        // const url14 = page14.url();
+        // const url15 = page15.url();
+        // const url16 = page16.url();
+
+        // expect(url9).toMatch(/\/dashboard$/);
+        // expect(url10).toMatch(/\/dashboard$/);
+        // expect(url11).toMatch(/\/dashboard$/);
+        // expect(url12).toMatch(/\/dashboard$/);
+        // expect(url13).toMatch(/\/dashboard$/);
+        // expect(url14).toMatch(/\/dashboard$/);
+        // expect(url15).toMatch(/\/dashboard$/);
+        // expect(url16).toMatch(/\/dashboard$/);
+
+
+
+        // await Promise.all([
+        //     navigateToGames(page9),
+        //     navigateToGames(page10),
+        //     navigateToGames(page11),
+        //     navigateToGames(page12),
+        //     navigateToGames(page13),
+        //     navigateToGames(page14),
+        //     navigateToGames(page15),
+        //     navigateToGames(page16),
+        // ]);
+
+        // await goToCreateNewGame(page9);
+        // await createGame(page9, 'test9PlaywrightGame', '100', '2');
+        // console.log('game9 created');
+        // await searchAndInvite(page9, 'test', 'test10');
+        // console.log('player 10 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test11');
+        // console.log('player 11 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test12');
+        // console.log('player 12 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test13');
+        // console.log('player 13 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test14');
+        // console.log('player 14 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test15');
+        // console.log('player 15 invited to game 9');
+        // await searchAndInvite(page9, 'test', 'test16');
+        // console.log('players 9-16 invited to game 9');
+
+        // await page10.reload();
+        // await page10.waitForTimeout(100);
+        // await page11.reload();
+        // await page11.waitForTimeout(100);
+        // await page12.reload();
+        // await page12.waitForTimeout(100);
+        // await page13.reload();
+        // await page13.waitForTimeout(100);
+        // await page14.reload();
+        // await page14.waitForTimeout(100);
+        // await page15.reload();
+        // await page15.waitForTimeout(100);
+        // await page16.reload();
+
+        // page9.locator('button:has-text("Enter Game")').click();
+        // //check that url ends with /play
+        // await page9.waitForURL(/.*\/play$/);
+        // console.log('player 9 entered game 9');
+        // await clickOnAndEnterGame(page10, 'test9PlaywrightGame');
+        // console.log('player 10 entered game 9');
+        // await clickOnAndEnterGame(page11, 'test9PlaywrightGame');
+        // console.log('player 11 entered game 9');
+        // await clickOnAndEnterGame(page12, 'test9PlaywrightGame');
+        // console.log('player 12 entered game 9');
+        // await clickOnAndEnterGame(page13, 'test9PlaywrightGame');
+        // console.log('player 13 entered game 9');
+        // await clickOnAndEnterGame(page14, 'test9PlaywrightGame');
+        // console.log('player 14 entered game 9');
+        // await clickOnAndEnterGame(page15, 'test9PlaywrightGame');
+        // console.log('player 15 entered game 9');
+        // await clickOnAndEnterGame(page16, 'test9PlaywrightGame');
+        // console.log('player 16 entered game 9');
+
+        // await startNewTestGame(page9);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
         
        
@@ -309,6 +537,14 @@ test.describe('8 Players', () => {
             navigateToAccount(page6),
             navigateToAccount(page7),
             navigateToAccount(page8),
+            // navigateToAccount(page9),
+            // navigateToAccount(page10),
+            // navigateToAccount(page11),
+            // navigateToAccount(page12),
+            // navigateToAccount(page13),
+            // navigateToAccount(page14),
+            // navigateToAccount(page15),
+            // navigateToAccount(page16),
         ]);
         //click button with text 'Delete Account'
         const deleteAccount = async (page) => {
@@ -327,6 +563,15 @@ test.describe('8 Players', () => {
             deleteAccount(page6),
             deleteAccount(page7),
             deleteAccount(page8),
+            // deleteAccount(page9),
+            // deleteAccount(page10),
+            // deleteAccount(page11),
+            // deleteAccount(page12),
+            // deleteAccount(page13),
+            // deleteAccount(page14),
+            // deleteAccount(page15),
+            // deleteAccount(page16),
+
         ]);
 
     })
