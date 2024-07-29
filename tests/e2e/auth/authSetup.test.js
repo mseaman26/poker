@@ -1,5 +1,6 @@
 
 const { test: setup, expect, chromium } = require('@playwright/test');
+require('dotenv').config({ path: '.env.local' }); 
 
 
 // const credentials = [
@@ -39,7 +40,7 @@ async function authenticateUser(usernumber) {
     const userFile = `tests/e2e/auth/state/user${usernumber}.json`;
     await page.goto('http://localhost:3000');
     await page.fill('input[name="email"]', `testuser${usernumber}@testuser${usernumber}.com`);
-    await page.fill('input[type="password"]', '!Q2w3e4r');
+    await page.fill('input[type="password"]', process.env.GENERIC_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/.*\/dashboard$/); // 
 
