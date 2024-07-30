@@ -35,7 +35,7 @@ export default function LoginForm() {
           username: session.user.name,
           id: session.user.id
         })
-        router.push('/games')
+        router.push('/dashboard')
     }else if (status === 'unauthenticated'){
       setLoading(false)
       
