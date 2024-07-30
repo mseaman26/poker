@@ -64,7 +64,7 @@ export default function Register() {
         const signInRes = await signIn('credentials', {
           email,
           password,
-          redirect: false,
+          redirect: true,
           onSuccess: async () => {
             //i was console loggin here before
             router.push("/dashboard");
