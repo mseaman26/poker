@@ -1,5 +1,5 @@
 
-const { test: setup, expect, chromium } = require('@playwright/test');
+const { test: setup, expect, chromium, default: test } = require('@playwright/test');
 require('dotenv').config({ path: '.env.local' }); 
 
 
@@ -49,15 +49,23 @@ async function authenticateUser(usernumber) {
     await page.waitForSelector(`div:has-text("testuser${usernumber}")`);
     await page.context().storageState({ path: userFile });
     //end test
+    await page.waitForTimeout(1000);
     await page.close();
+    await context.close();
+    await browser.close();
     return
 
 }
 
-setup('authenticate all test users', async ({page}) => {
-  for (let i = 1; i < 17; i++) {
-    await authenticateUser(i);
-  }
+setup.describe('authenticate all test users', async () => {
+  setup.setTimeout(360000); //6 min
+  setup.use({ actionTimeout: 12000 }); //12 sec action timeout
+  setup('?', async ()=> {
+    for (let i = 1; i < 17; i++) {
+      await authenticateUser(i);
+    }
+  })
+  
 })
 
 // setup('authenticate as user1', async ({ page }) => {

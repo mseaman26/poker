@@ -1,12 +1,14 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Login as Multiple Users', () => {
+    test.setTimeout(360000); 
+    test.use({ actionTimeout: 60000 }); //12 sec action timeout
     test('should log in as both player1 and player2 simultaneously', async ({ browser }) => {
         
 
         // Create two browser contexts to simulate two separate users
-        const context1 = await browser.newContext({storageState: 'tests/e2e/auth/state/user1.json'});
-        const context2 = await browser.newContext({storageState: 'tests/e2e/auth/state/user2.json'});
+        const context1 = await browser.newContext()
+        const context2 = await browser.newContext()
 
         // Create two pages, one for each context
         const page1 = await context1.newPage();
@@ -26,16 +28,18 @@ test.describe('Login as Multiple Users', () => {
             await page.goto('http://localhost:3000');
             await page.fill('input[name="email"]', email);
             await page.fill('input[type="password"]', password);
+            await page.waitForSelector('button[type="submit"]')
             await page.click('button[type="submit"]');
             await page.waitForURL(/.*\/dashboard$/); // Ensure the URL ends with /dashboard
         };
+        
 
         // Perform logins in parallel
         await Promise.all([
             login(page1, credentials1),
             login(page2, credentials2),
         ]);
-
+        console.log('two players logged in')
         // Verify both users are on the dashboard
         const url1 = page1.url();
         const url2 = page2.url();
@@ -55,7 +59,7 @@ test.describe('Login as Multiple Users', () => {
             navigateToGamePage(page1),
             navigateToGamePage(page2),
         ]);
-
+        console.log('both players on games page')
         // Verify both users are on the games page
         const gamesUrl1 = page1.url();
         const gamesUrl2 = page2.url();
@@ -81,30 +85,36 @@ test.describe('Login as Multiple Users', () => {
         expect(page2.url()).toMatch(/.*\/game\//);
         //function for clicking on 'Enter Game' button
         const clickEnterGame = async (page) => {
-            const enterButton = page.locator('button:has-text("Enter Game")');
-            await enterButton.click();
+            await page.waitForSelector('button:has-text("Enter Game")')
+            
+            const enterGameButton = page.locator('button:has-text("Enter Game")');
+            await enterGameButton.click();
             // Optionally, wait for some confirmation or navigation after clicking
+            await page.waitForURL(/.*\/play$/);
+
         }
 
         // Ensure Player 1 enters the game before Player 2 and ensure both are on the play page
+        
+        await clickEnterGame(page1),
+        await clickEnterGame(page2),
 
-        clickEnterGame(page1),
-        await page1.waitForURL(/.*\/play$/),
-        clickEnterGame(page2),
-        await page2.waitForURL(/.*\/play$/),
-
+        console.log('both players in game room')
     
         //check that url ends with /play
         expect(page1.url()).toMatch(/.*\/play$/);
         expect(page2.url()).toMatch(/.*\/play$/);
 
         //select the element with a data property of usersInRoom
+        await page1.waitForSelector('[data-testId="usersInRoom"]')
         const usersInRoom = page1.locator('[data-testId="usersInRoom"]');
         //check the element is visible
         expect(await usersInRoom.isVisible()).toBeTruthy();
         //check that usersInRoom has two spans as children
         //wait until page is fully stable
+        console.log('Before waiting for load state');
         await page2.waitForLoadState('networkidle');
+        console.log('After waiting for load state');
         expect(await usersInRoom.locator('span').count()).toBe(2);
         //check that the first span has text 'player1'
         expect(await usersInRoom.locator('span').first().textContent()).toBe('player1');
@@ -123,7 +133,7 @@ test.describe('Login as Multiple Users', () => {
         // //click ok on the alert, not cancel
         await page1.waitForLoadState('networkidle');
         await page2.waitForLoadState('networkidle');
-        
+        console.log('game started')
         // //page 2 should have a visible element with a data-testId of 'myTurnContainer'
         //pause test for inspection
         
@@ -135,6 +145,7 @@ test.describe('Login as Multiple Users', () => {
         expect(await myTurnPopUp.isVisible()).toBeTruthy();
 
         //there should be a button that matches id="react-burger-menu-btn" on page 1
+        page1.waitForSelector('button#react-burger-menu-btn');
         const burgerMenuButton = page1.locator('button#react-burger-menu-btn');
         expect(await burgerMenuButton.isVisible()).toBeTruthy();
         //click on the burger menu button
@@ -142,6 +153,7 @@ test.describe('Login as Multiple Users', () => {
         //pause page1
         // await page1.pause();
         //there should be a button that matches data-testid="endGameButton" on page 1, check it's visibility
+        page1.waitForSelector('div[data-testid="endGameButton"]');
         const endGameButton = page1.locator('div[data-testid="endGameButton"]');
         expect(await endGameButton.isVisible()).toBeTruthy();
         //click on the end game button

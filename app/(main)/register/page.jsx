@@ -67,6 +67,7 @@ export default function Register() {
           redirect: false,
           onSuccess: async () => {
             //i was console loggin here before
+            router.push("/dashboard");
           }
         });
         if(signInRes.error){
@@ -77,7 +78,7 @@ export default function Register() {
         let socket = await getSocket()
         socket.on('connect', () => {
         })
-        router.push("/dashboard");
+        // router.push("/dashboard");
       } else {
         const { code } = await res.json()
         if(code === 11000){

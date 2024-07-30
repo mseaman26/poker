@@ -63,7 +63,7 @@ export default function LoginForm() {
         password,
         redirect: false,
         onSuccess: async () => {
-          //i was console loggin here before
+          router.push("/dashboard");
         }
       });
       if (res.error) {
@@ -72,7 +72,7 @@ export default function LoginForm() {
       }
       
       
-      router.push("dashboard");
+      // router.push("/dashboard");
     } catch (error) {
       if(!production)(error);
     }

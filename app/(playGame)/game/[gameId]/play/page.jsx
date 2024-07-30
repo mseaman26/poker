@@ -584,7 +584,7 @@ export default function({params}){
                             {resumeGameButtonShown && gameData?.creatorId === session?.user?.id && !gameState.active && <button onClick={usersInRoom.length > 1 ? resumeGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont, backgroundColor: 'green'}}>Resume Game <br/>{`(${gameData?.state?.players? gameData.state.players.length : ''} players)`}</button>}
                             {gameData?.creatorId === session?.user?.id && !gameState?.active &&
                             <>
-                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}}>Start New<br/>Game</button>
+                            <button onClick={usersInRoom.length > 1 ? startGame : null} className={`blueButton ${styles.startGame} ${usersInRoom.length < 2 ? 'faded' : ''}`} style={{fontSize: baseFont}} data-testId="startGameButton">Start New<br/>Game</button>
                             {!production && <div>
                                     <input type="checkbox" checked={isTest} onChange={handleCheckboxChange} style={{width: 'fit-content'}} data-testid="testCheckbox"/>
                                     Test Mode

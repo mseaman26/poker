@@ -29,7 +29,7 @@ test.describe('8 Players', () => {
         const context8 = await browser.newContext({
             viewport: { width: 1280, height: 720 }
         });
-
+        console.log('8 contexts created')
         const page1 = await context1.newPage();
         const page2 = await context2.newPage();
         const page3 = await context3.newPage();
@@ -70,6 +70,7 @@ test.describe('8 Players', () => {
         page8.on('dialog', async dialog => {
             await dialog.accept();
         });
+        console.log('8 pages created')
         //navigate to the register page by clicking on the link with text "Register"
         const navigateToRegisterPage = async (page) => {
             await page.goto('http://localhost:3000');
@@ -88,7 +89,7 @@ test.describe('8 Players', () => {
             navigateToRegisterPage(page7),
             navigateToRegisterPage(page8),
         ]);
-        
+        console.log('all players on registration page')
         //define new user credentials
         const credentials1 = { 
             email: 'test1@test1.com', 
@@ -191,7 +192,7 @@ test.describe('8 Players', () => {
             navigateToGames(page7),
             navigateToGames(page8),
         ]);
-
+        console.log('all players on games page')
         // test1 clicks on a button with text that starts with 'Create New Game'
         const goToCreateNewGame = async (page) => {
             //select button with data-testid="createGameButton" attribute
@@ -257,6 +258,7 @@ test.describe('8 Players', () => {
         await searchAndInvite(page1, 'test', 'test6');
         await searchAndInvite(page1, 'test', 'test7');
         await searchAndInvite(page1, 'test', 'test8');
+        console.log('7 players invited')
         //refresh pages2-8
         await page2.reload();
         await page2.waitForTimeout(100);
@@ -326,30 +328,30 @@ test.describe('8 Players', () => {
         //pause
         // await page1.pause();
         //create 8 more contexts and pages
-        const context9 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context10 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context11 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context12 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context13 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context14 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context15 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
-        const context16 = await browser.newContext({
-            viewport: { width: 1280, height: 720 }
-        });
+        // const context9 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context10 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context11 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context12 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context13 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context14 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context15 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
+        // const context16 = await browser.newContext({
+        //     viewport: { width: 1280, height: 720 }
+        // });
 
         // const page9 = await context9.newPage();
         // const page10 = await context10.newPage();
@@ -546,8 +548,10 @@ test.describe('8 Players', () => {
             // navigateToAccount(page15),
             // navigateToAccount(page16),
         ]);
+        console.log('all players on account page')
         //click button with text 'Delete Account'
         const deleteAccount = async (page) => {
+            await page.waitForSelector('button:has-text("Delete Account")')
             await page.click('button:has-text("Delete Account")');
             //check for a visible element that is a button with the text 'Login'
 
@@ -573,6 +577,42 @@ test.describe('8 Players', () => {
             // deleteAccount(page16),
 
         ]);
+        console.log('all accounts deleted')
+        await Promise.all([
+            page1.close(),
+            page2.close(),
+            page3.close(),
+            page4.close(),
+            page5.close(),
+            page6.close(),
+            page7.close(),
+            await page8.waitForTimeout(1000),
+            page8.close(),
+            // page9.close(),
+            // page10.close(),
+            // page11.close(),
+            // page12.close(),
+            // page13.close(),
+            // page14.close(),
+            // page15.close(),
+            // page16.close(),
+            await context1.close(),
+            await context2.close(),
+            await context3.close(),
+            await context4.close(),
+            await context5.close(),
+            await context6.close(),
+            await context7.close(),
+            await context8.close(),
+            
+        ]);
 
+        //assure everything is cleaned up
+        const allContexts = browser.contexts();
+        expect(allContexts.length).toBe(0);
+
+
+        
+        await browser.close()
     })
 });

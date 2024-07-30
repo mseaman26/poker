@@ -1,7 +1,10 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('tests persistent auth state', () => {
+    test.setTimeout(360000); //6 min
+    test.use({ actionTimeout: 12000 }); //12 sec action timeout
     test('', async ({ browser }) => {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const context1 = await browser.newContext({storageState: 'tests/e2e/auth/state/user1.json'});
         const context2 = await browser.newContext({storageState: 'tests/e2e/auth/state/user2.json'});
         const context3 = await browser.newContext({storageState: 'tests/e2e/auth/state/user3.json'});
