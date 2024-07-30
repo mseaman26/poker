@@ -173,7 +173,8 @@ const AccountPAge= () => {
             {meData && <div className='formContainer'>
                 {meData?.cash !== undefined && <div className='formContainer'>
                     <form className='form' onSubmit={handleCashSubmit}>
-                        <label className='formLabel'>{`Update your cash balance: (currently $${(meData?.cash / 100).toFixed(2)})`}</label>
+                        {/* <label className='formLabel'>{`Update your cash balance: (currently $${(meData?.cash / 100).toFixed(2)})`}</label> */}
+                        <label className='formLabel'>{`Update your cash balance: (coming soon)`}</label>
                         <div style={{display: 'flex', width: '100%', alignItems: 'center', marginBottom: 12}}>
                             $ <input type='number' inputMode='decimal' className={`input ${styles.cashInput}`} onChange={(e) => setNewCashBalance(e.target.value)} value={`${newCashBalance}`}></input>
                         </div>

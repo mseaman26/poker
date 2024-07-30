@@ -35,7 +35,7 @@ const CreateGame = () => {
           <div className={styles.inputDiv}>
             <span className={styles.dollarSign}>$</span><input type='number' inputMode='decimal' id="buyIn" name="buyIn"  className={` ${styles.buyInInput}`} onChange={(e) => setBuyIn(e.target.value)}/>
           </div>
-          <label htmlFor="bigBlinds" className='formLabel'>Starting Big Blinds</label>
+          <label htmlFor="bigBlinds" className='formLabel'>{`Starting Big Blinds (small blinds will be 1/2 the big)`}</label>
           <div className={styles.inputDiv}>
             <span className={styles.dollarSign}>$</span><input type="decimal" inputMode='decimal' id="bitBlinds" name="bigBlinds"  className={` ${styles.buyInInput}`} onChange={(e) => setStartingBlind(e.target.value)}/>
           </div>

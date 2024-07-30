@@ -74,7 +74,7 @@ useEffect(() => {
 
 
   return (
-    <div className='pageContainer'>
+    <div className='pageContainer' style={{overflow: 'scroll'}}>
     <div className='headerContainer'>
       <h1>User Search</h1>
     </div>
