@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('Login as Multiple Users', () => {
     test.setTimeout(360000); 
-    test.use({ actionTimeout: 60000 }); //12 sec action timeout
+    test.use({ actionTimeout: 60000 }); //1 min action timeout
     test('should log in as both player1 and player2 simultaneously', async ({ browser }) => {
         
 

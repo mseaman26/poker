@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+require('dotenv').config({ path: '.env.local' }); 
 
 test.describe('tests persistent auth state', () => {
     test.setTimeout(360000); //6 min
@@ -30,10 +31,10 @@ test.describe('tests persistent auth state', () => {
         // const credentials1 = { email: 'player1@player1.com', password: '!Q2w3e4r' };
         // const credentials2 = { email: 'player2@player2.com', password: '!Q2w3e4r' };
 
-        await page1.goto('http://localhost:3000');
-        await page2.goto('http://localhost:3000');
-        await page3.goto('http://localhost:3000');
-        await page4.goto('http://localhost:3000');
+        await page1.goto(process.env.PLAYWRIGHT_BASE_URL);
+        await page2.goto(process.env.PLAYWRIGHT_BASE_URL);
+        await page3.goto(process.env.PLAYWRIGHT_BASE_URL);
+        await page4.goto(process.env.PLAYWRIGHT_BASE_URL);
         // page1.waitForTimeout(7000);
 
         await page1.waitForURL(/.*\/dashboard$/);

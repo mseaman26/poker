@@ -70,7 +70,7 @@ export default function LoginForm() {
         setError("Invalid Credentials");
         return;
       }
-      
+      router.push("/games");
       
       // router.push("/dashboard");
     } catch (error) {

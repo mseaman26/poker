@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+require('dotenv').config({ path: '.env.local' }); 
 
 
 test.describe('8 Players', () => {
@@ -73,7 +74,7 @@ test.describe('8 Players', () => {
         console.log('8 pages created')
         //navigate to the register page by clicking on the link with text "Register"
         const navigateToRegisterPage = async (page) => {
-            await page.goto('http://localhost:3000');
+            await page.goto(process.env.PLAYWRIGHT_BASE_URL);
             await page.waitForSelector('a:has-text("Register")');
             await page.click('a:has-text("Register")');
             await page.waitForURL(/.*\/register$/);
@@ -243,6 +244,7 @@ test.describe('8 Players', () => {
             await page.fill('input', '');
             await page.fill('input', searchText);
             await page.waitForLoadState('networkidle');
+            await page.waitForTimeout(1000)
             await page.waitForSelector(`button[data-testid="${inviteeName}-invite"]`);
             await page.click(`button[data-testid="${inviteeName}-invite"]`);
             //wait 500ms
@@ -305,10 +307,13 @@ test.describe('8 Players', () => {
             const startNewGameButton = page.locator('button:has-text("Start New")');
             expect(await startNewGameButton.isVisible()).toBeTruthy();
 
-            const testCheckbox = page.locator('[data-testid="testCheckbox"]');
-            await testCheckbox.waitFor({ state: 'visible' });
-            await testCheckbox.click();
-            expect(await testCheckbox.isVisible()).toBeTruthy();
+            if(process.env.PLAYWRIGHT_BASE_URL === 'http://localhost:3000'){
+                const testCheckbox = page.locator('[data-testid="testCheckbox"]');
+                await testCheckbox.waitFor({ state: 'visible' });
+                await testCheckbox.click();
+                expect(await testCheckbox.isVisible()).toBeTruthy();
+            }
+            
             await startNewGameButton.click();
             // //click ok on the alert, not cancel
             await page.waitForLoadState('networkidle');
@@ -526,7 +531,7 @@ test.describe('8 Players', () => {
         
         //navigate to //account by changing url
         const navigateToAccount = async (page) => {
-            await page.goto('http://localhost:3000/account');
+            await page.goto('/account');
             await page.waitForURL(/.*\/account$/);
         }
         //navigate to account for all users

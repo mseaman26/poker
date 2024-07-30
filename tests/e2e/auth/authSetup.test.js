@@ -38,7 +38,7 @@ async function authenticateUser(usernumber) {
     const page = await context.newPage();
     
     const userFile = `tests/e2e/auth/state/user${usernumber}.json`;
-    await page.goto('http://localhost:3000');
+    await page.goto(process.env.PLAYWRIGHT_BASE_URL);
     await page.fill('input[name="email"]', `testuser${usernumber}@testuser${usernumber}.com`);
     await page.fill('input[type="password"]', process.env.GENERIC_PASSWORD);
     await page.click('button[type="submit"]');

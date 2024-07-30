@@ -1,10 +1,12 @@
 const { test, expect, chromium } = require('@playwright/test');
+require('dotenv').config({ path: '.env.local' }); 
 
 
 test.describe('Full Game Setup', () => {
   test.setTimeout(360000); //6 min
   test.use({ actionTimeout: 12000 }); //12 sec action timeout
   test('should setup a full game', async ({page}) => {
+    console.log('starting full game setup test');
     //define timeout for the test
     test.setTimeout(180000);
     const browser = await chromium.launch();
@@ -61,10 +63,10 @@ test.describe('Full Game Setup', () => {
       await dialog.accept();
     });
 
-
+    console.log('opening authenticated user pages');
     async function openAuthenticatedUserPage(page, userNumber) {
       
-      await page.goto('http://localhost:3000', {storageState: `tests/e2e/auth/state/user${userNumber}.json`});
+      await page.goto(process.env.PLAYWRIGHT_BASE_URL, {storageState: `tests/e2e/auth/state/user${userNumber}.json`});
       await page.waitForURL(/.*\/dashboard$/);
       expect(page.url()).toMatch(/\/dashboard$/);
 
@@ -83,40 +85,42 @@ test.describe('Full Game Setup', () => {
 
     //player 9 tries to join game without being invited
     console.log('player 9 tries to join game without being invited');
-    await page9.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
+    await page9.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
     await page9.waitForURL(/.*\/dashboard$/);
     expect(page9.url()).toMatch(/\/dashboard$/);
     
     console.log('joining 8 invited players');
-    await page1.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page2.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page3.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page4.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page5.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page6.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page7.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
-    await page8.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
+    await page1.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page2.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page3.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page4.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page5.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page6.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page7.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
+    await page8.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
     console.log('all players joined game');
 
     //player 9  attempts to join game again
     console.log('player 9  attempts to join game again'); 
-    await page9.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
+    await page9.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
     await page9.waitForURL(/.*\/dashboard$/);
     expect(page9.url()).toMatch(/\/dashboard$/);
 
     //invited player tries to join game after it is full
     console.log('invited player (10) tries to join game after it is full');
-    await page10.goto('http://localhost:3000/game/66a82d098bb0a524d7efd3cf/play');
+    await page10.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`);
     await page10.waitForURL(/.*\/dashboard$/);
 
     //select element where data-testId="startGameButton
     await page1.waitForSelector('[data-testid="startGameButton"]');
     const startNewGameButton = page1.locator('[data-testid="startGameButton"]');
-    const testCheckbox = page1.locator('[data-testid="testCheckbox"]');
+    if(process.env.PLAYWRIGHT_BASE_URL.includes('localhost')) {
+      const testCheckbox = page1.locator('[data-testid="testCheckbox"]');
+     // expect(await startNewGameButton.isVisible()).toBeTruthy();
+      expect(await testCheckbox.isVisible()).toBeTruthy();
+      await testCheckbox.check();
+    }
     
-    // expect(await startNewGameButton.isVisible()).toBeTruthy();
-    expect(await testCheckbox.isVisible()).toBeTruthy();
-    await testCheckbox.check();
     await startNewGameButton.click();
     
     await browser.close();
