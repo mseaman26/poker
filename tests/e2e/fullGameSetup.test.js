@@ -73,15 +73,25 @@ test.describe('Full Game Setup', () => {
 
     }
     await openAuthenticatedUserPage(page1, 1);
+    console.log('player 1 authenticated');
     await openAuthenticatedUserPage(page2, 2);
+    console.log('player 2 authenticated');
     await openAuthenticatedUserPage(page3, 3);
+    console.log('player 3 authenticated');
     await openAuthenticatedUserPage(page4, 4);
+    console.log('player 4 authenticated');
     await openAuthenticatedUserPage(page5, 5);
+    console.log('player 5 authenticated');
     await openAuthenticatedUserPage(page6, 6);
+    console.log('player 6 authenticated');
     await openAuthenticatedUserPage(page7, 7);
+    console.log('player 7 authenticated');
     await openAuthenticatedUserPage(page8, 8);
+    console.log('player 8 authenticated');
     await openAuthenticatedUserPage(page9, 9);
+    console.log('player 9 authenticated');
     await openAuthenticatedUserPage(page10, 10);
+    console.log('player 10 authenticated');
 
     //player 9 tries to join game without being invited
     console.log('player 9 tries to join game without being invited');

@@ -514,8 +514,8 @@ export default function({params}){
     return (
         <>
         {!loading && isInvited && <div className={styles.container}>
-            {/* {!production && <DevMonitor gameState={gameState} gameData={gameData}/>}
-            {dealing && <DealingScreen />} */}
+             {!production && <DevMonitor gameState={gameState} gameData={gameData}/>}
+            {dealing && <DealingScreen />} 
             <div className={`${styles.upperRightButtons}`}>
                 <GameBurger endGame={endGame} gameId={params.gameId} isCreator={gameData?.creatorId === session?.user?.id} burgerOpen={burgerOpen} setBurgerOpen={setBurgerOpen} cashOut={cashOut} numPlayers={offsetPlayers?.length} changeBlinds={changeBlinds} setChangeBlindsFormShown={setChangeBlindsFormShown}/>
             </div>
@@ -551,7 +551,7 @@ export default function({params}){
                                 return <div key={`flopCard${index}`} className={styles.flopPlaceholder}></div>
                             }else{
 
-                               return  <div key={index} className={`${styles.flopPlaceholder} ${styles.InvisibleFlopPlaceholder}`}></div>
+                               return  <div key={`flopCard${index}`} className={`${styles.flopPlaceholder} ${styles.InvisibleFlopPlaceholder}`}></div>
                             }
                                 // return (
                                 //     <div key={index} className={styles.flopPlaceholder}></div>

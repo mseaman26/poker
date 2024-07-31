@@ -12,7 +12,7 @@ export default defineConfig({
     //include all state.json files in the tests/e2e/auth/state directory
 
   },
-  retries: 2,
+  // retries: 2,
   workers: 1,
   projects: [
     //mather for authSetup.test.js
@@ -27,11 +27,12 @@ export default defineConfig({
       dependancies: ['setup'],
       testMatch: [
         // '**.test.js',
-        'firstTest.test.js',
-        //'8players.test.js',
-        //'fullGameSetup.test.js',
+        //'firstTest.test.js',
+        '8players.test.js',
+        // 'fullGameSetup.test.js',
         // 'authState.test.js',
         //'authSetup.test.js' //logs in and saves state for all users (testuser1-testuser16)
+        // 'resumeGame.test.js'
       ],
       
     },

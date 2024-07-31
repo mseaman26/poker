@@ -39,6 +39,11 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     const cardStyle = {
         ...cardPosition
     }
+
+    useEffect(() => {
+        console.log('image1 ', cardImage1)
+        console.log('image2 ', cardImage2)
+    }, [cardImage1, cardImage2])
     const handleBuyBack = () => {
         const wantsBackIn = confirm(`Buy-in amount is $${(gameState.buyIn / 100).toFixed(decimalAmount)}. Are you sure you want to buy back in? `)
         if(wantsBackIn){
@@ -54,9 +59,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
     }, [winByFold])
 
     useEffect(() => {
-        if((gameState.handComplete || flipping) && player?.eliminated === false && player.pocket.length > 0){
-            setCardImage1(svgUrlHandler(player.pocket[0]))
-            setCardImage2(svgUrlHandler(player.pocket[1]))
+        if((gameState.handComplete || flipping || player.showCards) && player?.eliminated === false && player.pocket.length > 0 && player.showCards){
+            console.log('showing cards')
+            console.log('player pocket: ', player.pocket)
+            console.log(svgUrlHandler(player.pocket[0]).src)
+            setCardImage1(prior => svgUrlHandler(player.pocket[0]).src)
+            setCardImage2(prior => svgUrlHandler(player.pocket[1]).src)
         }else{
             setCardImage1(redBack)
             setCardImage2(redBack)

@@ -8,11 +8,17 @@ const DevMonitor = ({gameState, gameData}) => {
             <div className={styles.players}>
                 {gameState?.players?.map((player, index) => {
                     return (
-                        <div key={index} className={styles.player}>
+                        <>
+                        <div key={`player_${index}`} className={styles.player}>
                             <h3 style={{color: 'green'}}>{player.username}</h3>
             
                             <p>pocket length: {player?.pocket?.length}</p>
                         </div>
+                        <div key={index} className={styles.player}>
+                            <h3 style={{color: 'green'}}>{player.username}</h3>
+                            <p>cards shown: {player.cardsShown ? 'true' : 'false'}</p>
+                        </div>
+                        </>
                     );
                 })}
             </div>
@@ -31,14 +37,11 @@ const DevMonitor = ({gameState, gameData}) => {
             </div> */}
             <p style={{color: 'red'}}>SNAPSHOT</p>
             <div className={styles.players}>
-                {gameState?.snapShot?.map((player, index) => {
+                {/* {gameState?.snapShot?.map((player, index) => {
                     return (
-                        <div key={index} className={styles.player}>
-                            <h3 style={{color: 'green'}}>{player.username}</h3>
-                            <p>pocket length: {player.pocket.length}</p>
-                        </div>
+                        
                     );
-                })}
+                })} */}
             </div>
         </div>
     );

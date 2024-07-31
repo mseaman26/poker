@@ -61,7 +61,9 @@ setup.describe('authenticate all test users', async () => {
   setup.setTimeout(360000); //6 min
   setup.use({ actionTimeout: 12000 }); //12 sec action timeout
   setup('?', async ()=> {
-    for (let i = 1; i < 17; i++) {
+    //adjust the number of users you want to set up 
+    for (let i = 1; i < 11; i++) {
+      console.log('authenticating user', i)
       await authenticateUser(i);
     }
   })
