@@ -57,6 +57,7 @@ export default function({params}){
     const [redirected, setRedirected] = useState(false)
     const [isInvited, setIsInvited] = useState(false)
     const [isTest, setIsTest] = useState(false)
+    const [gameSaved, setGameSaved] = useState(false)
     const containerSize = Math.min(vW * .9 , vH * .9 )
     const router = useRouter()
     const baseFont = containerSize * .03
@@ -127,6 +128,7 @@ export default function({params}){
 
     const startGame = async () => {
         if(confirm('Are you sure you want to start the game and lose any saved game for this game room?') === false) return
+        setGameSaved(false)
         const data = await updateGameAPI(params.gameId, {players: usersInRoom})
         socket.emit('start game', {roomId: params.gameId, players: data.players, bigBlind: gameData.bigBlind, buyIn: data.buyIn, isTest: isTest})
         // for(let user of usersInRoom){
@@ -207,6 +209,7 @@ export default function({params}){
         setFlopping(false)
         setRenderedFlop([])
         setWinByFold(false)
+        setGameSaved(false)
         socket.emit('next hand', {roomId: params.gameId})
     }
     const cashOut = async () => {
@@ -231,9 +234,9 @@ export default function({params}){
 
     useEffect(() => {
         if(!production)console.log('game data: ', gameData)
-        if(gameData.invitedUsers?.length > 0 && session?.user?.id){
-            if(gameData.invitedUsers?.length > 0 && session?.user?.id){
-                if(gameData.invitedUsers.some(user => user._id === session.user.id) || gameData?.creatorId === session?.user?.id){
+        if(gameData?.invitedUsers?.length > 0 && session?.user?.id){
+            if(gameData?.invitedUsers?.length > 0 && session?.user?.id){
+                if(gameData?.invitedUsers.some(user => user._id === session.user.id) || gameData?.creatorId === session?.user?.id){
                     setIsInvited(true)
                     socket.emit('join room', {gameId: params.gameId, userId: session.user.id, username: session.user.name }, );
                 }else if(!redirected){
@@ -307,8 +310,13 @@ export default function({params}){
             }
             //update saved game state
             getGameData(params.gameId)
-            socket.emit('save hand', {roomId: params.gameId})
-            if(!production)console.log('saving game state: ', gameState)
+            if(!gameSaved){
+                setGameSaved(true)
+                if(!production)console.log('saving game state: ', gameState)
+                socket.emit('save hand', {roomId: params.gameId})
+            }
+            
+           
             // updateGameAPI(params.gameId, {state: gameState})
         }
         if(meData?._id && gameState?.players){

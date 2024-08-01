@@ -141,7 +141,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         // <div className={`${styles.container}`} style={style}>
         <>   
             {index !== 0 ? 
-            <div className={`${styles.otherPlayer}`} style={style}>
+            <div className={`${styles.otherPlayer}`} style={style} data-testId={`otherPlayer_${player.username}`}>
                 
                 {player.chips > 0 || player.moneyInPot > 0 ? 
                 <div className={`${styles.playerInfoContainer} ${gameState.turn === (index + meIndex) % numPlayers && index !== 0 && !gameState.handComplete && !flipping && !flopping ? styles.yellowHalo : ''}`} style={{borderRadius: basefont/2, display: burgerOpen ? 'none' : ''}} >
@@ -159,10 +159,10 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                         <>
                         
                         {index === 1  && numPlayers > 6 && <span className={styles.firstDealerMarker} style={{fontSize: basefont, right: '100%'}}>D</span>}
-                        {index === 1  && numPlayers < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont, right: '500%'}}>D</span>}
+                        {index === 1  && numPlayers < 6 && <span className={styles.dealerMarker} style={{fontSize: basefont, right: '500%'}} data-testId="otherDealerMarker">D</span>}
                         {index === 7 && numPlayers > 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
                         {index === 6 && numPlayers === 7 &&  <span className={styles.seventhDealerMarker} style={{fontSize: basefont}}>D</span>}
-                        {index > 1 && index < 7 && <span className={styles.dealerMarker} style={{fontSize: basefont}}>D</span>}
+                        {index > 1 && index < 7 && <span className={styles.dealerMarker} style={{fontSize: basefont}} data-testId="otherDealerMarker">D</span>}
                         </>
                     }
                    
@@ -217,7 +217,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
 
             </div>
             :
-            <div className={styles.me} style={{...style, display: burgerOpen ? 'none': 'flex'}} >
+            <div className={styles.me} style={{...style, display: burgerOpen ? 'none': 'flex'}} data-testId="player_me" >
                     {/* ME SECTION */}
                 {player?.eliminated === false &&
                 <div className={`${styles.myPocket}`} style={{...cardStyle}} >

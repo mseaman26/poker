@@ -3,7 +3,7 @@ require('dotenv').config({ path: '.env.local' });
 
 test.describe('Resume Game Test', () => {
     test.setTimeout(360000); //6 min
-    test.use({ actionTimeout: 12000 }); //12 sec action timeout
+    test.use({ actionTimeout: 24000 }); //12 sec action timeout
     test('should resume a game', async ({page}) => {
         const browser = await chromium.launch();
         const context1 = await browser.newContext({storageState: 'tests/e2e/auth/state/user1.json'});
@@ -33,7 +33,8 @@ test.describe('Resume Game Test', () => {
       
             await page.goto(process.env.PLAYWRIGHT_BASE_URL);
             await page.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`)
-            //expect(page.url()).toMatch(/\/game\/[a-z0-9]{24}\/play$/)
+            await page.url(/\/game\/[a-z0-9]{24}\/play$/)
+            expect(page.url()).toMatch(/\/game\/[a-z0-9]{24}\/play$/)
         }
 
         await getToGamePage(page1);
@@ -41,6 +42,7 @@ test.describe('Resume Game Test', () => {
         await getToGamePage(page3);
         await getToGamePage(page4);
         console.log('4 players in game room')
+
       
         if(process.env.PLAYWRIGHT_BASE_URL.includes('localhost')) {
             await page1.waitForSelector('[data-testid="testCheckbox"]');
@@ -52,6 +54,10 @@ test.describe('Resume Game Test', () => {
         }
 
         await page1.waitForSelector('[data-testid="startGameButton"]');
+        await page1.waitForSelector('span:has-text("testuser1")')
+        await page1.waitForSelector('span:has-text("testuser2")')
+        await page1.waitForSelector('span:has-text("testuser3")')
+        await page1.waitForSelector('span:has-text("testuser4")')
         const startGameButton = page1.locator('[data-testid="startGameButton"]');
         await startGameButton.click();
         console.log('game started')
@@ -157,8 +163,126 @@ test.describe('Resume Game Test', () => {
         await checkForMyTurnPopUp(page2);
         await allIn(page2);
 
+        //on page3 wait for selector with data-testId 'otherPlayer_testuser4' and find a child that is an 
+        await page3.waitForSelector('[data-testid="otherPlayer_testuser4"]')
+        await page3.waitForSelector('[data-testid="otherPlayer_testuser4"] h1:text("Winner!!")')
+        await page3.waitForSelector('[data-testid="otherPlayer_testuser2"] h1:text("Winner!!")')
+        // await page1.waitForSelector('button:has-text("Show your Cards?")')
+        // page1.locator('button:has-text("Show your Cards?")').click()
+        await page3.waitForSelector('button:has-text("Show your Cards?")')
+        let showCardsButton = page3.locator('button:has-text("Show your Cards?")')
+
+        await showCardsButton.click()
+        console.log('show cards button clicked')
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] img[src="/_next/static/media/clubs_2.9c66a404.svg"]`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] img[src="/_next/static/media/clubs_9.eb52831f.svg"]`)
+
+        console.log('flip cards visible')
+        
+        await endGame(page1);
+        await page1.waitForSelector('button:has-text("Resume Game")');
+        const resumeGameButton = page1.locator('button:has-text("Resume Game")');
+        await resumeGameButton.click();
+        
+
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser2"] span:has-text("101")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] span:has-text("98")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser4"] span:has-text("101")`)
+        await page1.waitForSelector(`[data-testid="player_me"] span:has-text("100")`)
+
+        await page1.waitForSelector('button:has-text("Next Hand")');
+        const nextHandButton = page1.locator('button:has-text("Next Hand")');
+        await nextHandButton.click();
+
+        //slect element with data-testid 'otherPlayer_testuser2' and find a child that is an span with text data-testid 'otherDealerMarker' 
+        
+        await page1.waitForSelector('[data-testid="otherPlayer_testuser2"] span[data-testid="otherDealerMarker"]')
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser2"] span:has-text("101")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] span:has-text("97")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser4"] span:has-text("99")`)
+
+        await checkForMyTurnPopUp(page1);
+        await allIn(page1);
+        await checkForMyTurnPopUp(page2);
+        await allIn(page2);
+        await checkForMyTurnPopUp(page3);
+        await allIn(page3);
+        await checkForMyTurnPopUp(page4);
+        await allIn(page4);
+
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] span:has-text("392")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser2"] span:has-text("8")`)
+
+        await page1.waitForSelector('button:has-text("Next Hand")');
+        const nextHandButton2 = page1.locator('button:has-text("Next Hand")');
+        await nextHandButton2.click();
+
+        await endGame(page1);
+        await page1.waitForSelector('button:has-text("Resume Game")');
+        const resumeGameButton2 = page1.locator('button:has-text("Resume Game")');
+        await resumeGameButton2.click();
+
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser2"] span:has-text("8")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] span:has-text("392")`)
+
+        await page1.waitForSelector('button:has-text("Next Hand")');
+        const nextHandButton3 = page1.locator('button:has-text("Next Hand")');
+        await nextHandButton3.click();
+
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser4"] span:has-text("(spectating)")`)
+        await page1.waitForSelector(`[data-testid="player_me"] button:has-text("Buy in ($100)")`)
+        const buyInButton = page1.locator('button:has-text("Buy in ($100)")');
+        await buyInButton.click();
+
+        await page1.waitForSelector(`[data-testid="player_me"] h1:has-text("You will be dealt in when the next hand starts!")`)
+        await page2.waitForSelector(`[data-testid="otherPlayer_testuser1"] span:has-text("100")`)
+        await fold(page2);
+        await page1.waitForSelector('button:has-text("Next Hand")');
+        const nextHandButton4 = page1.locator('button:has-text("Next Hand")');
+        await nextHandButton4.click();
+        
+        await page1.waitForSelector(`[data-testid="player_me"] span:has-text("100")`)
+        await fold(page1);
+        await checkForMyTurnPopUp(page2);
+        await fold(page2);
+        await page1.waitForSelector('button:has-text("Next Hand")');
+        const nextHandButton5 = page1.locator('button:has-text("Next Hand")');
+        await nextHandButton5.click();
+
+        await endGame(page1);
+        await page1.waitForSelector('button:has-text("Resume Game")');
+        const resumeGameButton3 = page1.locator('button:has-text("Resume Game")');
+        await resumeGameButton3.click();
+
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser2"] span:has-text("6")`)
+        await page1.waitForSelector(`[data-testid="otherPlayer_testuser3"] span:has-text("394")`)
+        await page1.waitForSelector(`[data-testid="player_me"] span:has-text("100")`)
+
+        await page1.waitForSelector('button:has-text("Next Hand")');
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
         await page1.pause();
 
+
+       
+        
+
+
+        
+        
         await endGame(page1);
         await page1.close();
         await page2.close();
