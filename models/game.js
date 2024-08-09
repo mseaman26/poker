@@ -2,6 +2,8 @@ import { ObjectId } from "mongodb";
 import mongoose, { Schema, models } from "mongoose";
 import User from "./user";
 
+//NOTE!!! IF YOU CHANGE THIS FILE, YOU MUST ALSO CHANGE THE MODEL IN THE SERVER REPO
+
 const playerSchema = new Schema({
   userId: {
     type: String,
