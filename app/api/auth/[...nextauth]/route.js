@@ -15,7 +15,7 @@ export const authOptions = {
       async authorize(credentials) {
         let { email, password } = credentials;
         email = email.toLowerCase()
-
+        console.log('authorizing')
         try {
           await connectMongoDB();
           const user = await User.findOne({ email });
@@ -26,12 +26,13 @@ export const authOptions = {
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (!passwordsMatch) {
+            console.log('invalid password')
             return null;
           }
           cash = user.cash
           return { ...user.toObject(), id: user._id.toString(), cash: user.cash};
         } catch (error) {
-          if(!production)console.log("Error: ", error);
+          console.log("Error: ", error);
         }
       },
     }),
@@ -56,6 +57,9 @@ export const authOptions = {
   },
   session: {
     strategy: 'jwt',
+  },
+  session: {
+    strategy: "jwt",
   },
 
   secret: process.env.NEXTAUTH_SECRET,

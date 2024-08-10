@@ -27,8 +27,8 @@ export default function LoginForm() {
   }, [])
 
   useEffect(() => {
-    if(socket && session){
-
+    if(socket && session?.user?.name){
+        console.log('session ', session)
         socket.emit('activate user', {
           socketId: socket.id,
           email: session.user.email,
@@ -61,20 +61,22 @@ export default function LoginForm() {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: true,
+        redirect: false,
         onSuccess: async () => {
-          router.push("/games");
+          //i was console loggin here before
         }
       });
+      console.log('res ', res)
       if (res.error) {
         setError("Invalid Credentials");
         return;
       }
-      router.push("/games");
+      if(res?.user){
+        router.push("dashboard");
+      }
       
-      // router.push("/dashboard");
     } catch (error) {
-      if(!production)(error);
+      alert("An error occurred. Please try again.");
     }
   }
   const requestActiveUsers = async(e) => {
@@ -96,6 +98,7 @@ export default function LoginForm() {
       await deleteTestUsersAPI()
     }
   }
+ 
   return (
     
     <div className={`pageContainer ${styles.container}`}>
@@ -119,9 +122,8 @@ export default function LoginForm() {
             type="password"
             placeholder="Password"
             className='input'
-            name='password'
           />
-          <button className='submitButton' type='submit'>
+          <button type='submit' className='submitButton'>
             Login
           </button>
           {error && (

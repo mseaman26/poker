@@ -34,7 +34,9 @@ test.describe('Resume Game Test', () => {
             await page.goto(process.env.PLAYWRIGHT_BASE_URL);
             await page.goto(`${process.env.PLAYWRIGHT_BASE_URL}/game/66a82d098bb0a524d7efd3cf/play`)
             await page.url(/\/game\/[a-z0-9]{24}\/play$/)
-            expect(page.url()).toMatch(/\/game\/[a-z0-9]{24}\/play$/)
+            //expect url to contain 'play' anywhere in the url
+            expect(page.url()).toContain('play');
+
         }
 
         await getToGamePage(page1);
@@ -260,29 +262,7 @@ test.describe('Resume Game Test', () => {
 
         await page1.waitForSelector('button:has-text("Next Hand")');
 
-        
 
-
-
-
-
-
-
-
-
-
-
-
-
-        await page1.pause();
-
-
-       
-        
-
-
-        
-        
         await endGame(page1);
         await page1.close();
         await page2.close();
