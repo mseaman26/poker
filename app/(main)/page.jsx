@@ -61,7 +61,7 @@ export default function LoginForm() {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
         onSuccess: async () => {
           //i was console loggin here before
         }
@@ -76,7 +76,8 @@ export default function LoginForm() {
       }
       
     } catch (error) {
-      alert("An error occurred. Please try again.");
+      console.log('error: ', error)
+
     }
   }
   const requestActiveUsers = async(e) => {
