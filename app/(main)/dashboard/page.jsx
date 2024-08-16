@@ -1,10 +1,55 @@
 
 'use client'
+import { useState, useEffect } from 'react'
+import { useSession } from "next-auth/react";
 import styles from './dashboard.module.css'
 import Link from 'next/link'
+import { initializeSocket, getSocket } from "@/lib/socketService";
 
 
 export default function Dashboard() {
+
+  const { data: session, status } = useSession();
+  let production = process.env.NODE_ENV === 'production' ? true : false
+
+
+  initializeSocket()
+  let socket = getSocket()
+
+  const requestActiveUsers = async(e) => {
+    try{
+      socket.emit('request active users', () => {
+      })
+    }catch(err){
+      console.log(err)
+    }
+
+  }
+
+  useEffect(() => {
+    socket.on('connect', () => {  
+      //activeUsers.set(socket.id, {id: data.id, email: data.email, username: data.username, socketId: socket.id})
+      const data = {id: session?.user?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
+      console.log('data ', data)
+      socket.emit('activate user', {id: session?.user?.user?.id, email: session?.user?.user?.email, username: session?.user?.name, socketId: socket.id})
+    })
+    socket.on('active users', (data) => {
+      console.log('active users ', data)
+    })
+  }, [])
+
+  useEffect(() => {
+    if(socket && session?.user?.name){
+        console.log('session ', session)
+        socket.emit('activate user', {
+          socketId: socket.id,
+          email: session.user.email,
+          username: session.user.name,
+          id: session.user.id
+        })
+    }
+    console.log('session ', session)
+  }, [session, socket])
 
   return (
       <div className='pageContainer'>
@@ -17,6 +62,7 @@ export default function Dashboard() {
           <Link href={'/myFriends'} className={styles.button}>MY FRIENDS</Link>
           <Link href={'/searchUsers'} className={styles.button}>SEARCH USERS</Link>
           <Link href={'/account'} className={styles.button}>MY ACCOUNT</Link>
+          {!production && <button className={styles.button} onClick={requestActiveUsers}>Request Active users</button>}
           
         </div>
       

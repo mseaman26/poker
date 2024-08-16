@@ -23,7 +23,10 @@ export default function LoginForm() {
 
   useEffect(() => {
     socket.on('connect', () => {  
+      //activeUsers.set(socket.id, {id: data.id, email: data.email, username: data.username, socketId: socket.id})
+      socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
     })
+
   }, [])
 
   useEffect(() => {
@@ -81,8 +84,6 @@ export default function LoginForm() {
     }
   }
   const requestActiveUsers = async(e) => {
-    initializeSocket()
-    let socket = await getSocket()
     e.preventDefault()
     socket.emit('request active users', () => {
       return
