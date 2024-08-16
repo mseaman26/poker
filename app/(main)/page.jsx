@@ -72,7 +72,7 @@ export default function LoginForm() {
         return;
       }
       if(res?.user){
-        router.push("dashboard");
+        router.push("/dashboard");
       }
       
     } catch (error) {
