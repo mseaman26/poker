@@ -182,7 +182,7 @@ const ViewGameInfo = ({params}) => {
         {gameInfo?.creatorId === meData?._id && (
           <div className={styles.inviteFriends}>
             <div className={`headerContainer`}>
-              <h1>Invite Friends</h1>
+              <h1>Invite Players</h1>
             </div>
             <h2 className={`${styles.creatorHeader}`}>
               {`Keep in mind: There are only 8 players allowed per room`}

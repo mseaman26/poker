@@ -8,6 +8,7 @@ import { slide as Menu } from 'react-burger-menu';
 import EmptyProfileIcon from "@/app/assets/icons/emptyProfileIcon"
 import { fetchSingleUserAPI } from '@/lib/apiHelpers'
 
+
 export default function NavBar () {
     const { data: session } = useSession();
     const [menuOpen, setMenuOpen] = useState(false)

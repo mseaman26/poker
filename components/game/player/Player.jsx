@@ -2,11 +2,10 @@ import styles from './player.module.css'
 import { useState, useEffect } from 'react';
 import { playerPositions, chipPositions, cardPositions } from '@/lib/playerPositions';
 import Image from 'next/image';
-import blackChip from '@/app/assets/images/black_Poker_Chip.webp'
 import blueChip from '@/app/assets/images/pokerChipBlue.png'
 import { svgUrlHandler } from '@/lib/svgUrlHandler';
 import redBack from '../../../app/assets/cardSVGs/backs/red.svg'
-import Games from '@/app/(main)/games/page';
+import { updateUserAPI, fetchSingleUserAPI } from '@/lib/apiHelpers';
 
 
 const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, containerSize, renderedFlop, flipping, flopping, burgerOpen, winByFold, roomId, socket, allInAmount}) => {
@@ -108,6 +107,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
         }
         let duration = 0; // duration of the animation in milliseconds
         if(player?.chips === renderedChips) return;
+        const changeAmount = player?.chips - renderedChips
         if(player?.chips > renderedChips){
             setWinAmount(player?.chips - renderedChips)
             duration = 3000
@@ -133,7 +133,12 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
             
           });
         }, frameRate);
-    
+        const updateCashData = async () => { 
+            const playerData = await fetchSingleUserAPI(player.userId)
+            const currentCash = playerData.cash
+            await updateUserAPI(player.userId, {cash: currentCash + winAmount})
+        }
+        updateCashData()
         return () => clearInterval(chipsInterval);
       }, [player?.chips, gameState]);
 

@@ -28,11 +28,11 @@ export default defineConfig({
       testMatch: [
         // '**.test.js',
         // 'firstTest.test.js',
-        // '8players.test.js',
+        '8players.test.js',
         // 'fullGameSetup.test.js',
         // 'authState.test.js',
         // 'authSetup.test.js' //logs in and saves state for all users (testuser1-testuser16)
-        'resumeGame.test.js'
+        // 'resumeGame.test.js' //only works locally
       ],
       
     },

@@ -19,7 +19,8 @@
 }
 .searchInput{
     width: 75%;
-    margin: 0px;
+    margin-right: 5px;
+
 }
 .searchSubmit{
     width: 25%;

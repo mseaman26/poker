@@ -145,7 +145,7 @@ export default function Dashboard() {
               </div>
             </div>
             {/* ACTIVE GAMES */}
-            <div className={styles.activeFriendsContainer}>
+            {/* <div className={styles.activeFriendsContainer}>
               <h1 className={styles.onlineFriendsHeader}>Active Games</h1>
               <div className={styles.onlineFriends}>
                 <ul className={styles.onlineFriendsUl}>
@@ -163,7 +163,7 @@ export default function Dashboard() {
                   })}
                 </ul>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       {/* <div className={`h-screen ${styles.containerLeft}`}> */}
