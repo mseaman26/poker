@@ -3,6 +3,7 @@ import Game from "@/models/game";
 import { plugin } from "mongoose";
 import { NextResponse } from "next/server";
 
+
 export async function GET(req, {params}){
     try{
         await connectMongoDB()
@@ -15,7 +16,7 @@ export async function GET(req, {params}){
             // })
         return NextResponse.json(game)
     }catch(err){
-      if(!production)console.log('error in get game fetch ', err)
+      console.log('error in get game fetch ', err)
     }
 }
 export async function PUT(req, { params }) {
@@ -39,7 +40,7 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ error: 'Game not found' });
       }
     } catch (err) {
-      if(!production)('error in update game fetch ', err);
+        ('error in update game fetch ', err);
       return NextResponse.json({ error: 'Internal Server Error' });
     }
   }

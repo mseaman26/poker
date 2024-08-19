@@ -5,9 +5,19 @@ import { useSession } from "next-auth/react";
 import styles from './dashboard.module.css'
 import Link from 'next/link'
 import { initializeSocket, getSocket } from "@/lib/socketService";
+import { fetchSingleUserAPI } from '@/lib/apiHelpers';
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen';
 
 
 export default function Dashboard() {
+
+  const [activeUsers, setActiveUsers] = useState([])
+  const [meData, setMeData] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [myFriends, setMyFriends] = useState([])
+  const [activeFriends, setActiveFriends] = useState([])
+  const [activeGames, setActiveGames] = useState([])
+
 
   const { data: session, status } = useSession();
   let production = process.env.NODE_ENV === 'production' ? true : false
@@ -16,15 +26,53 @@ export default function Dashboard() {
   initializeSocket()
   let socket = getSocket()
 
-  const requestActiveUsers = async(e) => {
+  const requestActiveUsers = async() => {
     try{
       socket.emit('request active users', () => {
       })
     }catch(err){
       console.log(err)
     }
-
   }
+  const requestActiveGames = async() => {
+    try{
+      socket.emit('request active games', {
+        socketId: socket.id
+      })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const getMeData = async () => {
+    const me = await fetchSingleUserAPI(session.user.id)
+    setMeData(me)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    console.log('active users', activeUsers)
+  }, [activeUsers])
+
+  useEffect(() => {
+    console.log('my active friends', activeFriends)
+  })
+
+  useEffect(() => {
+    setActiveFriends(activeUsers.filter(user =>
+      myFriends.some(friend => friend._id === user.id)))
+  }, [myFriends, activeUsers])
+
+  useEffect(() => {
+    console.log('meData: ', meData)
+    if(meData._id){
+      setMyFriends(meData.friends)
+    }
+  }, [meData])
+
+  useEffect(() => {
+    console.log('myFriends', myFriends)
+  }, [myFriends])
 
   useEffect(() => {
     socket.on('connect', () => {  
@@ -34,9 +82,14 @@ export default function Dashboard() {
       socket.emit('activate user', {id: session?.user?.user?.id, email: session?.user?.user?.email, username: session?.user?.name, socketId: socket.id})
     })
     socket.on('active users', (data) => {
-      console.log('active users ', data)
+      setActiveUsers(data)
+    })
+    socket.on('active games', (data) => {
+      setActiveGames(data)
     })
   }, [])
+
+  
 
   useEffect(() => {
     if(socket && session?.user?.name){
@@ -47,25 +100,72 @@ export default function Dashboard() {
           username: session.user.name,
           id: session.user.id
         })
+        getMeData()
     }
     console.log('session ', session)
   }, [session, socket])
+
+  if(loading){
+    return <LoadingScreen/>
+  }
 
   return (
       <div className='pageContainer'>
         <div className='headerContainer'>
           <h1 className={styles.title}>Welcome to Mike's Friendly Poker!</h1>
         </div>
-        <div className={styles.buttonContainer}>
+        <div className={styles.dashboardContainer}>
+          <div className={styles.buttonContainer}>
           <Link href={'/createGame'} className={styles.button}>CREATE NEW GAME</Link>
           <Link href={'/games'} className={styles.button}>GAMES</Link>
           <Link href={'/myFriends'} className={styles.button}>MY FRIENDS</Link>
           <Link href={'/searchUsers'} className={styles.button}>SEARCH USERS</Link>
           <Link href={'/account'} className={styles.button}>MY ACCOUNT</Link>
           {!production && <button className={styles.button} onClick={requestActiveUsers}>Request Active users</button>}
-          
+          {!production && <button className={styles.button} onClick={requestActiveGames}>Request Active Games</button>}
+          </div>
+          <div className={styles.friendsAndGamesContaine}>
+            <div className={styles.activeFriendsContainer}>
+              <h1 className={styles.onlineFriendsHeader}>Online Friends</h1>
+              <div className={styles.onlineFriends}>
+                <ul className={styles.onlineFriendsUl}>
+                  {activeFriends.length < 1 ? 
+                    <h1>No Online Friends</h1>
+                    :
+                  
+                  activeFriends.map((friend, index) => {
+                    return (
+                      <li key={`activeFriend_${index}`} className={styles.onlineFriendsLi}>
+                          <div className={styles.pulsingIcon}></div>
+                          <p className={styles.onlineFriendsP}>{friend.username}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </div>
+            {/* ACTIVE GAMES */}
+            <div className={styles.activeFriendsContainer}>
+              <h1 className={styles.onlineFriendsHeader}>Active Games</h1>
+              <div className={styles.onlineFriends}>
+                <ul className={styles.onlineFriendsUl}>
+                  {activeGames.length < 1 ? 
+                    <h1>No Active Games</h1>
+                    :
+                    
+                  activeGames.map((game, index) => {
+                    return (
+                      <li key={`activeGanme_${index}`} className={styles.onlineFriendsLi}>
+                          <div className={styles.pulsingIcon}></div>
+                          <p className={styles.onlineFriendsP}>{game.name}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-      
       {/* <div className={`h-screen ${styles.containerLeft}`}> */}
         {/* CREATE GAME */}
         

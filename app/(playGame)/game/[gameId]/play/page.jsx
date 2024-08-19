@@ -78,7 +78,7 @@ export default function({params}){
 
     useEffect(() => {
 
-        if(meData._id && socket.id && !gameState.active && isInvited){
+        if(meData?._id && socket.id && !gameState.active && isInvited){
             socket.emit('add player', {roomId: params.gameId, player: {id: meData._id, username: meData.name}})
         }
         if(gameData?.state){
