@@ -74,12 +74,17 @@ export default function NavBar () {
         },
         //Individual item
         bmItem: {
-          fontWeight: 700,
-          fontSize: 32,
-          marginBottom: 20,
-          border: '1px solid #f1f1f1',
-          color: '#f1f1f1',
-          padding: 10
+          fontWeight: 600, // Semi-bold for a balanced text weight
+          fontSize: windowWidth > 399 ? '24px' : '20px', // Responsive font size
+          marginBottom: '12px', // Slightly tighter spacing between items
+          border: 'none', // Removed border for a cleaner look
+          color: '#f0f0f0', // Soft white color for better contrast
+          padding: '10px 15px', // Comfortable padding for touch targets
+          textAlign: 'center', // Center-align text for balance
+          borderRadius: '8px', // Rounded corners for a modern feel
+          backgroundColor: '#444444', // Dark background for contrast
+          transition: 'background-color 0.3s ease, transform 0.3s ease', // Smooth transitions
+          cursor: 'pointer', // Pointer cursor to indicate interactivity
         },
         //Styling of overlay
         bmOverlay: {
