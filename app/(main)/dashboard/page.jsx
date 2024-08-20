@@ -6,7 +6,7 @@ import styles from './dashboard.module.css'
 import Link from 'next/link'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { fetchSingleUserAPI } from '@/lib/apiHelpers';
-import LoadingScreen from '@/components/loadingScreen/LoadingScreen';
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen.jsx';
 
 
 export default function Dashboard() {
