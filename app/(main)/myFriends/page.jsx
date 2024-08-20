@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import { fetchSingleUserAPI, respondToFriendRequestAPI } from '@/lib/apiHelpers'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import Link from 'next/link'
-import LoadingScreen from '@/components/loadingScreen/loadingScreen'
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen2'
 
 const MyFriends = () => {
 

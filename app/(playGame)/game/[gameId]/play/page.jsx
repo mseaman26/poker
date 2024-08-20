@@ -9,7 +9,7 @@ import Myturn from "@/components/game/MyTurn/MyTurn";
 import { svgUrlHandler } from "@/lib/svgUrlHandler";
 import Image from "next/image";
 import Player from "@/components/game/player/Player";
-import LoadingScreen from "@/components/loadingScreen/loadingScreen";
+import LoadingScreen from "@/components/loadingScreen/LoadingScreen2";
 import GameBurger from "@/components/game/GameBurger/GameBurger";
 import DealingScreen from "@/components/dealingScreen/dealingScreen";
 import DevMonitor from "@/components/DevMonitor/DevMonitor";

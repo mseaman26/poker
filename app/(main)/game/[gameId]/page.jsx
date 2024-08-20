@@ -7,7 +7,7 @@ import { initializeSocket, getSocket } from "@/lib/socketService";
 import styles from './gamePage.module.css'
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import LoadingScreen from "@/components/loadingScreen/loadingScreen";
+import LoadingScreen from "@/components/loadingScreen/LoadingScreen2";
 import Link from "next/link";
 
 

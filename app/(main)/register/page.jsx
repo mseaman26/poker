@@ -9,7 +9,7 @@ import { initializeSocket, getSocket } from "@/lib/socketService";
 import { socket } from "@/socket";
 import { searchUsersAPI } from "@/lib/apiHelpers";
 import { isValidEmail } from "@/lib/validators";
-import LoadingScreen from '@/components/loadingScreen/loadingScreen';
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen2';
 
 export default function Register() {
   const { data: session } = useSession();

@@ -7,7 +7,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { isValidEmail } from "@/lib/validators";
-import LoadingScreen from '@/components/loadingScreen/loadingScreen';
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen2';
 import {updateUsersAPI, deleteTestUsersAPI} from '../../lib/apiHelpers'
 
 

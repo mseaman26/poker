@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { searchUsersAPI, updateUserAPI, deleteUserAPI, fetchSingleUserAPI } from '@/lib/apiHelpers'
 import { signIn, signOut } from 'next-auth/react'
-import LoadingScreen from '@/components/loadingScreen/loadingScreen'
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen2'
 
 
 const AccountPAge= () => {

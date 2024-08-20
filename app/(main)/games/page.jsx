@@ -7,7 +7,7 @@ import { getMyGamesAPI, deleteGameAPI, fetchSingleUserAPI } from '@/lib/apiHelpe
 import { formatDateFromMongo } from '@/lib/helpers'
 import { initializeSocket, getSocket } from "@/lib/socketService";
 import { useRouter } from 'next/navigation'
-import LoadingScreen from '@/components/loadingScreen/loadingScreen'
+import LoadingScreen from '@/components/loadingScreen/LoadingScreen2'
 
 
 const Games = () => {
