@@ -189,7 +189,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             <Image src={blueChip} width={50} height={50} className={styles.chipImage} style={{width: containerSize * .03, height: containerSize * .03}}  alt='poker chip icon'/>
                             </div>}
                         {player.bet > 0 && !player.maxWin &&
-                        <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : decimalAmount)}</h1>
+                        <h1 className={styles.otherBet} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : 2)}</h1>
                         }  
                         
                         </div>}
@@ -251,7 +251,7 @@ const Player = ({player, index, numPlayers, meIndex, gameState, betFormShown, co
                             {/* <div className={`${styles.MychipBackground} ${styles.myChipBlue}`}></div> */}
                             <Image src={blueChip} width={50} height={50} className={styles.MyChipImage} alt='poker chip icon' style={{width: containerSize * .03, height: containerSize * .03}}/>
                             {player.bet > 0 && 
-                                <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : decimalAmount)}</h1>}
+                                <h1 className={styles.myMoneyInPot} style={{fontSize: containerSize * .03}}>${(player.bet / 100).toFixed((player.bet / 100) % 1 === 0 ? 0 : 2)}</h1>}
                         </div>
                         }
                         

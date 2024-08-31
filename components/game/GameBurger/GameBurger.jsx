@@ -10,6 +10,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false)
     const [menuHovered, setMenuHovered] = useState(false)
+    const [windowWidth, setWindowWidth] = useState(0);
 
     const closeMenu = () => {
         setMenuOpen(false)  
@@ -22,44 +23,36 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             width: '36px',
             height: '30px',
             color: 'white',
-            zIndex: 10
         },
         //Color/shape of burger icon bars
         bmBurgerBars: {
           
-            background: '#f1f1f1',
-            zIndex: 0
+          background: '#f1f1f1'
         },
         //Color/shape of burger icon bars on hover
         bmBurgerBarsHover: {
-            background: '#a90000'
+          background: '#a90000'
         },
         //Position and sizing of clickable cross button
         bmCrossButton: {
-            height: '64px',
-            width: '64px',
-
+          height: '32px',
+          width: '32px'
         },
         // Color/shape of close button cross
         bmCross: {
-            // fontSize: '128em',
-            // fontSize: "64px",
-
-            background: '#bdc3c7',
-            left: '0',
-
-
+          fontSize: '64em',
+          // fontSize: "64px",
+          background: '#bdc3c7'
         },
       
         //Sidebar wrapper styles
         // Note: Beware of modifying this element as it can     break the animations - you should not need to touch it in most cases
     
         bmMenuWrap: {
-            position: 'fixed',
-            height: '100%',
-            width: '80%',
-            top: 0,
-
+          position: 'fixed',
+          height: '100%',
+          width: '80%',
+          top: 0
         },
         //General sidebar styles
         bmMenu: {
@@ -68,49 +61,54 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             padding: '2.5em 1.5em 0',
             fontSize: '1.15em',
             width: '100%',
-            top: 0,
-
+            top: 0
         },
         //Morph shape necessary with bubble or elastic
         bmMorphShape: {
-   
+          fill: '#373a47'
         },
         //Wrapper for item list
         bmItemList: {
-            position: 'relative',
-            color: '#F1EFEB',
-            padding: '0.8em',
-
+          color: '#F1EFEB',
+          padding: '0.8em'
         },
         //Individual item
         bmItem: {
-            position: 'relative',
-            fontWeight: 700,
-            fontSize: 32,
-            marginBottom: 20,
-            color: '#f1f1f1',
-
-            cursor: 'pointer',
-            border: '1px solid #f1f1f1',
-            padding: '10px',
-            borderRadius: '5px',
-            transition: 'background 0.3s, color 0.3s'
+          fontWeight: 600, // Semi-bold for a balanced text weight
+          fontSize: windowWidth > 399 ? '24px' : '20px', // Responsive font size
+          marginBottom: '12px', // Slightly tighter spacing between items
+          border: 'none', // Removed border for a cleaner look
+          color: '#f0f0f0', // Soft white color for better contrast
+          padding: '10px 15px', // Comfortable padding for touch targets
+          textAlign: 'center', // Center-align text for balance
+          borderRadius: '8px', // Rounded corners for a modern feel
+          backgroundColor: '#444444', // Dark background for contrast
+          transition: 'background-color 0.3s ease, transform 0.3s ease', // Smooth transitions
+          cursor: 'pointer', // Pointer cursor to indicate interactivity
         },
         //Styling of overlay
-        bmItemHover: {
-            background: '#a90000',
-            color: '#ffffff'
-        },
         bmOverlay: {
     
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            width: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            zIndex: 0
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          width: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)'
         }
-    }
+      } 
+    
+    useEffect(() => {
+        function handleResize() {
+          setWindowWidth(window.innerWidth);
+        }
+        if(window){
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener('resize', handleResize);
+        
+        return () => window.removeEventListener('resize', handleResize);
+        
+    }, []);
 
     useEffect(() => {
         if(menuOpen !== burgerOpen) setBurgerOpen(menuOpen)
