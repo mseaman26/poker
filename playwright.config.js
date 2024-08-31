@@ -29,7 +29,7 @@ export default defineConfig({
         // '**.test.js',
         //'firstTest.test.js',
         // '8players.test.js',
-        // 'fullGameSetup.test.js',
+        //'fullGameSetup.test.js',
         // 'authState.test.js',
         //'authSetup.test.js' //logs in and saves state for all users (testuser1-testuser16)
         'resumeGame.test.js' //only works locally, you might have to change the base url in the env file and you may need to re run authSetup if it was run remotely previously
