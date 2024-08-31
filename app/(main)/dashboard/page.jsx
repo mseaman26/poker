@@ -45,7 +45,7 @@ export default function Dashboard() {
   }
 
   const getMeData = async () => {
-    const me = await fetchSingleUserAPI(session.user.id)
+    const me = await fetchSingleUserAPI(session?.user.id)
     setMeData(me)
     setLoading(false)
   }
@@ -87,15 +87,12 @@ export default function Dashboard() {
   
 
   useEffect(() => {
-    if(socket && session?.user?.name){
-        console.log('session ', session)
-        if(session?.user && socket?.id){
+        if(session?.user && socket){
           const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
           console.log(data)
           socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
         }
         getMeData()
-    }
     console.log('session ', session)
   }, [session, socket])
 
