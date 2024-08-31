@@ -2,16 +2,42 @@
 import React from 'react'
 import styles from './createGame.module.css'
 import { createGameAPI } from '@/lib/apiHelpers'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { initializeSocket, getSocket } from "@/lib/socketService";
 
 const CreateGame = () => {
   const { data: session } = useSession();
+  initializeSocket();
+  let socket = getSocket()
+  
   const router = useRouter()
   const [gameName, setGameName] = useState('')
   const [buyIn, setBuyIn] = useState('')
   const [startingBlind, setStartingBlind] = useState(0)
+
+
+  useEffect(() => {
+    
+      console.log('here!')
+      socket.on('connect', () => {  
+        console.log('connected in create game')
+        //activeUsers.set(socket.id, {id: data.id, email: data.email, username: data.username, socketId: socket.id})
+        
+      })
+  
+  }, [])
+
+  useEffect(() => {
+      console.log('session: ', session)
+      if(session?.user && socket){
+        const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
+        console.log(data)
+        socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
+      }
+      
+  }, [session, socket])
 
   const createGame = async (e) => {
     e.preventDefault()

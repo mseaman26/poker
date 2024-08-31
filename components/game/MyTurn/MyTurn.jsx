@@ -1,5 +1,5 @@
 
-import { set } from 'mongoose'
+
 import styles from './MyTurn.module.css'
 import { useState, useEffect, useRef } from 'react'
 
@@ -12,6 +12,8 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const [maxRaise, setMaxRaise] = useState(0)
     const [maxBet, setMaxBet] = useState(0)
     const [chipTotal, setChipTotal] = useState(0)
+    const [popUpVisible, setPopUpVisible] = useState(true)
+
     const baseFont = containerSize * .03
     const raiseInputRef = useRef(null);
     const betInputRef = useRef(null);
@@ -20,6 +22,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     const decimalAmount = gameState.bigBlind >= 200 ? 0 : 2 
 
     const fold = () => {
+        setPopUpVisible(false)
         socket.emit('fold', {roomId: gameId, turn: gameState.turn})
     }
     const call = (amount) => {
@@ -27,11 +30,12 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             alert('You do not have enough chips')
             return
         }
-
+        setPopUpVisible(false)
         bet(amount)
     }
     const handleAllIn = () => {
         if(confirm('Are you sure you want to go all in?')){
+            setPopUpVisible(false)
             setAllInAmount(gameState.players[gameState.turn].chips + gameState.players[gameState.turn].bet)
             bet(gameState.players[gameState.turn].chips)
         }
@@ -39,6 +43,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
     const handleMaxBet = () => {
         if(confirm('Are you sure you want to bet the max?')){
+            setPopUpVisible(false)
             bet(maxBet)
         }
     }
@@ -68,6 +73,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             alert(`Max raise is $${(maxRaise / 100).toFixed((maxRaise / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
+        setPopUpVisible(false)
         if((raiseAmount * 100)- gameState.players[gameState.turn].bet + gameState.currentBet
         === gameState.players[gameState.turn].chips){
             let allInAmount = raiseAmount * 100 + gameState.currentBet - gameState?.players[gameState.turn]?.bet
@@ -99,6 +105,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
             alert(`Max bet is $${(maxBet / 100).toFixed((maxBet / 100) % 1 === 0 ? 0 : 2)}`)
             return
         }
+        setPopUpVisible(false)
         if((betAmount * 100) + gameState.players[gameState.turn].bet 
         
         
@@ -111,6 +118,7 @@ const Myturn = ({gameState, socket, gameId, betFormShown, setBetFormShown, conta
     }
 
     const bet = (amount) => { 
+        setPopUpVisible(false)
         if(amount  === gameState.players[gameState.turn].chips){
 
             socket.emit('all in', {roomId: gameId, turn: gameState.turn, amount: amount})

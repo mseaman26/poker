@@ -54,9 +54,6 @@ export default function Dashboard() {
     console.log('active users', activeUsers)
   }, [activeUsers])
 
-  useEffect(() => {
-    console.log('my active friends', activeFriends)
-  })
 
   useEffect(() => {
     setActiveFriends(activeUsers.filter(user =>
@@ -76,12 +73,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     socket.on('connect', () => {  
+      console.log('dashboard connect')
       //activeUsers.set(socket.id, {id: data.id, email: data.email, username: data.username, socketId: socket.id})
       const data = {id: session?.user?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
-      console.log('data ', data)
+      console.log('data: ',data)
       socket.emit('activate user', {id: session?.user?.user?.id, email: session?.user?.user?.email, username: session?.user?.name, socketId: socket.id})
     })
     socket.on('active users', (data) => {
+      console.log('active users ', data)
       setActiveUsers(data)
     })
     socket.on('active games', (data) => {

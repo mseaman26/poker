@@ -94,6 +94,15 @@ const Games = () => {
           socket.off('disconnect');
         };
       }, [])
+      useEffect(() => {
+        console.log('session: ', session)
+        if(session?.user && socket){
+          const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
+          console.log(data)
+          socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
+        }
+        
+    }, [session, socket])
 
     return (
         <div className='pageContainer'>

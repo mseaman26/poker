@@ -6,10 +6,12 @@ import { useSession } from 'next-auth/react'
 import { searchUsersAPI, updateUserAPI, deleteUserAPI, fetchSingleUserAPI } from '@/lib/apiHelpers'
 import { signIn, signOut } from 'next-auth/react'
 import LoadingScreen from '@/components/loadingScreen/LoadingScreen2'
+import { initializeSocket, getSocket } from "@/lib/socketService";
 
 
 const AccountPAge= () => {
-
+    initializeSocket()
+    const socket = getSocket()
     const { data: session } = useSession();
     const [newUsername, setNewUsername] = useState("");
     const [newEmail, setNewEmail] = useState("");
@@ -162,6 +164,15 @@ const AccountPAge= () => {
             }
             
     }, [session])
+    useEffect(() => {
+        console.log('session: ', session)
+        if(session?.user && socket){
+          const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
+          console.log(data)
+          socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
+        }
+        
+    }, [session, socket])
 
     return (
         <>
