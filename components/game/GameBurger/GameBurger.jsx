@@ -123,7 +123,7 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
             Leave Game Room
             </div>
             {/* CREATOR ACTIONS */}
-            {!isCreator &&
+            {/* {!isCreator &&
                 <div className="menu-item" onClick={() => {
                     if(numPlayers <= 2){
                         if(confirm('Are you sure you want to cash out and end the game?')){
@@ -139,10 +139,10 @@ const GameBurger = ({endGame, gameId, isCreator, burgerOpen, setBurgerOpen, cash
                     }
                     
                 }}>Cash Out</div>
-            }
-            {isCreator && 
+            } */}
+            {/* {isCreator && 
                 <div className="menu-item" onClick={() =>{} }>Change Blinds</div>
-            }
+            } */}
             {isCreator && 
             <div className="menu-item" onClick={() => {
                 closeMenu()
