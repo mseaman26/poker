@@ -45,7 +45,7 @@ export default function Dashboard() {
   }
 
   const getMeData = async () => {
-    const me = await fetchSingleUserAPI(session?.user.id)
+    const me = await fetchSingleUserAPI(session?.user?.id)
     setMeData(me)
     setLoading(false)
   }
