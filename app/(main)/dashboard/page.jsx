@@ -89,7 +89,7 @@ export default function Dashboard() {
   useEffect(() => {
     if(socket && session?.user?.name){
         console.log('session ', session)
-        if(session?.user && socket){
+        if(session?.user && socket?.id){
           const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
           console.log(data)
           socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
