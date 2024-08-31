@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     console.log('meData: ', meData)
-    if(meData._id){
+    if(meData?._id){
       setMyFriends(meData.friends)
     }
   }, [meData])
@@ -88,9 +88,9 @@ export default function Dashboard() {
 
   useEffect(() => {
         if(session?.user && socket){
-          const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id}
+          const data = {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket?.id}
           console.log(data)
-          socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket.id})
+          socket.emit('activate user', {id: session?.user?.id, email: session?.user?.email, username: session?.user?.name, socketId: socket?.id})
         }
         getMeData()
     console.log('session ', session)
