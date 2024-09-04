@@ -28,11 +28,11 @@ export default defineConfig({
       testMatch: [
         // '**.test.js',
         //'firstTest.test.js',
-        // '8players.test.js',
+        '8players.test.js', //may require using the 'delete test users' button on the login page (in dev mode) to clear the database  
         //'fullGameSetup.test.js',
         // 'authState.test.js',
         //'authSetup.test.js' //logs in and saves state for all users (testuser1-testuser16)
-        'resumeGame.test.js' //only works locally, you might have to change the base url in the env file and you may need to re run authSetup if it was run remotely previously
+        //'resumeGame.test.js' //only works locally, you might have to change the base url in the env file and you may need to re run authSetup if it was run remotely previously
       ],
       
     },
