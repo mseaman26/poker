@@ -64,9 +64,11 @@ export default function LoginForm() {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: true,
+        redirect: false,
         onSuccess: async () => {
-          //i was console loggin here before
+          //redirect to dashboard
+          router.push("/dashboard");
+
         }
       });
       console.log('res ', res)
